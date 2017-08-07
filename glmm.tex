@@ -99,16 +99,17 @@ Alternatively, statisticians speak of \textit{multilevel models} or \textit{hier
 The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (or \textit{data point} or \textit{measurement}) is one atomic exemplar entering into the statistical analysis of the study.
 In corpus linguistics, these are usually represented by a single line of a concordance containing for example (and with reference to the above examples) a clause or sentence in which one of the alternants of a case alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
-When such observations are grouped, it is often plausible to assume that some variance in the choice of constructions occurs at the group-level and not at the level of observations.
-Groups could be defined any linguistically relevant grouping factor, such as authors, regions where authors are from, social groups with which authors identify themselves, time periods, genres, styles, etc.
+When such observations are grouped, it is often plausible to assume that some variance in the choice of the alternating forms or constructions occurs at the group-level and not at the level of observations.
+Groups could be defined any linguistically relevant grouping factor, such as authors, authors' sex and gender, regions where authors were born or live, social groups with which authors identify themselves, time periods, genres, styles, etc.
 If the concordance in a study contains, say, ten sentences each written by ten authors, the grouping factor \textit{Author} has ten levels and defines ten groups.
-We know that preferences vary between speakers, and it is therefore reasonable to include this variance in our models.
+We know that preferences vary between speakers, and it is therefore reasonable to include this variance in our modeling in some way.
 The same goes for the other possible groups just mentioned.
+In experimental settings, variation between participants is standardly modeled by including a random effect for speaker.
 
-While random effects are often presented like this using conceptual arguments, the crucial question in specifying models is not whether to include these grouping factors at all when the respective information is available, but rather whether to include them as fixed effects or as random effects.%
-\footnote{I assume that no corpus linguist would make the decision not to include such relevant factors in their models when the corpus contains the meta data or these meta data can be annotated reliably with acceptable effort.}
-
-
+While random effects are often presented like this using conceptual arguments, the crucial question in specifying models is not whether to include these grouping factors at all, but rather whether to include them as fixed effects or as random effects.%
+\footnote{I assume that no corpus linguist would make the decision not to include relevant factors in their models when the corpus contains the corresponding meta data or these meta data can be annotated reliably with acceptable effort.}
+Contrary to formulaic recommendations such as ``Always include random effects for speaker and genre.'', the choice between fixed and random effects can and should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting estimates.
+After some further clarifications, this is the subject of Section~\ref{sec:thedetails}.
 
 \subsection{Crossed an nested effects}
 \label{sec:crossedandnestedeffects}
@@ -122,9 +123,17 @@ While random effects are often presented like this using conceptual arguments, t
 \label{sec:thedetails}
 
 
-\section{Doing it in R}
+\section{Estimation for hierarchical models in R}
 \label{sec:usefulfunctionsandpackages}
 
+\subsection{The standard lme4 package}
+\label{sec:thestandardlm4package}
+
+\subsection{Improving lme4 inferences and model selection using the bootstrap}
+\label{sec:improvinglme4inferencesandmodelselectionusingthe bootstrap}
+
+\subsection{Using a more robust ``Bayesian'' estimator}
+\label{sec:usingamorerobustbayesianestimator}
 
 
 %\section{Representative studies}

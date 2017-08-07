@@ -1,7 +1,7 @@
-\documentclass[a4paper,11.5pt]{article}
+\documentclass[a4paper,12pt]{article}
 
 \usepackage{authblk}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=1.5in]{geometry}
 \usepackage{setspace}
 \usepackage[T1]{fontenc}
 \usepackage{calc}
@@ -71,26 +71,72 @@
 \maketitle
 
 \section{Introduction}
-
+\label{sec:introduction}
 
 \section{Fundamentals}
+\label{sec:fundamentals}
 
 % For each type of statistics, the chapter should aim to answer the following guiding questions in the main text:
 % 1) What kind of data does one use this method for? 
 % 2) What are the assumptions?
 % 3) What kind of research questions does it answer?
 
-\section{Representative studies}
+\subsection{Introduction to random effects}
+\label{sec:introductiontorandomeffects}
 
-\subsection{STUDY 1}
+\textit{Generalized Linear Models} (GLMs; as discussed in the previous chapter) allow us to estimate the effects which various \textit{predictors} or \textit{regressors} (\ie corpus linguistic variables) have on an \textit{outcome} or \textit{response} (\ie another corpus linguistic variable).%
+\footnote{It should be noted that I use the term \textit{variable} here in its neutral sense which is common in most strains of empirical and statistical research.
+The definition of a variable in Labovian variationist linguistics is more restricted and theoretically burdened.}
+Surely, the most typical application (in corpus linguistics) is the modeling of \textit{alternations}, \ie phenomena where the response variable of interest encodes a choice of forms or constructions, for example a case alternation (binary or n-valued categorical, depending on the richness of the language's case system), alternations of graphemic form such as contracted vs.\ non-contracted, ordering preferences such as the order of prenominal adjectives, or syntactic constructional alternations such as the dative alternation.%
+\footnote{In this article, I restrict the discussion to GL(M)Ms with categorical responses, simply because the continuous responses in Linear (Mixed) Models -- or LM(M)s – are not often found in corpus linguistics.
+Also, an L(M)M can be understood as a GL(M)M with an identity link function and a Gaussian distribution for residuals.}
+The approach is called \textit{generalized} in contrast to normal linear models because the response need not be numerical, and the \textit{errors} or \textit{residuals} do not have to be (approximately) normally distributed.
+This is achieved by allowing for different types of exponential distributions for the residuals -- which requires the use of a more general estimator than least-squares, typically likelihood maximization -- and \textit{link functions} that relate the additive linear term that combines the predictors in a non-linear way to the response variable.
+Generalized Linear Mixed Models (GLMMs) are not much different.
+They add what are often called \textit{random effects}, \textit{mixing} them with the normal predictors which are used in GLMs, and which are called \textit{fixed effects} in this terminology.
+Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:fundamentals}.
 
-\subsubsection{Research questions}
-\subsubsection{Data}
-\subsubsection{Method}
-\subsubsection{Results}
+The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
+A single observation (or \textit{data point} or \textit{measurement}) is one atomic exemplar entering into the statistical analysis of the study.
+In corpus linguistics, these are usually represented by a single line of a concordance containing for example (and with reference to the above examples) a clause or sentence in which one of the alternants of a case alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
+When such observations are grouped, it is often plausible to assume that some variance in the choice of constructions occurs at the group-level and not at the level of observations.
+Groups could be defined any linguistically relevant grouping factor, such as authors, regions where authors are from, social groups with which authors identify themselves, time periods, genres, styles, etc.
+If the concordance in a study contains, say, ten sentences each written by ten authors, the grouping factor \textit{Author} has ten levels and defines ten groups.
+We know that preferences vary between speakers, and it is therefore reasonable to include this variance in our models.
+The same goes for the other possible groups just mentioned.
 
-\section{Useful functions and packages}
+While random effects are often presented like this using conceptual arguments, the crucial question in specifying models is not whether to include these grouping factors at all when the respective information is available, but rather whether to include them as fixed effects or as random effects.%
+\footnote{I assume that no corpus linguist would make the decision not to include such relevant factors in their models when the corpus contains the meta data or these meta data can be annotated reliably with acceptable effort.}
 
-% \printbibliography
+
+
+\subsection{Crossed an nested effects}
+\label{sec:crossedandnestedeffects}
+
+
+\subsection{Hierarchical models}
+\label{sec:hierarchicalmodels}
+
+
+\subsection{The details}
+\label{sec:thedetails}
+
+
+\section{Doing it in R}
+\label{sec:usefulfunctionsandpackages}
+
+
+
+%\section{Representative studies}
+%
+%\subsection{STUDY 1}
+%
+%\subsubsection{Research questions}
+%\subsubsection{Data}
+%\subsubsection{Method}
+%\subsubsection{Results}
+
+
+\printbibliography
 
 \end{document} 

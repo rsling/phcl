@@ -67,6 +67,7 @@
 \date{\today}
 
 \setlength\parindent{0pt}
+\doublespacing
 
 \begin{document}       
 
@@ -283,18 +284,18 @@ Which one is more appropriate will be argued to be better understood as a techni
 \subsection{Model specification}
 \label{sec:modelspecification}
 
-In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative using only fixed effects.
+In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
 A major focus is on the question of when to use fixed and random effects.
 The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced as the absolute minimum required to understand the literature on mixed models.
 To make successful \textit{practical} use of mixed models, some level of fundamental understanding is required.
 
-Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other potential random effects grouping factors discussed in the previous sections) can be specified as a normal fixed effect in a GLM.
+Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other grouping factors discussed in the previous sections) can be specified as a normal fixed effect in a GLM.
 In such a case, each of the $m$ levels of the speaker factor is dummy-coded, and for all but one of these binary dummy variables, a coefficient is estimated.
-A logistic regression example is used throughout this section.
+A logistic regression example is used throughout this section, using the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
 We begin with a minimal model with only the dummies of the lemma grouping factor and one other predictor, namely discourse status.
 There are $m$ verb lemmas (\ie groups) and $n$ observations.
 As index variables, we use $j$ for groups and $i$ for observations.
-A specification of such a model is given in equation~(\ref{eq:glm01}).
+A specification of such a model is given in (\ref{eq:glm01}).
 
 \begin{equation}
   Pr(y^i=1)=logit^{-1}(\alpha_0+\beta_d\cdot x_{d}^i+\beta_{l_1}\cdot x_{l_1}^i+\beta_{l_2}\cdot x_{l_2}^i+\cdots+\beta_{l_{m-1}}\cdot x_{l_{m-1}}^i)
@@ -303,7 +304,7 @@ A specification of such a model is given in equation~(\ref{eq:glm01}).
 
 This model provides an estimate of the probability ($Pr$) that in observation $i$, the outcome variable $y^i$ is $1$, \ie that dative shift occurs.
 $\alpha_0$ is the intercept, $\beta_d$ is the coefficient for the effect of discourse status.
-$x_d^i$ is the value of the variable that encodes discourse status for exemplar $i$ with the value $0$ for discourse-old NPs and $1$ for discourse-new NPs.
+$x_d^i$ is the value of the variable that encodes discourse status for exemplar $i$ ($0$ for discourse-old NPs and $1$ for discourse-new NPs).
 Furthermore $\beta_{l_j}$ are the coefficients for the lemma dummy variables.
 Finally, $x_{l_j}^i$ is the value ($0$ or $1$) for lemma $j$ and observation $i$.
 If in exemplar $64$, the lemma is \textit{give} and \textit{give} is encoded as group $12$, then $i=64$, $j=12$, and $x_{l_{12}}^{64}=1$, whereas all $x_{l_j}^{64}=0$ with $j\neq12$.%
@@ -318,14 +319,14 @@ It is obvious that in such a model, the effect of each verb lemma is treated as 
 The coefficient $\beta_d$ is estimated in exactly the same way as each $\beta_{l_j}$.
 
 If we treat the same grouping factor as a so-called random intercept, we add an atomic term to the linear term and give it a distribution instead of estimating $m-1$ coefficients.
-The model looks like in equation~(\ref{eq:glmm01}).
+The model looks like in (\ref{eq:glmm01}).
 
 \begin{equation}
   P(y^i=1)=logit^{-1}(\alpha_0+\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
   \label{eq:glmm01}
 \end{equation}
 
-We now have an overall intercept $\alpha_0$, an atomic term $\alpha_l^j$ that varies between groups (instead of a single additive term for each of the lemmas), where in $\alpha_l^{j[i]}$ the correct lemma intercept $j$ is chosen for observation $i$, which we write $j[i]$, a notation borrowed from \citet{GelmanHill2006}.
+We now have an overall intercept $\alpha_0$, an atomic term $\alpha_l^j$ that varies between groups (instead of a single additive term for each of the groups), where in $\alpha_l^{j[i]}$ the correct lemma intercept $j$ is chosen for observation $i$, which we write $j[i]$, a notation borrowed from \citet{GelmanHill2006}.
 If, again, in exemplar $64$, the lemma is \textit{give}, which is group $12$, then $i=64$ and $\alpha_l^{j[12]}=\alpha_l^{12}$ because $j[64]=12$.
 The term $\beta_d\cdot x_d^i$ for the effect of discourse status remains unchanged.
 Crucially, instead of estimating coefficients for the lemma effect -- as in the model in (\ref{eq:glm01}) --, $\alpha_l$ is itself modeled, and random terms are \textit{predicted} for each level of the grouping factor.
@@ -342,7 +343,7 @@ We can see this if we reformulate it as (\ref{eq:glmm03}).
 
 \begin{equation}
   \begin{split}
-    \alpha_l^j=z_j+\epsilon_j\\
+    \alpha_l^j=y^j+\epsilon^j\\
     \epsilon_j\sim\mathbf{N}(0,\sigma_l^2)
   \end{split}
   \label{eq:glmm03}

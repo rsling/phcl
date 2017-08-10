@@ -286,15 +286,18 @@ Which one is more appropriate will be argued to be better understood as a techni
 
 In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
 A major focus is on the question of when to use fixed and random effects.
-The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced as the absolute minimum required to understand the literature on mixed models.
+The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced as the absolute minimum required to understand both the output of lme4 and other packages in R as well as the literature on mixed models.
 To make successful \textit{practical} use of mixed models, some level of fundamental understanding is required.
 
-Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other grouping factors discussed in the previous sections) can be specified as a normal fixed effect in a GLM.
+\subsubsection{Simple random intercepts}
+
+Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other grouping factors discussed in the previous sections) could be specified as a normal fixed effect in a GLM.
 In such a case, each of the $m$ levels of the speaker factor is dummy-coded, and for all but one of these binary dummy variables, a coefficient is estimated.
 A logistic regression example is used throughout this section, using the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
-We begin with a minimal model with only the dummies of the lemma grouping factor and one other predictor, namely discourse status.
+We begin with a minimal model with only the dummies of the lemma grouping factor and one other (binary) predictor, namely discourse status.
 There are $m$ verb lemmas (\ie groups) and $n$ observations.
 As index variables, we use $j$ for groups and $i$ for observations.
+In general, $\alpha$ is used for intercepts and $\beta$ for coefficients.
 A specification of such a model is given in (\ref{eq:glm01}).
 
 \begin{equation}
@@ -302,7 +305,7 @@ A specification of such a model is given in (\ref{eq:glm01}).
   \label{eq:glm01}
 \end{equation}
 
-This model provides an estimate of the probability ($Pr$) that in observation $i$, the outcome variable $y^i$ is $1$, \ie that dative shift occurs.
+This models the estimate of the probability ($Pr$) that in observation $i$, the outcome variable $y^i$ is $1$, \ie that dative shift occurs.
 $\alpha_0$ is the intercept, $\beta_d$ is the coefficient for the effect of discourse status.
 $x_d^i$ is the value of the variable that encodes discourse status for exemplar $i$ ($0$ for discourse-old NPs and $1$ for discourse-new NPs).
 Furthermore $\beta_{l_j}$ are the coefficients for the lemma dummy variables.
@@ -310,7 +313,6 @@ Finally, $x_{l_j}^i$ is the value ($0$ or $1$) for lemma $j$ and observation $i$
 If in exemplar $64$, the lemma is \textit{give} and \textit{give} is encoded as group $12$, then $i=64$, $j=12$, and $x_{l_{12}}^{64}=1$, whereas all $x_{l_j}^{64}=0$ with $j\neq12$.%
 \footnote{It is unfortunate that multiple indexation is required to such an extent.
 However, any alternative notation has at least the same potential to confuse readers.}
-
 Because one verb lemma dummy variable is on the intercept $\alpha_0$ and thus used as a reference, we only estimate $m-1$ instead of $m$ coefficients, \ie $j=1,\cdots,m-1$.%
 \footnote{It is often not explained in text books for practitioners that using one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist because one could simply add a constant to the intercept and subtract it from the dummies.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate for the coefficient matrix.}
@@ -318,8 +320,9 @@ The function $logit^{-1}$ is the \textit{link function}, and its argument is the
 It is obvious that in such a model, the effect of each verb lemma is treated as a fixed population parameter, exactly the same as the effect of discourse status.
 The coefficient $\beta_d$ is estimated in exactly the same way as each $\beta_{l_j}$.
 
-If we treat the same grouping factor as a so-called random intercept, we add an atomic term to the linear term and give it a distribution instead of estimating $m-1$ coefficients.
-The model looks like in (\ref{eq:glmm01}).
+If we treat the same grouping factor as a random intercept, we add an atomic term to the linear term and give it a distribution instead of estimating $m-1$ coefficients.
+This is the only relevant difference between a fixed effect and a random effect.
+The model specification then looks like in (\ref{eq:glmm01}).
 
 \begin{equation}
   P(y^i=1)=logit^{-1}(\alpha_0+\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
@@ -327,39 +330,33 @@ The model looks like in (\ref{eq:glmm01}).
 \end{equation}
 
 We now have an overall intercept $\alpha_0$, an atomic term $\alpha_l^j$ that varies between groups (instead of a single additive term for each of the groups), where in $\alpha_l^{j[i]}$ the correct lemma intercept $j$ is chosen for observation $i$, which we write $j[i]$, a notation borrowed from \citet{GelmanHill2006}.
-If, again, in exemplar $64$, the lemma is \textit{give}, which is group $12$, then $i=64$ and $\alpha_l^{j[12]}=\alpha_l^{12}$ because $j[64]=12$.
+If, again, in exemplar $64$, the lemma is \textit{give}, which is group $12$, then $i=64$ and $j[64]=12$ (``the group $j$ appropriate for exemplar $64$ is group $12$''), and $\alpha_l^{j[12]}=\alpha_l^{12}$.
 The term $\beta_d\cdot x_d^i$ for the effect of discourse status remains unchanged.
 Crucially, instead of estimating coefficients for the lemma effect -- as in the model in (\ref{eq:glm01}) --, $\alpha_l$ is itself modeled, and random terms are \textit{predicted} for each level of the grouping factor.
 For this, the assumption in (\ref{eq:glmm02}) is made.
 
 \begin{equation}
-  \alpha_l^j\sim\mathbf{N}(0,\sigma_l^2)
+  \alpha_l^j\sim N(0,\sigma_l^2)
   \label{eq:glmm02}
 \end{equation}
 
-This is to be read as ``the values of $\alpha_l^j$ follow a normal distribution with mean $0$ and a variance of $\sigma_l^2$''.
-Equation~\ref{eq:glmm02} already specifies a very simple second-level linear model.
-We can see this if we reformulate it as (\ref{eq:glmm03}).
+This is standard notation for ``the values of $\alpha_l^j$ follow a normal distribution with mean $0$ and a variance of $\sigma_l^2$''.
+In fact, \ref{eq:glmm02} already specifies a very simple second-level linear model.
+This second-level model predicts the values for the group-level intercepts with some prediction error, and the error terms are normally distributed.
+It should be noted that there is already more than one intercept in (\ref{eq:glmm01}), namely both $\alpha_0$ and $\alpha_{l}^{j[i]}$.
+With each modelled term (here all labeled $\alpha$), the number of intercepts in the first-level model and the number of second-level models increases by one (because each random intercept comes with a model of its own).
 
-\begin{equation}
-  \begin{split}
-    \alpha_l^j=y^j+\epsilon^j\\
-    \epsilon_j\sim\mathbf{N}(0,\sigma_l^2)
-  \end{split}
-  \label{eq:glmm03}
-\end{equation}
-
+\subsection{Pooling and shrinkage}
+\label{sec:poolingandshrinkage}
 
 % Raneff: We give the effect a distribution. Not treated as fixed population parameter.
 % More "natural" than dummy coding.
 
 % Mention time series in this section.
 
-\subsection{Pooling and shrinkage}
-\label{sec:poolingandshrinkage}
 
 
-\section{Estimation of hierarchical models in R}
+\section{Packages and tools in R}
 \label{sec:estimationofhierarchicalmodelsinr}
 
 \subsection{Using lme4}

@@ -119,7 +119,7 @@ While random effects are often presented like this using conceptual arguments, t
 Random effects structures are very suitable for accounting for group-level variation in regression, but contrary to formulaic recommendations such as ``Always include random effects for speaker and genre!'', the choice between fixed and random effects can and should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting estimates.
 Subsection~\ref{sec:crossedandnestedeffects}, \ref{sec:hierarchicalormultilevelmodels}, and \ref{sec:randominterceptsandslopes} introduce three important points to consider about the structure of the data typically used in mixed modeling.
 This is intended to show readers that mixed or multilevel\slash hierarchical modeling is simply a matter of doing justice to the structure of the data.
-Then, Sections~\ref{sec:modelspecification} and \ref{sec:poolingandshrinkage} provide a mostly non-technical introduction to the important technicalities in mixed modeling, including a discussion of when a factor should be included as a random effect and when as a fixed effect.
+Then, Section~\ref{sec:modelspecification} provide a moderately technical introduction to the important technicalities in mixed modeling, including a discussion of when a factor should be included as a random effect and when as a fixed effect.
 Section~\ref{sec:estimationofhierarchicalmodelsinr} then shows how mixed models are specified and interpreted using R.
 
 
@@ -346,8 +346,8 @@ This second-level model predicts the values for the group-level intercepts with 
 It should be noted that there is already more than one intercept in (\ref{eq:glmm01}), namely both $\alpha_0$ and $\alpha_{l}^{j[i]}$.
 With each modelled term (here all labeled $\alpha$), the number of intercepts in the first-level model and the number of second-level models increases by one (because each random intercept comes with a model of its own).
 
-\subsection{Pooling and shrinkage}
-\label{sec:poolingandshrinkage}
+\subsection{Differences between random and fixed effects}
+\label{sec:differencesbetweenrandomandfixedeffects}
 
 % Raneff: We give the effect a distribution. Not treated as fixed population parameter.
 % More "natural" than dummy coding.

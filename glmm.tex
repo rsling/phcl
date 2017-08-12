@@ -92,7 +92,7 @@
 The definition of a variable in Labovian variationist linguistics is more restricted and theoretically burdened.}
 Surely, the most typical application (in corpus linguistics) is the modeling of \textit{alternations}, \ie phenomena where the response variable of interest encodes a choice of forms or constructions, for example a case alternation (a binary or multi-valued categorical response, depending on the richness of the language's case system), alternations of graphemic form such as contracted vs.\ non-contracted, ordering preferences such as the order of prenominal adjectives, or syntactic\slash constructional alternations such as the dative alternation.%
 \footnote{In this article, I restrict the discussion to GL(M)Ms with categorical responses, simply because the continuous responses in Linear (Mixed) Models -- or LM(M)s – are not found very often in corpus linguistics.
-Also, an L(M)M can be understood as a GL(M)M with an identity link function and a Gaussian distribution for residuals.}
+Also, an L(M)M can be understood as a GL(M)M with an identity link function and a Gaussian distribution for the residuals.}
 The approach is called \textit{generalized} in contrast to normal linear models because the response need not be numerical, and the \textit{errors} or \textit{residuals} do not have to be (approximately) normally distributed.
 First, this is achieved by allowing for different types of exponential distributions for the residuals, which requires the use of a more general estimator than least-squares, typically likelihood maximization.
 Second, \textit{link functions} are introduced which relate the additive linear term that combines the predictors in a non-linear way to the response variable.
@@ -102,13 +102,12 @@ The latter one are called \textit{fixed effects} in this terminology.
 Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels} and Section~\ref{sec:estimationofhierarchicalmodelsinr}.
 
 The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
-A single observation (or \textit{data point} or \textit{measurement}) is one atomic exemplar entering into the statistical analysis of the study.
+A single observation (or \textit{data point} or \textit{measurement} or \textit{unit}) is one atomic exemplar entering into the statistical analysis of the study.
 In corpus linguistics, single observations can be understood as a single line in a concordance, and they typically represent, for example (and with reference to the above examples), a clause or sentence in which one of the alternants of a case alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
 When such observations are grouped, it is often plausible to assume that some variance in the choice of the alternating forms or constructions occurs at the group-level and not at the level of observations.
 Groups can be defined by any linguistically relevant grouping factor (a categorical variable, also called a nominal variable), such as the individual speakers (or authors, writers, etc.), their sex and gender, the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.
-If the concordance in a study contains, say, ten exemplars each written by ten speakers, then the speaker grouping factor has ten levels and defines ten groups.%
-\footnote{Importantly, it will be advised below that grouping factors with as few as ten levels should \textit{not} standardly be used as random effects, cf.\ Section~\ref{sec:modelspecification}.}
-We know that preferences vary between speakers, and it is therefore reasonable to model this variance in our statistics in some way.
+If the concordance in a study contains, say, ten exemplars each written by ten speakers, then the speaker grouping factor has ten levels and defines ten groups.
+We know that preferences vary between speakers, and it is therefore reasonable to take care of this variance in our statistics in some way.
 The same goes for the other possible groups just mentioned.
 Furthermore, it is known that specific lexemes often have idiosyncratic affinities towards alternants in alternating constructions.
 Therefore, exemplars containing specific lexemes can also be treated as groups with considerable between-group variance.
@@ -179,7 +178,7 @@ Continuing the example, crossed factors for speaker and mode are illustrated in 
                     8 &           Hayden &         Written \\
     \bottomrule
   \end{tabular}
-  \caption{Illustration of nested factors}
+  \caption{Illustration of crossed factors}
   \label{tab:crossed}
 \end{table}
 %
@@ -294,7 +293,7 @@ This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342)
 
 Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other grouping factors discussed in the previous sections) could be specified as a normal fixed effect in a GLM.
 In such a case, each of the $m$ levels of the speaker factor is dummy-coded, and for all but one of these binary dummy variables, a coefficient is estimated.
-A logistic regression example is used throughout this section, using the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
+Logistic regression examples are used throughout this section, and we begin with the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
 We begin with a minimal model with only the dummies of the lemma grouping factor and one other (binary) predictor, namely discourse status.
 There are $m$ verb lemmas (\ie groups) and $n$ observations.
 As index variables, we use $j$ for groups and $i$ for observations.
@@ -347,8 +346,8 @@ In fact, we can regard (\ref{eq:glmm02}) as a minimal second-level model already
 All more complex models to be discussed below are extensions of this approach.
 In the next section, the consequences of going from a fixed effect to a random effect are discussed.
 
-\subsection{Choosing between random and fixed effects}
-\label{sec:differencesbetweenrandomandfixedeffects}
+\subsubsection{Choosing between random and fixed effects}
+\label{sec:choosingbetweenrandomandfixedeffects}
 
 There are primarily two points to consider which influence the decision to use random effects.
 First, the variance in the intercepts (and for random intercept-random slope models also the covariance between intercepts and slopes) needs to be estimated.
@@ -356,25 +355,25 @@ Second, the random intercepts can be understood as a compromise between fitting 
 While all conditions which were discussed in the previous chapter (independence of observations, non-collinearity, etc.) must also be met by hierarchical models, these two points add some additional conditions.
 
 As was stated above in (\ref{eq:glmm02}), the random intercepts are assumed to follow a normal distribution, and the variance $\sigma_l^2$ needs to be estimated with sufficient precision.
-From the estimated variance and the data, the estimator then predicts the \textit{conditional modes} in GLMMs (\textit{conditional means} in LMMs) for each group (see \citealt{Bates2010}), which is the numerical value which software packages like lme4 peoduce, and these values are sometimes sloppily called ``random effects'' by practitioners.
+From the estimated variance and the data, the estimator then predicts the \textit{conditional modes} in GLMMs (\textit{conditional means} in LMMs) for each group (see \citealt{Bates2010}), which is the numerical value which software packages like lme4 produce, and these values are sometimes sloppily called ``random effects'' by practitioners.
 This procedure, however, requires that the number of groups must not be too low to effectively achieve this.
 As a rule of thumb, fewer than five levels means that a grouping factor should be included as a fixed effect, regardless of its conceptual nature.
 Even if there is a default recommendation to use a speaker grouping variable as a random effect, it is ill-advised to do so if there are exemplars from less than five speakers in the sample.
 Very often, the estimator will fail anyway under such conditions.
+At the same time, the estimation of coefficients for a (dummy-coded) fixed effect becomes less precise and feasible with large numbers of levels, and at a certain point, a random effect might be the better or only option for technical reasons.
 
-If, however, the number of groups is large enough, the next thing to consider is the number of observations per group.
+If, however, the number of groups is reasonably large, the next thing to consider is the number of observations per group.
 As mentioned at the outset of this section, alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed values per group are estimated without taking the between-group variance into account.
 The conditional modes are \textit{shrunken} towards the overall intercept as a result (an effect called \textit{shrinkage}), and they tend to be more leveled compared to fixed effects estimates.
 This effect becomes considerably weaker with larger per-group sample sizes.
-
 With relatively low numbers of observations per group, on the other hand, fixed effect estimates tend to become inexact and will probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, non-significance).
 In this case, the conditional modes (or means) of random intercepts will just be shrunken more towards the overall intercept.
 This considered, including a grouping factor as a random effect might be a way to using it when the estimation of fixed effects fails.
 
-This section finished with a comparison with an illustration.%
+This section closes with an illustration.%
 \footnote{The code for these and other simulations is available under a Creative Commons Attribution license: \url{https://github.com/rsling/Rstuff/tree/master/simulations/glmm}}
-For this, 1,000 data sets were simulated (see Chapter~XYZ) which corresponded ideally to the model in (\ref{eq:glmm03}) and (\ref{eq:glmm04}).
+For this, 1,000 data sets were simulated which corresponded to the model in (\ref{eq:glmm03}) and (\ref{eq:glmm04}).
 We drop the subscripts on $\alpha$, $\beta$, and $\mu$ for convenience since there is only one random intercept.
 
 \begin{align}
@@ -407,48 +406,55 @@ This is what was pre-specified in the simulations.}
 \end{figure}
 
 The per-group predictions lean slightly towards $0$ in the GLMM (Figure~\ref{fig:glmmj5i20}), but the fixed effects estimates in the GLM are prone to massive misestimations (see the large spread and increased 95\% intervals).
-Even with as few as five levels of a grouping factor, random and fixed effects lead to similar results, with different advantages and disadvantages.
+Even with as few as five levels of a grouping factor, however, random and fixed effects lead to very similar results, albeit with different advantages and disadvantages.
 A few more differences will be discussed in Sections~\ref{sec:significancetestingandcoefficientsofdetermination} and \ref{sec:morecomplexmodels}.
 
-\subsection{Significance testing, model selection and coefficients of determination}
+\subsubsection{Significance testing, model selection and coefficients of determination}
 \label{sec:significancetestingandcoefficientsofdetermination}
 
-One commonly given reason to use a random effect is that ``the researchers are not interested in the individual levels of the random effect factor'' or variations thereof.
+One commonly given reason to use a random effect is that ``the researchers are not interested in the individual levels of the random effect factor'' (or variations thereof).
 Such recommendations should be taken with a grain of salt.
-\citet[245--247]{GelmanHill2006} summarise the diverging recommendations and their various justifications, concluding that there is essentially no clean conceptual way of deciding what should be a random effect and what a fixed effect.
+\citet[245--247]{GelmanHill2006} summarise the diverging recommendations and their various justifications, concluding that there is essentially no clean conceptual way of deciding what should be a random effect and what a fixed effect (see Section~\ref{sec:choosingbetweenrandomandfixedeffects} for the more technical approach).
 Clearly, however, it is not adequate to do any kind of significance test on the levels of the random effect factor, as is customary for fixed effects.
 The conditional modes are not estimates, and only for estimates is significance testing a well-defined activity.
 There are ways of calculating confidence intervals (see Section~\ref{sec:usinglme4}), but they should not be misused for talking about significance.
 If this is desired, fixed effects are the way to go.
 
 A related question is model selection, \ie whether the inclusion of the random effect improves the model.
-This can be achieved by likelihood ration testing comparing a model including the random effect and a model not including it.
+This can be achieved by likelihood ratio testing comparing a model including the random effect and a model not including it.
 Such models are called \textit{nested} (not to be confused with nested effects discussed in Section~\ref{sec:crossedandnestedeffects}).
 A much more robust option uses a parametric bootstrap (see Section~\ref{sec:usinglme4}).
 It is \textit{not} appropriate to compare a model with a random effect and a model with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
 
 Also, coefficients of determination ($R^2$) should not be used for model selection, because they usually do not penalize complexity enough (\ie the coefficients rise with added complexity).
+They can still be used to give some idea of the model fit, however.
 For GLMMs, \citet{NakagawaSchielzeth2013} have proposed a method that distinguishes between \textit{marginal} $R^2$ (fixed-effects-only) and \textit{conditional} $R^2$ (including random effects).
 This has become a de facto standard, and we now show its consistency with Nagelkerke's $R^2$ for GLMs.
-Using the simulations described in the last section, Figures~\ref{fig:rsqglmmj5i20} and \ref{fig:rsqglmmj5i20} show that the marginal $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which ignores the grouping, and the conditional is roughly the same as Nagelkerke's $R^2$ in a GLM which includes the grouping factor as a fixed effect, given that all the estimator converges for all these three types of models.
+Using the simulations described in the last section, Figures~\ref{fig:rsqglmmj5i20} and \ref{fig:rsqglmj5i20} show that the marginal $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which ignores the grouping factor, and the conditional $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which includes the grouping factor as a fixed effect, given that the estimators converge for all these three types of models.
 
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.6\textwidth]{graphics/rsqglmmj5i20}
-  \caption{Distribution of Nakagawa \& Schielzeth's $R^2$ in the simulations described in Section~\ref{sec:differencesbetweenrandomandfixedeffects}}
+  \caption{Distribution of Nakagawa \& Schielzeth's $R^2$ in the simulations described in Section~\ref{sec:choosingbetweenrandomandfixedeffects}}
   \label{fig:rsqglmmj5i20}
 \end{figure}
 
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.6\textwidth]{graphics/rsqglmj5i20}
-  \caption{Nagelkerke's $R^2$ in the simulations described in Section~\ref{sec:differencesbetweenrandomandfixedeffects} for a GLM that ignores the grouping factor and a model that includes it as a fixed effect}
+  \caption{Nagelkerke's $R^2$ in the simulations described in Section~\ref{sec:choosingbetweenrandomandfixedeffects} for a GLM that ignores the grouping factor and a model that includes it as a fixed effect}
   \label{fig:rsqglmj5i20}
 \end{figure}
 
-
-\subsection{More complex models}
+\subsubsection{More complex models}
 \label{sec:morecomplexmodels}
+
+This section shows briefly how more complex models are specified before Section~\ref{sec:usinglme4} demonstrated how all models discussed are estimated in R, including interpretations of the output.
+
+\paragraph{Varying intercepts and slopes}
+\paragraph{Nested and crossed random effects}
+\paragraph{Second-level predictors}
+\paragraph{Remarks about models for time series}
 
 \section{Packages and tools in R}
 \label{sec:estimationofhierarchicalmodelsinr}

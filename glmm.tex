@@ -58,6 +58,7 @@
 \newcommand{\Supsf}[1]{\ensuremath{\mathsf{^{#1}}}}
 \newcommand{\pPB}{p\Subsf{PB}}
 \newcommand{\mpPB}{\ensuremath{p_{\text{PB}}}}
+\newcommand{\vivs}{VI\slash VS\ }
 
 \bibliography{rs,cow}
 
@@ -419,14 +420,22 @@ Clearly, however, it is not adequate to do any kind of significance test on the 
 The conditional modes are not estimates, and only for estimates is significance testing a well-defined activity.
 There are ways of calculating confidence intervals (see Section~\ref{sec:usinglme4}), but they should not be misused for talking about significance.
 If this is desired, fixed effects are the way to go.
+Not doing its does, however, not mean that the researcher is not interested in the individual conditional modes of the random effect.
+Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible in the same way with fixed effects.
 
 A related question is model selection, \ie whether the inclusion of the random effect improves the model.
-This can be achieved by likelihood ratio testing comparing a model including the random effect and a model not including it.
-Such models are called \textit{nested} (not to be confused with nested effects discussed in Section~\ref{sec:crossedandnestedeffects}).
-A much more robust option uses a parametric bootstrap (see Section~\ref{sec:usinglme4}).
+First, the between-group variance should be checked.
+If it is close to $0$, there is most likely not much going on between groups, or there simply was not enough data to estimate the variance.
+In LMMs, it is possible to compare the residual (observation-level) variance with the between-group variance to see which one is larger, and to which degree.
+If, for example, the residual variance is $\sigma_{\epsilon}=0.2$ and the between-group variance is $\sigma_{\alpha}=0.8$, then we can say that the between-group variance is four times larger than the residual variance, which indicates a high importance of the random effect.
+This comparison is not possible in most GLMMs, because the residuals do not have the same straightforward interpretation as in LMMs.
+
+Traditional model selection for random effects can be achieved through a likelihood ratio (LR) test comparing a model including the random effect and a model not including it.
+Such models, where one is strictly a simplification of the other, are called \textit{nested model models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
+A much more robust option uses a parametric bootstrap replacements for the LR test (see Section~\ref{sec:usinglme4}).
 It is \textit{not} appropriate to compare a model with a random effect and a model with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
 
-Also, coefficients of determination ($R^2$) should not be used for model selection, because they usually do not penalize complexity enough (\ie the coefficients rise with added complexity).
+Coefficients of determination ($R^2$) should not be used for model selection, because they usually do not penalize complexity enough (\ie the coefficients rise with added complexity).
 They can still be used to give some idea of the model fit, however.
 For GLMMs, \citet{NakagawaSchielzeth2013} have proposed a method that distinguishes between \textit{marginal} $R^2$ (fixed-effects-only) and \textit{conditional} $R^2$ (including random effects).
 This has become a de facto standard, and we now show its consistency with Nagelkerke's $R^2$ for GLMs.
@@ -446,12 +455,66 @@ Using the simulations described in the last section, Figures~\ref{fig:rsqglmmj5i
   \label{fig:rsqglmj5i20}
 \end{figure}
 
+Finally, it should be mentioned that adding a random intercept does not change the estimates nor the inferences (p-values) for fixed effects, at least if the grouping factor and the fixed effect are independent.
+Figure~\ref{fig:pcomparison} compares the p-values obtained for the two fixed effects in the $1,000$ simulations described above for the GLMM and the GLM ignoring the grouping factor.
+Notice that the $\beta_2$ effect has the higher effect strength, and p-values are generally lower.
+If fixed effects and random effects are not independent, adding a varying slope should be considered, which is described in Section~\ref{sec:morecomplexmodels}.
+
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{graphics/pcomparison}
+  \caption{Comparison between the p-values of the fixed effects in the simulations described in Section~\ref{sec:choosingbetweenrandomandfixedeffects} for the GLMM and the GLM ignoring the grouping factor; the line was drawn using LOWESS (locally weighted scatterplot smoothing)}
+  \label{fig:pcomparison}
+\end{figure}
+
 \subsubsection{More complex models}
 \label{sec:morecomplexmodels}
 
 This section shows briefly how more complex models are specified before Section~\ref{sec:usinglme4} demonstrated how all models discussed are estimated in R, including interpretations of the output.
 
 \paragraph{Varying intercepts and slopes}
+
+A varying slop is an interaction between a fixed effect and a random effect, see Section~\ref{sec:randominterceptsandslopes}.
+While it is possible to have just a varying slope, this is rarely useful, and we discuss only varying-intercept and varying-slope (VIVS) models.
+We extend the simple model from (\ref{eq:glmm01}), and the fixed effect coefficients for which a random slope is specified simply receive group indices; see (\ref{eq:glmm05}).
+Put simply, instead of a fixed coefficient for the fixed effect, coefficients are predicted and assumed to come from a random (normal) distribution.
+We use $\beta_{d:l}$ to denote the coefficient for discourse status varying by lemma.
+
+\begin{equation}
+  P(y^i=1)=logit^{-1}(\alpha_{l}^{j[i]}+\beta_{d:l}^{j[i]}\cdot x_d^i)
+  \label{eq:glmm05}
+\end{equation}
+
+A source of problems in VIVS models is the fact that in addition to the variance in the intercepts and slopes, the covariance between them has to be estimated.
+If in groups with a higher-than-average intercept, the slope is also higher than average, they are positively correlated, and vice versa.
+These relations are captured in the covariance.
+Condition (\ref{eq:glmm06}) is added, where the indices $l$ and $d:l$ are omitted for readability.
+
+\begin{equation} 
+  \left( \begin{smallmatrix} \alpha^j \\ \beta^j \end{smallmatrix}\right) \sim
+    \left(
+    \left( \begin{smallmatrix} \mu_{\alpha}\vphantom{\beta^j} \\ \mu_{\beta}\vphantom{\beta^j} \end{smallmatrix} \right), 
+      \left( \begin{smallmatrix} \sigma_{\alpha}^2 & \rho\sigma_{\alpha}\sigma_{\beta} \\
+	\rho\sigma_{\alpha}\sigma_{\beta} & \sigma_{\beta}^2 \end{smallmatrix} \right)
+    \right)
+  \label{eq:glmm06}
+\end{equation}
+
+(\ref{eq:glmm06}) says that the joint distribution of the intercepts $\alpha^j$ and the slopes $\beta^j$ follow a bivariate normal distribution with means $\mu_{\alpha}$ and $\mu_{\beta}$.
+The variance in the intercepts is $\sigma_{\alpha}$, the variance in the slopes is $\sigma_{\beta}$, and the covariance between them is $\rho$.
+Figure~\ref{fig:multnorm} shows the bivariate density distributions for two negatively correlated, non-correlated, and positively correlated normally distributed variables.
+
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.33\textwidth]{graphics/multnorm1}~\includegraphics[width=0.33\textwidth]{graphics/multnorm2}~\includegraphics[width=0.33\textwidth]{graphics/multnorm3}
+  \caption{Bivariate normal density distribution with different correlations ($\rho$); $\sigma_{\alpha}=\sigma_{\beta}=3$, $\mu_{\alpha}=\mu_{\beta}=0$}
+  \label{fig:multnorm}
+\end{figure}
+
+Importantly, the number of parameters to estimate obviously increases with more complex model specifications, and the estimation of the parameters in the presence of complex variance-covariance matrices requires considerably more data than estimating a single variance parameter.
+The estimator might converge, but typically covariance estimates of $-1$ or $1$ indicate that the data was too sparse for a successful estimation of the parameter.
+In this case, the model is \textit{over-parametrized} and needs to be simplified.
+
 \paragraph{Nested and crossed random effects}
 \paragraph{Second-level predictors}
 \paragraph{Remarks about models for time series}

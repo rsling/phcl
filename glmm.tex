@@ -18,7 +18,7 @@
 \setmonofont{inconsolata}
 
 \usepackage{listings}
-\lstset{language=R, keywordstyle=\color{black}, frameround=fttt, basicstyle=\ttfamily}
+\lstset{language=R, keywordstyle=\color{black}, frameround=fttt, basicstyle=\ttfamily\small}
 
 \usepackage{pifont}
 
@@ -138,22 +138,22 @@ Such a data set would intrinsically be \textit{nested}, as Table~\ref{tab:crosse
     \toprule
     \textbf{Exemplar} & \textbf{Speaker}  & \textbf{Region}        \\
     \midrule
-                    1 &           Bay    &         Tyneside       \\
-                    2 &           Bay    &         Tyneside       \\
+                    1 &           Daryl  &         Tyneside       \\
+                    2 &           Daryl  &         Tyneside       \\
                     3 &           Riley  &         Tyneside       \\
                     4 &           Riley  &         Tyneside       \\
                     5 &           Dale   &         Greater London \\
                     6 &           Dale   &         Greater London \\
-                    7 &           Hayden &         Greater London \\
-                    8 &           Hayden &         Greater London \\
+                    7 &           Reed   &         Greater London \\
+                    8 &           Reed   &         Greater London \\
     \bottomrule
   \end{tabular}
   \caption{Illustration of nested factors}
   \label{tab:nested}
 \end{table}
 
-Since speakers have a unique region of birth, Tyneside is the unique region value for the speakers Bay and Riley, and Greater London is the unique region value for Dale and Hayden.
-There cannot be exemplars where, for example, the speaker is Bay and the region is Greater London (assuming that speakers are uniquely identified by the labels in the middle column).
+Since speakers have a unique region of birth, Tyneside is the unique region value for the speakers Daryl and Riley, and Greater London is the unique region value for Dale and Reed.
+There cannot be exemplars where, for example, the speaker is Daryl and the region is Greater London (assuming that speakers are uniquely identified by the labels in the middle column).
 In this example, the region factor nests the speaker factor.
 This example was chosen because the nesting is conceptually necessary.
 However, even when a data set has a nested structure by accident, standard packages in R will treat them as nested, and a closer look at data sets should be part of any protocol for using GLMMs in corpus studies (see Section~\ref{sec:usinglme4}).
@@ -167,21 +167,21 @@ Continuing the example, crossed factors for speaker and mode are illustrated in 
     \toprule
     \textbf{Exemplar} & \textbf{Speaker}  & \textbf{Mode}   \\
     \midrule
-                    1 &           Bay    &         Spoken  \\
-                    2 &           Bay    &         Written \\
+                    1 &           Daryl  &         Spoken  \\
+                    2 &           Daryl  &         Written \\
                     3 &           Riley  &         Spoken  \\
                     4 &           Riley  &         Spoken  \\
                     5 &           Dale   &         Written \\
                     6 &           Dale   &         Written \\
-                    7 &           Hayden &         Spoken  \\
-                    8 &           Hayden &         Written \\
+                    7 &           Reed   &         Spoken  \\
+                    8 &           Reed   &         Written \\
     \bottomrule
   \end{tabular}
   \caption{Illustration of crossed factors}
   \label{tab:crossed}
 \end{table}
 %
-While there are only spoken sentences by Riley and only written sentences by Dale in the sample, there is one spoken and one written sentence each by Bay and Hayden.
+While there are only spoken sentences by Riley and only written sentences by Dale in the sample, there is one spoken and one written sentence each by Daryl and Reed.
 There is a many-to-many relation between speakers and modes, which is characteristic of crossed factors.
 In Table~\ref{tab:nested}, the relation between speakers and regions was many-to-one, which is typical of nested factors.
 In experimental settings, the design often makes sure that the combinations of nested or crossed factors are represented by equal numbers of observations (such that, for example, there is an equal number of written and spoken sentences from each speaker).
@@ -289,6 +289,7 @@ To make successful \textit{practical} use of mixed models, some level of fundame
 This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
 
 \subsubsection{Simple random intercepts}
+\label{sec:simplerandomintercepts}
 
 Readers with experience in fixed effects modeling (see the previous chapter in this handbook) should see that a grouping factor encoding the verb lemma, the speaker, the mode, the genre corresponding to a corpus exemplar (and all the other grouping factors discussed in the previous sections) could be specified as a normal fixed effect in a GLM.
 In such a case, each of the $m$ levels of the speaker factor is dummy-coded, and for all but one of these binary dummy variables, a coefficient is estimated.
@@ -471,7 +472,8 @@ If fixed effects and random effects are not independent, adding a varying slope 
 
 This section shows briefly how more complex models are specified before Section~\ref{sec:usinglme4} demonstrated how all models discussed are estimated in R, including interpretations of the output.
 
-\paragraph{Varying intercepts and slopes}
+\subsubsection{Varying intercepts and slopes}
+\label{sec:varyinginterceptsandslopes}
 
 A varying slope is an interaction between a fixed effect and a random effect, see Section~\ref{sec:randominterceptsandslopes}.
 While it is possible to have just a varying slope, this is rarely useful, and we discuss only varying-intercept and varying-slope (VIVS) models.
@@ -515,7 +517,8 @@ The estimator might converge, but typically covariance estimates of $-1$ or $1$ 
 In this case, the model is \textit{over-parametrized} and needs to be simplified.
 In Section~\ref{sec:usinglme4}, it will be shown how to interpret the lme4 output appropriately.
 
-\paragraph{Nested and crossed random effects}
+\subsubsection{Nested and crossed random effects}
+\label{sec:nestedandcrossedrandomeffects}
 
 As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are adequate when grouping factors are nested within other grouping factors.
 Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts ca be understood interactions between two or more random effects.
@@ -535,7 +538,8 @@ In the crossed case, this is not the case.
 As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the questions is rather one of how the way the data are organised.
 In the model specification (including model specification in R), there is not much to consider.
 
-\paragraph{Second-level predictors}
+\subsubsection{Second-level predictors}
+\label{sec:secondlevelpredictors}
 
 In Section~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be (partially) predicted from fixed-effects.
 In this case, an additional linear model is specified for the random effect instead of the simple normal distribution predictor.
@@ -570,7 +574,8 @@ The lme4 syntax treats second-level predictors like interactions between a fixed
 %   \epsilon_l^j \sim & N(0, \sigma^2) \label{eq:glmm11}
 % \end{align}
 
-% \paragraph{Remarks about models for time series}
+% \subsubsection{Remarks about models for time series}
+% \label{sec:remarksaboutmodelsfortimeseries}
 
 \section{Packages and tools in R}
 \label{sec:estimationofhierarchicalmodelsinr}
@@ -582,7 +587,8 @@ This section focusses on lme4, the standard package to do multilevel modeling in
 First, specifying models is discussed.
 Second, it is shown how the output can be interpreted.
 
-\paragraph{Specifying models}
+\subsubsection{Specifying models}
+\label{sec:specifyingmodels}
 
 Most important are the functions \texttt{lmer} and \texttt{glmer}, which extend the syntax of \texttt{lm} and \texttt{glm}.
 The simple varying intercept model in \ref{eq:glmm01} looks as follows in R.
@@ -590,15 +596,13 @@ Informative variable names are used instead of Greek letters.
 
 \vspace{0.5\baselineskip}
 
-\pagebreak
-
 \begin{lstlisting}[frame=trbl]
 glmer(construction ~ discourse + (1 | lemma),
       family = binominal(link=logit), data = my.data)
 \end{lstlisting}
 
-The pipe operator \texttt{x|y} can be read as \textit{x varies by y}, and the intercept is denoted by \texttt{1}.
-Therefore, \texttt{(1|lemma)} simply says that the intercept varies by lemma.
+The pipe operator \texttt{x1 | x2} can be read as \textit{x1 varies by x2}.
+The intercept is denoted by \texttt{1}, and hence \texttt{(1 | lemma)} simply says that the intercept varies by lemma.
 
 The VIVS model in (\ref{eq:glmm05}) would be specified as follows.
 Only the formula is given from now on.
@@ -642,31 +646,269 @@ Sometimes the recommendation is found to use the following notation for nested r
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}[frame=trbl]
-construction ~ discourse + ( 1 | semantics/lemma )
+construction ~ discourse + ( 1 | semantics / lemma )
 \end{lstlisting}
 
-This is not necessary under normal circumstances.
+lme4 expands this to the following underlying syntax, which shows more clearly that nesting is handled as a kind of interaction.
 
-\paragraph{Interpreting the output}
+\vspace{0.5\baselineskip}
 
-\subsection{Bootstrap methods for lme4}
-\label{sec:bootstrapestimationforlme4}
+\begin{lstlisting}[frame=trbl]
+construction ~ discourse + ( 1 | semantics ) +
+               ( 1 | semantics : lemma )
+\end{lstlisting}
 
-%\subsection{Estimation using Markov-Chain Monte Carlo}
-%\label{sec:estimationusingmarkovchainmontecarlo}
-%
-%\section{Representative studies}
-%
-%\subsection{STUDY 1}
-%
-%\subsubsection{Research questions}
-%\subsubsection{Data}
-%\subsubsection{Method}
-%\subsubsection{Results}
+In other words, there is a random intercept for \texttt{semantics} and one for each combination of \texttt{semantics} and \texttt{lemma}
+While these notations are seemingly very explicit about the nesting structure, they are not necessary under normal circumstances.
+If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested} for an illustration of what this means in terms of the data structure), lme4 automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
+However, the following specification is \textit{not} equivalent and leads to problematic results.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+construction ~ discourse + ( 1 | semantics ) +
+               ( 1 | lemma ) +
+               ( 1 | semantics : lemma )
+\end{lstlisting}
+
+This would instruct lme4 to try to estimate the variance of \texttt{lemma} not just restricted to specific permutations of the levels of \texttt{lemma} and \texttt{semantics} (\ie \texttt{semantics : lemma}), but also outside of these specific permutations.
+In the nested case, there are no occurrences outside of these permutations, however, and the variance for \texttt{lemma} alone will be estimated close to $0$, while the variance estimate for \texttt{semantics : lemma} will be distorted.
+
+\begin{table}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Exemplar} & \textbf{Speaker}  & \textbf{Region}        \\
+    \midrule
+                    1 &           D      &         Tyneside       \\
+                    2 &           D      &         Tyneside       \\
+                    3 &           R      &         Tyneside       \\
+                    4 &           R      &         Tyneside       \\
+                    5 &           D      &         Greater London \\
+                    6 &           D      &         Greater London \\
+                    7 &           R      &         Greater London \\
+                    8 &           R      &         Greater London \\
+    \bottomrule
+  \end{tabular}
+  \caption{Illustration of nested factors, organized suboptimally}
+  \label{tab:nestedwrong}
+\end{table}
+
+There is one situation where the explicit notation for nested factors is necessary.
+This is when the data are stored in a suboptimal way.
+The suboptimal version of Table~\ref{tab:nested} would look something like Table~\ref{tab:nestedwrong}.
+Here, the speaker factor is encoded as the initial letter of the name only.
+Hence, Daryl and Dale (coming from two different regions) cannot be distinguisehd from each other, and Riley and Reed cannot, either.
+This leaves lme4 no way of recognizing that the data structure is nested, and the user has to explicitly provide that information.
+It would, of course, be better \textit{not} to organize data that way.
+
+Finally, we turn to how second level predictors are specified.
+(\ref{eq:glmm08}) and (\ref{eq:glmm09}) have the following lme4 syntax.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+construction ~ discourse + frequency + ( 1 | lemma )
+\end{lstlisting}
+
+If the data is organized as shown in Table~\ref{tab:multilevel} -- \ie, with the second-level regressor not having any variance within the levels of the grouping factor --, lme4 will detect this and treat \texttt{frequency} as a second-level effect.
+This should be kept in mind when interpreting the results of the estimation.
+
+Finally, and without going into the details for space reasons, we mention that second-level predictors for random slopes are more tricky to specify (see \citealt[280-282]{GelmanHill2006}).
+Assuming that the effect of discourse status varies with the lemma, which itself comes with a second-level model including frequency as a regressor, the specification looks as follows.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+construction ~ discourse + frequency +
+               discourse : frequency +
+	       ( 1 + discourse | lemma )
+\end{lstlisting}
+
+A second-level regressor on a varying slope is thus an interaction between a first-level and a second-level fixed effect.
+
+\subsubsection{Interpreting the output}
+\label{sec:interpretingtheoutput}
+
+\paragraph{Basics and simple varying intercepts}
+
+The output for GLMMs in lme4 can be understood straightforwardly after what was said in Sections~\ref{sec:fundamentals}.
+Here is a possible output of the \texttt{summary} function for a fit of model (\ref{eq:glmm01}) and (\ref{eq:glmm02}), repeated here as (\ref{eq:glmm01r}) and (\ref{eq:glmm02r}).
+Artificial data was used for the estimation.
+
+\begin{align}
+  P(y^i=1) & = logit^{-1}(\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
+  \label{eq:glmm01r} \\
+  \alpha_l^j & \sim N(\mu_l,\sigma_l^2)
+  \label{eq:glmm02r}
+\end{align}
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+Generalized linear mixed model fit by maximum likelihood 
+ Family: binomial  ( logit )
+Formula: construction ~ discourse + (1 | lemma)
+   Data: observations
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ lemma  (Intercept) 1.29     1.136   
+Number of obs: 250, groups:  lemma, 5
+
+Fixed effects:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   0.7638     0.5513   1.385    0.166    
+discourse1    1.5064     0.3626   4.154 3.26e-05 ***
+\end{lstlisting}
+
+Some clutter as well as information which we do not interpret here (AIC, BIC, and information about the residuals) have been removed.
+In this output, the \texttt{(Intercept)} estimate ($0.7638$) is the estimate for $\mu_l$, and the \texttt{Variance} for the \texttt{lemma} ($1.29$) random intercept is the estimate of $\sigma_l^2$.
+The estimate for \texttt{discourse1} ($1.5064$) corresponds to the estimate of $\beta_d$.
+Finally, we learn that there were five different lemmas and $250$ observations in total.
+
+To see whether the random intercept has a considerable influence, we should first look at the variance estimate.
+Here, it is above one, which would be surprising if there were nothing going on in terms of between-lemma variation.
+It is possible to compute confidence intervals for the variance estimate using the \texttt{confint} function.
+Assuming the original model was stored in \texttt{alternation}, the following two alternatives work.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+  confint(alternation, parm="theta_", method = "profile")
+  confint(alternation, parm="theta_", method = "boot",
+          nsim = 1000)
+\end{lstlisting}
+
+The profile method uses LR tests and the bootstrap method uses a parametric bootstrap.
+For this model (where the variance estimate was $1.29$ and the true value used to generate the data was $1.5$), the profile method gives $0.5808\dots2.6433$ and the bootstrap with $1,000$ simulations gives $0.0015\dots1.9137$ as the $95\%$ confidence interval.
+Since the bootstrap process tends to run into replications where the estimation of the variance fails and is close to $0$, the bootstrap interval is skewed to the left, while the profile confidence interval frames the true value symmetrically.
+The bootstrap is thus not always more robust or better.
+
+Although the authors of the lme4 package advise against it, a significance test on the deviance of a simple GLMM and a GLMM with an added single random effect can be performed with the \texttt{anova} function.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+alternation.null <- glm(construction ~ discourse,
+                        data = observations,
+			family = binomial(link=logit))
+anova(alternation, alternation.null)
+\end{lstlisting}
+
+The GLMM must be the first argument to \texttt{anova}.
+In this case, the output looks like this (AIC and BIC removed for space reasons), indicating a significant effect.
+However, the p-values are not reliable.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+Data: observations
+Models:
+null.model: construction ~ discourse
+full.model: construction ~ discourse + (1 | lemma)
+          Df  logLik deviance  Chisq Chi Df Pr(>Chisq)    
+null.model 2 -134.52   269.05                             
+full.model 3 -119.12   238.24 30.801      1  2.859e-08 ***
+\end{lstlisting}
+
+The coefficient of determination (pseudo-$R^2$) can be computed using the function \texttt{r.squaredGLMM} from the \texttt{MuMIn} package.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+library(MuMIn)
+r.squaredGLMM(alternation)
+\end{lstlisting}
+
+In this case, it gives us \texttt{R2m = 0.1101} and \texttt{R2c = 0.3608}, so there is a considerable difference between the marginal $R^2$ (without random effects) and conditional $R^2$ (with random effects).
+
+To inspect the conditional modes, the \texttt{ranef} function can be used, and it can also output standard errors for them.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+ranef(alternation, drop = T, condVar = T)
+\end{lstlisting}
+
+To plot the predictions for the levels of a random effect, packages like \texttt{sjPlot} offer customizable functions, as in the following example, which plots Figure~\ref{fig:blups}.
+Notice that calls the conditional modes BLUPs (best linear unbiased predictors), which is an alternative term for conditional means in linear models.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+sjp.glmer(alternation, sort.est = "sort.all",
+          facet.grid = F, show.ci = T)
+\end{lstlisting}
+
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphics/blups}
+  \caption{Estimated conditional modes with confidence intervals}
+  \label{fig:blups}
+\end{figure}
+
+\paragraph{Varying intercepts and slopes}
+
+If we add a varying slope to the model as in (\ref{eq:glmm05}), the most important thing to look for is the report of the variances and covariances.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+Random effects:
+ Groups Name        Variance Std.Dev. Corr 
+ lemma  (Intercept) 0.6103   0.7812        
+        discourse   0.8944   0.9457   -0.39
+Number of obs: 2500, groups:  lemma, 50
+
+Fixed effects:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   0.6332     0.1226   5.163 2.43e-07 ***
+discourse    -1.0428     0.1492  -6.990 2.75e-12 ***
+\end{lstlisting}
+
+This output tells us that the estimated variance in the intercepts is $\hat{\sigma}_{\alpha}^2=0.6103$, the estimated variance in the slopes is $\hat{\sigma}_{\beta}^2=0.8944$, and the covariance coefficient estimate is $\hat{\rho}=-0.39$.
+The means are given by $\mu_{\alpha}=0.6332$ and $\mu_{\beta}=-1.0428$.
+Compare this to Section~\ref{sec:varyinginterceptsandslopes}), especially (\ref{eq:glmm06}).
+It is possible to reconstruct group-wise models from this output and a lookup of the group-specific predictions.
+For the first group, for example, the following can be done.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+ranef(alternation)$ $lemma[1,]
+\end{lstlisting}
+
+The output is as follows.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}[frame=trbl]
+     (Intercept) discourse
+0001   0.4351156 -1.227842
+\end{lstlisting}
+
+This means that for the first lemma, actual predictions for the outcome of the alternation can be made using (\ref{eq:glmm012}), where values are rounded to two decimal digits.
+Compare this to (\ref{eq:glmm05}).
+
+\begin{equation}
+  Pr(y^i=1)=logit^{-1}( [0.63+0.44] + [-1.04-1.23]\cdot x_d^i )
+  \label{eq:glmm012}
+\end{equation}
+
+In this chapter, readers should have learned that the output of R is transparent when practitioners are able to relate it to (1) the structure of their data set and (2) the specification of the model.
+As a general protocol, it is recommended that for each study, researchers first examine their data set, then specify a model in mathematical notation \textit{including the variance-covariance matrix} based on their knowledge of the data and the theory behind their study.
+After the re-specification in R and the estimation, the R output and the model specification can be easily related, and informed inferences can be made.
 
 \section{Further reading}
 \label{sec:furtherreading}
 
+This article was written in a way such that readers should be able to move on to text books written by statisticians rather than practitioners.
+That said, Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for R and lme4 users.
+Similarly, \citet{ZuurEa2009} has a reputation among R users of mixed effects models in many fields.
+% Also, \cite{Fox2016} is a helpful resource.
+% The non-technical passages of \citet{FahrmeirEa2013} could be considered.
+The companion to lme4, \citet{Bates2010} is an obligatory read for users of lme4.
 
 \printbibliography
 

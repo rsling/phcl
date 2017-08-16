@@ -953,12 +953,38 @@ After the re-specification in R and the estimation, the R output and the model s
 \section{Representative studies}
 
 \begin{boxedminipage}{\textwidth}
+  \footnotesize
   \subsection*{\citet{WolkEa2013}}
   \paragraph{Research questions}
+
+  The authors aim to achieve two things.
+  First, they want to compare changes in two word order related alternations in the history of English between 1650 and 1999: the dative alternation and the genitive alternation.
+  They look for influencing features shared in both cases as well as construction-specific features.
+  Second, they aim to show that historical data fits well into a probabilistic, cognitively oriented view of language.
+
   \paragraph{Data}
+
+  The authors use the \textsc{archer} corpus, which contains texts from various registers from 1650 to 1999.
+  For both constructions, carefully designed sampling protocols were used (see their Section~4).
+  For the annotation of the data, both available corpus meta data were used (text ID, register, time in fractions of centuries, centered at 1800) as well as a large number of manually coded variables (constituent length, animacy, definiteness, etc.).
+  Furthermore, the possessor head lemma (genitive alternation) and the verb lemma (dative alternation) were coded.
+
   \paragraph{Method}
+
+  Two mixed effects logistic regression models are estimated.
+  For the genitive alternation, the text ID and the possessor head lemma are used as crossed random effects.
+  The authors state on p.~399 that they collapsed all head noun lemmas with less than four occurrences into one category.
+  They do not give any reason except that otherwise ``difficulties'' would arise, but it is the advantage of random effects modeling that it can deal with a situation where categories have low numbers of observations (see \textit{shrinkage} in Section~\ref{sec:choosingbetweenrandomandfixedeffects}).
+  For the dative alternation, the model includes the text ID, the register (which nests the text ID) as well as the lemma of the theme argument and the verb. 
+
   \paragraph{Results}
+
+  It is found that many important factors have a shared importance in both alternations, \eg definiteness, animacy, construction length.
+  At the same time, 
+
 \end{boxedminipage}
+
+\vspace{2\baselineskip}
 
 \begin{boxedminipage}{\textwidth}
   \subsection*{\citet{Gries2015}}

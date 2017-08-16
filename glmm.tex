@@ -14,14 +14,14 @@
 \setmathfont[Scale=MatchUppercase]{libertinusmath-regular.otf}
 
 \usepackage{inconsolata}
-%\usepackage{fontspec}
 \setmonofont{inconsolata}
 
+\usepackage{color}
+\definecolor{lightgray}{gray}{0.9}
 \usepackage{listings}
-\lstset{language=R, keywordstyle=\color{black}, frameround=fttt, basicstyle=\ttfamily\small}
+\lstset{language=R, keywordstyle=\color{black}, basicstyle=\ttfamily\small,backgroundcolor = \color{lightgray}, frame=trbl, rulecolor=\color{black}, framesep=10pt}
 
 \usepackage{pifont}
-
 \usepackage{hhline}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -29,6 +29,8 @@
 \usepackage{colortbl}
 \usepackage{gb4e-}
 \usepackage{graphicx}
+
+\usepackage{boxedminipage2e}
 
 \usepackage[backend=biber,
 	natbib=true,
@@ -39,9 +41,6 @@
 	doi=false,
 	eprint=false
 ]{biblatex}
-
-% \usepackage{fancyhdr}
-% \pagestyle{fancy}
 
 \newcommand{\Lf}{
   \setlength{\itemsep}{1pt}
@@ -80,15 +79,21 @@
 \section{Introduction}
 \label{sec:introduction}
 
+Mixed effects modeling -- alternativeley called \textit{hierarchical} or \textit{multilevel modeling} is a straightforward extension of (generalized) linear modeling as discussed in the previous chapter.
+A common characterization of mixed-effects modeling is that it accounts for situations where observations are \textit{clustered} or \textit{come in groups}.
+In corpus linguistics, there could be clusters of observations defined by individual speakers, registers, genres, modes, lemmas occurring in constructions, etc.
+Instead of estimating a coefficients for each level of such a grouping factor (a so-called \textit{fixed effects}), in a mixed model they can be modeled as normally distributed random variable (a so-called \textit{random effect}) with predictions being made for each group.
+This chapter introduces the situations where mixed-effects modeling is useful, including a discussion of the alternative models without random effects.
+The proper specification of models without and with R are discussed, as well as some model diagnostics and ways of interpreting the output.
+Readers are assumed to be familiar with the concepts covered in the previous chapter.
+
 \section{Fundamentals}
 \label{sec:fundamentals}
 
-% For each type of statistics, the chapter should aim to answer the following guiding questions in the main text:
-% 1) What kind of data does one use this method for? 
-% 2) What are the assumptions?
-% 3) What kind of research questions does it answer?
+\subsection{When are random effects useful?}
+\label{sec:whenrandomeffectsareuseful}
 
-\subsection{Introduction to random effects}
+\subsubsection{Introduction to random effects}
 \label{sec:introductiontorandomeffects}
 
 \textit{Generalized Linear Models} (GLMs), as discussed in the previous chapter, allow us to estimate the effects which various \textit{predictors} or \textit{regressors} (\ie corpus linguistic variables) have on an \textit{outcome} or \textit{response} (\ie another corpus linguistic variable).
@@ -101,7 +106,7 @@ Second, \textit{link functions} are introduced which relate the additive linear 
 Generalized Linear Mixed Models (GLMMs) are not much different.
 They add what are often called \textit{random effects} and \textit{mix} them with the normal predictors as used in GLMs.
 The latter one are called \textit{fixed effects} in this terminology.
-Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels} and Section~\ref{sec:estimationofhierarchicalmodelsinr}.
+Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels}.
 
 The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (or \textit{data point} or \textit{measurement} or \textit{unit}) is one atomic exemplar entering into the statistical analysis of the study.
@@ -119,11 +124,11 @@ While random effects are often presented like this using conceptual arguments, t
 Random effects structures are very suitable for accounting for group-level variation in regression, but contrary to formulaic recommendations such as ``Always include random effects for speaker and genre!'', the choice between fixed and random effects can and should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting estimates.
 Subsection~\ref{sec:crossedandnestedeffects}, \ref{sec:hierarchicalormultilevelmodels}, and \ref{sec:randominterceptsandslopes} introduce three important points to consider about the structure of the data typically used in mixed modeling.
 This is intended to show readers that mixed or multilevel\slash hierarchical modeling is simply a matter of doing justice to the structure of the data.
-Then, Section~\ref{sec:modelspecification} provide a moderately technical introduction to the important technicalities in mixed modeling, including a discussion of when a factor should be included as a random effect and when as a fixed effect.
-Section~\ref{sec:estimationofhierarchicalmodelsinr} then shows how mixed models are specified and interpreted using R.
+Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provide a moderately technical introduction to the important technicalities in mixed modeling, including a discussion of when a factor should be included as a random effect and when as a fixed effect.
+Section~\ref{sec:specifyingmodelsusinglme4inr} then shows how mixed models are specified and interpreted using R.
 
 
-\subsection{Crossed an nested effects}
+\subsubsection{Crossed an nested effects}
 \label{sec:crossedandnestedeffects}
 
 It was established in the previous section that random effects are a means of accounting for group-level variance in regression models.
@@ -156,7 +161,7 @@ Since speakers have a unique region of birth, Tyneside is the unique region valu
 There cannot be exemplars where, for example, the speaker is Daryl and the region is Greater London (assuming that speakers are uniquely identified by the labels in the middle column).
 In this example, the region factor nests the speaker factor.
 This example was chosen because the nesting is conceptually necessary.
-However, even when a data set has a nested structure by accident, standard packages in R will treat them as nested, and a closer look at data sets should be part of any protocol for using GLMMs in corpus studies (see Section~\ref{sec:usinglme4}).
+However, even when a data set has a nested structure by accident, standard packages in R will treat them as nested, and a closer look at data sets should be part of any protocol for using GLMMs in corpus studies (see Section~\ref{sec:specifyingmodelsusinglme4inr}).
 
 When the grouped entities do not uniquely belong to grouping factors, the factors are \textit{crossed}.
 Continuing the example, crossed factors for speaker and mode are illustrated in Table~\ref{tab:crossed}.
@@ -199,21 +204,22 @@ Similarly, we might want to describe -- in a given study on adjectives -- adject
 Within the two groups, a finer-grained semantic classification might be nested, which itself nests single adjective lexemes.
 This gives rise to potentially complex hierarchical structures, which can often be modeled more effectively using random effect structures compared to fixed effect structures.
 
-\subsection{Hierarchical or multilevel modeling}
+\subsubsection{Hierarchical or multilevel modeling}
 \label{sec:hierarchicalormultilevelmodels}
 
 This section introduces the idea -- often ignored in introductory texts written by practitioners and handbook articles -- that so-called random effects actually introduce new levels of modeling, or \textit{secondary models}.
-It is argued that this is, again, not a technical thing but required by the structure of certain data sets.
+It is argued that this is not a technical matter but required by the structure of certain data sets.
 Assume that we wanted to account for lexeme-specific variation in a study on an alternation phenomenon by specifying the lexeme as a random effect in the model.
 Additionally, we suspect or know that a lexeme's overall frequency influences its preferences for occurring in the construction alternants.
 Now, we could simply quantize the frequency variable and turn it into an ordinal variable (for example in the form of frequency bands) and interpret it as a grouping factor which nests the lexeme grouping factor.
-However, frequency obviously is a numerical and not a categorical variable, and by using it as a grouping factor we would destroy valuable information that is encoded in the data.
+However, frequency obviously is a numerical and not a categorical variable, and by using it as a grouping factor we would destroy valuable information.
 A similar situation would arise in a study of learner corpus data with a learner grouping factor if we also knew that the number of years learners have learned a language influences their performance with regard to a specific phenomenon.
 
 It should have become clear that in such cases, variables like \textit{frequency} and \textit{number of learning years} are constant for each level of the grouping factor (\textit{lexeme} and \textit{learner}, respectively), but we cannot treat them as nesting grouping factors themselves.
 In other words, each lexeme has exactly one overall frequency, and each learner has had a fixed number of years of learning the language.%
 \footnote{In the given example, things would get more complicated if the corpus contained data by single learners from different points in time.
-We simplify the scenario for the sake of an easier-to-follow introduction.}
+We simplify the scenario for the sake of an easier-to-follow introduction.
+See also the last subsection of Section~\ref{sec:morecomplexmodels}.}
 
 \begin{table}
   \centering
@@ -239,24 +245,24 @@ We simplify the scenario for the sake of an easier-to-follow introduction.}
 
 Such variables are thus reasonably interpretable only at the group-level.
 Table~\ref{tab:multilevel} illustrates such a data set (fictional in this case).
-It might be a small fraction of the data used to predict whether a dative NP is used in the dative shift construction or not.
+It might be a small fraction of the data used to predict whether a ditransitive verb is used in the dative shift construction or not.
 The exemplar indices, again, simply identify single sentences containing one of the constructions of interest.
 The discourse status status obviously varies at the level observations, and so does the NP length in syllables.
 To capture verb lemma specific tendencies, a verb lemma grouping factor is added, and the verb lemma frequency necessarily varies at the group level because each lemma has a unique frequency.
 I such cases, an adequately specified multilevel model uses the group-level variables to partially predict the tendency of the grouping factor.
 Put differently, the idiosyncratic effect associated with a lexeme, speaker, genre, etc.\ is split up into a truly idiosyncratic preference and a preference predictable from group-level factors.
-This is achieved, in fact, by specifying another model (a linear model) that predicts the group-level random effect itself, and the second-level predictor is a fixed effect in this model.
+This is achieved, in fact, by specifying a second (linear) model which predicts the group-level random effect itself, and the second-level predictor is a fixed effect in this model.
 Such second-level models can even contain modeled effects themselves, giving rise to third-level models, and so on.
-In a way, the data look similar to multilevel nesting, but (1) second-level models can account for continuous numerical predictors at the group-level, which nesting cannot, and (2) there might be situations where specifying even categorical second-level grouping factors as fixed effects in a second-level model is more appropriate than adding nested random effects (see Section~\ref{sec:modelspecification}).
+The data look similar to multilevel nesting, but (1) second-level models can account for continuous numerical predictors at the group-level, which nesting cannot, and (2) there might be situations where specifying even categorical second-level grouping factors as fixed effects in a second-level model is more appropriate than adding nested random effects (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
 
-As in the case of nested vs.\ crossed factors, standard packages in R often take care of hierarchical modeling automatically, given that the data are structured and are specified accordingly (see Section~\ref{sec:estimationofhierarchicalmodelsinr}).
+As in the case of nested vs.\ crossed factors, standard packages in R often take care of hierarchical modeling automatically, given that the data are structured and are specified accordingly.
 This might, however, lead to situations where practitioners specify multilevel models without even knowing it, which in turn can lead to misinterpretations of the results.
-Therefore, multilevel modeling will be introduced as the more general framework for so-called mixed effects models in Sections~\ref{sec:modelspecification} and \ref{sec:estimationofhierarchicalmodelsinr}.
+Therefore, multilevel modeling will be introduced as the more general framework for so-called mixed effects models in Sections~\ref{sec:modelspecificationandmodelingassumptions} and \ref{sec:specifyingmodelsusinglme4inr}.
 
-\subsection{Random slopes as interactions}
+\subsubsection{Random slopes as interactions}
 \label{sec:randominterceptsandslopes}
 
-Before moving on to the more technical discussion of hierarchical model specification in Section~\ref{sec:modelspecification}, one more basic concept will be discussed in this section, namely the data patterns that gives rise to \textit{varying intercepts} and \textit{varying slopes}. 
+Before moving on to the more technical discussion of hierarchical model specification in Section~\ref{sec:modelspecificationandmodelingassumptions}, one more basic concept will be discussed in this section, namely the data patterns that gives rise to \textit{varying intercepts} and \textit{varying slopes}. 
 Varying intercepts are an adequate modeling tool when the overall tendency in the outcome variable changes with the levels of the grouping factor.
 It is shown that random slopes are just another way of modeling an interaction between influencing factors.
 
@@ -271,21 +277,22 @@ For the sake of the argument, we assume that we are looking at an alternation ph
 Looking at data set, it turns out that the probability of the dative shift changes for \textit{old} and \textit{new} dative NPs.
 The verb lemma -- a typical candidate to be used as a random effect -- also influences the probability of either variant being used.
 The situation can now be as in the left or the right panel of Figure~\ref{fig:varintlsope}.
-In the situation illustrated in the left panel, the overall level in probability changes with the verb lemma, but for each verb lemma, the values change roughly accordingly in exemplars with old and new dative NPs.
+In the left panel, the overall level in probability changes with the verb lemma, but for each verb lemma, the values change roughly accordingly in exemplars with old and new dative NPs.
 Note that the lines are not perfectly parallel because the figure is supposed to be an illustration of a data set rather than a fitted model, and we always expect some chance variation in data sets.
-In the situation depicted in the right panel, however, the overall levels are different between lemmas, but the lemma-specific tendencies also vary between exemplars with old and new NPs.
+In the right panel, however, the overall levels are different between lemmas, but the lemma-specific tendencies also vary between exemplars with old and new NPs.
 This is actually nothing but an interaction between two factors (verb lemma and discourse status).
 However, if the verb lemma factor is used as a random effect grouping factor, the interaction is modeled as a so-called \textit{random slope}.
 In the next section, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects.
 Which one is more appropriate will be argued to be better understood as a technical rather than a conceptual question.
 
-\subsection{Model specification}
-\label{sec:modelspecification}
+
+\subsection{Model specification and modeling assumptions}
+\label{sec:modelspecificationandmodelingassumptions}
 
 In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
 A major focus is on the question of when to use fixed and random effects.
 The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced as the absolute minimum required to understand both the output of lme4 and other packages in R as well as the literature on mixed models.
-To make successful \textit{practical} use of mixed models, some level of fundamental understanding is required.
+To make successful practical use of mixed models, some level of fundamental understanding is required.
 This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
 
 \subsubsection{Simple random intercepts}
@@ -358,12 +365,12 @@ This procedure, however, requires that the number of groups must not be too low 
 As a rule of thumb, fewer than five levels means that a grouping factor should be included as a fixed effect, regardless of its conceptual nature.
 Even if there is a default recommendation to use a speaker grouping variable as a random effect, it is ill-advised to do so if there are exemplars from less than five speakers in the sample.
 Very often, the estimator will fail anyway under such conditions.
-At the same time, the estimation of coefficients for a (dummy-coded) fixed effect becomes less precise and feasible with large numbers of levels, and at a certain point, a random effect might be the better or only option for technical reasons.
+At the same time, the estimation of coefficients for a (dummy-coded) fixed effect becomes less precise and feasible with large numbers of levels, and at a certain point, a random effect might be the best option for technical reasons.
 
 If, however, the number of groups is reasonably large, the next thing to consider is the number of observations per group.
 As mentioned at the outset of this section, alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed values per group are estimated without taking the between-group variance into account.
-The conditional modes are \textit{shrunken} towards the overall intercept as a result (an effect called \textit{shrinkage}), and they tend to be more leveled compared to fixed effects estimates.
+The conditional modes are \textit{shrunken} towards the overall intercept as a result (\textit{shrinkage}), and they tend to be more leveled compared to fixed effects estimates.
 This effect becomes considerably weaker with larger per-group sample sizes.
 With relatively low numbers of observations per group, on the other hand, fixed effect estimates tend to become inexact and will probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, non-significance).
 In this case, the conditional modes (or means) of random intercepts will just be shrunken more towards the overall intercept.
@@ -381,13 +388,13 @@ We drop the subscripts on $\alpha$, $\beta$, and $\mu$ for convenience since the
 \end{align}
 
 Again, this could be a model of a binary alternation.
-$x_1$ was a binary variable (such as singular\slash plural) and $x_2$ a continuous variable (such as the length of the construction).
+$x_1$ was a binary variable (such as singular\slash plural) and $x_2$ a continuous variable (such as NP length).
 Since the data were simulated, the parameters to be estimated were known: $\beta_1=0.8$, $\beta_2=-1.3$, $\mu=0$, $\sigma=1.5$.
 The number of groups was set to $5$ (the recommended minimum), the simulated values of the grouping factor were identical in each simulation, and there were $20$ observations per group.
 Figure~\ref{fig:glmmj5i20} shows the distribution of the group levels based on the conditional modes predicted of all but the first group in the $1,000$ simulations.
 Figure~\ref{fig:glmj5i20} shows the group estimates from a model where the grouping factor was added as a fixed effect.%
 \footnote{The plots do not show the distribution of the raw conditional modes and coefficient estimates of the fixed effects.
-Rather, the overall intercept was taken into account, and the plots thus show the distribution of the per-group prediction of the models, taking only the grouping factor into account.
+Rather, the overall intercept was taken into account, and the plots thus show the distribution of the per-group prediction of the models, all other things being equal.
 This is what was pre-specified in the simulations.}
 
 \begin{figure}[!htpb]
@@ -407,6 +414,7 @@ The per-group predictions lean slightly towards $0$ in the GLMM (Figure~\ref{fig
 Even with as few as five levels of a grouping factor, however, random and fixed effects lead to very similar results, albeit with different advantages and disadvantages.
 A few more differences will be discussed in Sections~\ref{sec:significancetestingandcoefficientsofdetermination} and \ref{sec:morecomplexmodels}.
 
+
 \subsubsection{Significance testing, model selection and coefficients of determination}
 \label{sec:significancetestingandcoefficientsofdetermination}
 
@@ -414,11 +422,11 @@ One commonly given reason to use a random effect is that ``the researchers are n
 Such recommendations should be taken with a grain of salt.
 \citet[245--247]{GelmanHill2006} summarise the diverging and partially contradicting recommendations for what should be a random effect along with their motivations.
 They conclude that there is essentially no clean conceptual way of deciding what should be a random effect and what a fixed effect.
-Here, a rather technical approach was therefore suggested; see Section~\ref{sec:choosingbetweenrandomandfixedeffects}.
+In this chapter, a more technical approach was therefore suggested; see Section~\ref{sec:choosingbetweenrandomandfixedeffects}.
 
 Clearly, however, it is not adequate to do any kind of significance test on the levels of the random effect factor, as is customary for fixed effects.
 The conditional modes are not estimates, and only for estimates is significance testing a well-defined activity.
-There are ways of calculating confidence intervals for conditional modes (see Section~\ref{sec:usinglme4}), but they should not be misused for talking about significance.
+There are ways of calculating confidence intervals for conditional modes (see Section~\ref{sec:specifyingmodelsusinglme4inr}), but they should not be misused for talking about significance.
 If this is absolutely required, fixed effects are the way to go.
 Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
 Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible in the same way with fixed effects.
@@ -432,8 +440,8 @@ This comparison is impossible in GLMMs because their (several types of) residual
 
 Traditional model selection for random effects can be achieved through a likelihood ratio (LR) test comparing a model including the random effect and a model not including it.
 Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
-A much more robust option uses a parametric bootstrap replacements for the LR test (see Section~\ref{sec:usinglme4}).
-It is \textit{not} appropriate to compare a model with a random effect and a model with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
+An alternative option are parametric bootstrap replacements for the LR test (see Section~\ref{sec:specifyingmodelsusinglme4inr}).
+It is \textit{not} appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
 
 Coefficients of determination (pseudo-$R^2$) should not be used for model selection, because they usually do not penalize complexity enough (\ie the pseudo-$R^2$ measures rise with added complexity).
 They can still be used to give some idea of the model fit, however.
@@ -470,10 +478,9 @@ If fixed effects and random effects are not independent, adding a varying slope 
 \subsubsection{More complex models}
 \label{sec:morecomplexmodels}
 
-This section shows briefly how more complex models are specified before Section~\ref{sec:usinglme4} demonstrated how all models discussed are estimated in R, including interpretations of the output.
+This section shows briefly how more complex models are specified before Section~\ref{sec:specifyingmodelsusinglme4inr} demonstrated how models are estimated in R, including interpretations of the output.
 
-\subsubsection{Varying intercepts and slopes}
-\label{sec:varyinginterceptsandslopes}
+\paragraph{Varying intercepts and slopes}
 
 A varying slope is an interaction between a fixed effect and a random effect, see Section~\ref{sec:randominterceptsandslopes}.
 While it is possible to have just a varying slope, this is rarely useful, and we discuss only varying-intercept and varying-slope (VIVS) models.
@@ -512,13 +519,12 @@ Figure~\ref{fig:multnorm} shows the bivariate density distributions for two (1) 
   \label{fig:multnorm}
 \end{figure}
 
-Importantly, the number of parameters to estimate obviously increases with more complex model specifications, and the estimation of the parameters in the presence of complex variance-covariance matrices requires considerably more data than estimating a single variance parameter.
+Importantly, the number of variance parameters to be estimated obviously increases with more complex model specifications, and the estimation of the parameters in the presence of complex variance-covariance matrices requires considerably more data than estimating a single variance parameter.
 The estimator might converge, but typically covariance estimates of $-1$ or $1$ indicate that the data was too sparse for a successful estimation of the parameter.
 In this case, the model is \textit{over-parametrized} and needs to be simplified.
-In Section~\ref{sec:usinglme4}, it will be shown how to interpret the lme4 output appropriately.
+In Section~\ref{sec:interpretingtheoutputoflme4}, it will be shown how to interpret the lme4 output appropriately.
 
-\subsubsection{Nested and crossed random effects}
-\label{sec:nestedandcrossedrandomeffects}
+\paragraph{Nested and crossed random effects}
 
 As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are adequate when grouping factors are nested within other grouping factors.
 Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts ca be understood interactions between two or more random effects.
@@ -538,8 +544,7 @@ In the crossed case, this is not the case.
 As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the questions is rather one of how the way the data are organised.
 In the model specification (including model specification in R), there is not much to consider.
 
-\subsubsection{Second-level predictors}
-\label{sec:secondlevelpredictors}
+\paragraph{Second-level predictors}
 
 In Section~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be (partially) predicted from fixed-effects.
 In this case, an additional linear model is specified for the random effect instead of the simple normal distribution predictor.
@@ -556,7 +561,7 @@ The first-level model specification remains the same, namely (\ref{eq:glmm08}).
 However, instead of (\ref{eq:glmm02}), the varying intercept is predicted from (\ref{eq:glmm09}).
 
 \begin{equation}
-  \alpha_l^j\sim N(\gamma_0+\gamma_f\cdot u_j^j,\sigma_l^2)
+  \alpha_l^j\sim N(\gamma_0+\gamma_f\cdot u_f^j,\sigma_l^2)
   \label{eq:glmm09}
 \end{equation}
 
@@ -565,30 +570,67 @@ If the lemma frequency plays a role, this approach can lead to a more precise pr
 True multilevel models increase the complexity of GLMMs, especially if third-level models, fourth-level models, etc. are used.
 Situations for multilevel modeling are quite frequently encountered, however.
 Especially when it comes to speakers as random effects, the age, the gender, the region of birth (if this grouping factor has too few levels to be used as a random effect nesting speakers), etc.\ are ideal second-level predictors.
-The lme4 syntax treats second-level predictors like interactions between a fixed and a random effect, something which will be demonstrated in Section~\ref{sec:estimationofhierarchicalmodelsinr}.
+The lme4 syntax treats second-level predictors like interactions between a fixed and a random effect, see also Section~\ref{sec:specifyingmodelsusinglme4inr}.
 
-% Readers finding it difficult to see why (\ref{eq:glmm09}) is a plain linear model could consider the equivalent formulation in (\ref{eq:glmm10}) and (\ref{eq:glmm11}).
-% 
-% \begin{align}
-%   \alpha_l^j   =    & \gamma_0+\gamma_f\cdot u_j^j+\epsilon_l^j \label{eq:glmm10}\\
-%   \epsilon_l^j \sim & N(0, \sigma^2) \label{eq:glmm11}
-% \end{align}
+Readers finding it difficult to see why (\ref{eq:glmm09}) is a plain linear model could consider the equivalent formulation in (\ref{eq:glmm10}) and (\ref{eq:glmm11}).
+ 
+\begin{align}
+  \alpha_l^j   =    & \gamma_0+\gamma_f\cdot u_j^j+\epsilon_l^j \label{eq:glmm10}\\
+  \epsilon_l^j \sim & N(0, \sigma^2) \label{eq:glmm11}
+\end{align}
 
-% \subsubsection{Remarks about models for time series}
-% \label{sec:remarksaboutmodelsfortimeseries}
+\paragraph{Models for longitudinal studies}
 
-\section{Packages and tools in R}
-\label{sec:estimationofhierarchicalmodelsinr}
+A longitudinal study is one wherein single subjects (usually speakers) are observed at different points in time, for example second-language learners after different years of learning a second language.
+This section briefly discusses the main points to consider when such models -- which can get quite complex -- are specified.
+First, the observations are obviously grouped by the individual speakers.
+It is thus recommended to include the speaker grouping factor, either as a fixed effect (up to five speakers) or random effect (more speakers).
+Second, there might be time parameters such as years of learning.
+Third, the errors might be correlated.
 
-\subsection{Using lme4}
-\label{sec:usinglme4}
+We now assume we have a sample from a learner corpus of German as a second language.
+In a logistic regression, we examine whether Swedish and English learners use the weak or the strong forms of attributive adjectives in NPs with a determiner.
+Grammatically, the crucial variable is whether the determiner has itself a strong ending or not, and we include an appropriate first-level term $\beta_d\cdot x_d^i$ in the model.
+A random effect for individual learners is also included as $\alpha_l^{j[i]}$.
+Additionally, we add a term for the number of years the learners have learned German (potentially logarithmized or otherwise transformed).
+However, since learners progress with different speed, a random slope is indicated, and the term becomes $\beta_{y:l}^{j[i]}\cdot x_y^i$.
+The first-level model is thus (\ref{eq:glmm013}).
+
+\begin{equation}
+  P(y^i=1)=logit^{-1}(\alpha_l^{j[i]} + \beta_d\cdot x_d^i + \beta_{y:l}^{j[i]}\cdot x_y^i)
+  \label{eq:glmm013}
+\end{equation}
+
+The main purpose of our study might be to find out whether Swedish and English learners differ with respect to the phenomenon at hand.
+Therefore, the first language is added as a second-level predictor with the term $\gamma_f\cdot u_f^j$, where $u_f^j$ is $1$ if the language of learner $j$ is Swedish, and $0$ if it is English.
+Since we have a random intercept and a random slope, the second-level model becomes more complex, and we need to distinguish between $\gamma_f^{\alpha}\cdot u_f^j$ for the random intercept and $\gamma_f^{\beta}\cdot u_f^j$ for the random slope.
+The second level model to go with (\ref{eq:glmm013}) is (\ref{eq:glmm14}).
+
+\begin{equation} 
+  \left( \begin{smallmatrix} \alpha^j \\ \beta^j \end{smallmatrix}\right) \sim
+    \left(
+    \left( \begin{smallmatrix} \gamma_0^{\alpha}+\gamma_f^{\alpha}\cdot u_f^j \\ \gamma_0^{\beta}+\gamma_f^{\beta}\cdot u_f^j    \end{smallmatrix} \right), 
+      \left( \begin{smallmatrix} \sigma_{\alpha}^2 & \rho\sigma_{\alpha}\sigma_{\beta} \\
+	\rho\sigma_{\alpha}\sigma_{\beta} & \sigma_{\beta}^2 \end{smallmatrix} \right)
+    \right)
+  \label{eq:glmm14}
+\end{equation}
+
+This is already a quite complex model, but most likely not yet adequate.
+Since the performance of learners after $n+1$ years of learning is usually correlated to a high degree with their performance after $n$ years.
+This will lead to \textit{autocorrelation} in the errors, violating basic assumptions.
+To take care of this, model which allow for explicitly specified error structures must be used.
+While these are well-understood and implemented in R packages for linear models (see \citealt{Fox2016} and \citealt{ZuurEa2009}), there exists no simple solution for GLM(M)s.
+Anyone wishing to use such models will have to consult original literature.
+
+\subsection{Specifying model using lme4 in R}
+\label{sec:specifyingmodelsusinglme4inr}
 
 This section focusses on lme4, the standard package to do multilevel modeling in R with maximum likelihood methods.
 First, specifying models is discussed.
 Second, it is shown how the output can be interpreted.
 
-\subsubsection{Specifying models}
-\label{sec:specifyingmodels}
+\paragraph{Varying intercepts}
 
 Most important are the functions \texttt{lmer} and \texttt{glmer}, which extend the syntax of \texttt{lm} and \texttt{glm}.
 The simple varying intercept model in \ref{eq:glmm01} looks as follows in R.
@@ -596,7 +638,7 @@ Informative variable names are used instead of Greek letters.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 glmer(construction ~ discourse + (1 | lemma),
       family = binominal(link=logit), data = my.data)
 \end{lstlisting}
@@ -604,12 +646,14 @@ glmer(construction ~ discourse + (1 | lemma),
 The pipe operator \texttt{x1 | x2} can be read as \textit{x1 varies by x2}.
 The intercept is denoted by \texttt{1}, and hence \texttt{(1 | lemma)} simply says that the intercept varies by lemma.
 
+\paragraph{Varying intercepts and slopes}
+
 The VIVS model in (\ref{eq:glmm05}) would be specified as follows.
-Only the formula is given from now on.
+Only the formula is given from now on since the rest of the function call remains the same.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + (1 + discourse | lemma)
 \end{lstlisting}
 
@@ -619,7 +663,7 @@ The last formula can therefore be abbreviated to the following equivalent one.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + (discourse | lemma)
 \end{lstlisting}
 
@@ -627,16 +671,18 @@ In order to let \textit{only} the slope vary, the intercept has to be removed ex
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + (discourse - 1 | lemma)
 \end{lstlisting}
 
-When there are more than one random effects, several bracketed terms can simply be added.
+\paragraph{Multiple random effects}
+
+When there is more than one random effect, several bracketed terms can simply be added.
 The following is the recommended specification for models like (\ref{eq:glmm07}), regardless of whether the effects are nested or crossed.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + (1 + | lemma) +
                ( 1 | semantics )
 \end{lstlisting}
@@ -645,7 +691,7 @@ Sometimes the recommendation is found to use the following notation for nested r
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + ( 1 | semantics / lemma )
 \end{lstlisting}
 
@@ -653,7 +699,7 @@ lme4 expands this to the following underlying syntax, which shows more clearly t
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + ( 1 | semantics ) +
                ( 1 | semantics : lemma )
 \end{lstlisting}
@@ -665,7 +711,7 @@ However, the following specification is \textit{not} equivalent and leads to pro
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + ( 1 | semantics ) +
                ( 1 | lemma ) +
                ( 1 | semantics : lemma )
@@ -702,12 +748,13 @@ Hence, Daryl and Dale (coming from two different regions) cannot be distinguiseh
 This leaves lme4 no way of recognizing that the data structure is nested, and the user has to explicitly provide that information.
 It would, of course, be better \textit{not} to organize data that way.
 
-Finally, we turn to how second level predictors are specified.
+\paragraph{Second-level predictors}
+
 (\ref{eq:glmm08}) and (\ref{eq:glmm09}) have the following lme4 syntax.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + frequency + ( 1 | lemma )
 \end{lstlisting}
 
@@ -719,7 +766,7 @@ Assuming that the effect of discourse status varies with the lemma, which itself
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 construction ~ discourse + frequency +
                discourse : frequency +
 	       ( 1 + discourse | lemma )
@@ -727,10 +774,10 @@ construction ~ discourse + frequency +
 
 A second-level regressor on a varying slope is thus an interaction between a first-level and a second-level fixed effect.
 
-\subsubsection{Interpreting the output}
-\label{sec:interpretingtheoutput}
+\subsection{Interpreting the output of lme4}
+\label{sec:interpretingtheoutputoflme4}
 
-\paragraph{Basics and simple varying intercepts}
+\paragraph{Basics and varying intercepts}
 
 The output for GLMMs in lme4 can be understood straightforwardly after what was said in Sections~\ref{sec:fundamentals}.
 Here is a possible output of the \texttt{summary} function for a fit of model (\ref{eq:glmm01}) and (\ref{eq:glmm02}), repeated here as (\ref{eq:glmm01r}) and (\ref{eq:glmm02r}).
@@ -745,7 +792,7 @@ Artificial data was used for the estimation.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 Generalized linear mixed model fit by maximum likelihood 
  Family: binomial  ( logit )
 Formula: construction ~ discourse + (1 | lemma)
@@ -763,8 +810,9 @@ discourse1    1.5064     0.3626   4.154 3.26e-05 ***
 \end{lstlisting}
 
 Some clutter as well as information which we do not interpret here (AIC, BIC, and information about the residuals) have been removed.
-In this output, the \texttt{(Intercept)} estimate ($0.7638$) is the estimate for $\mu_l$, and the \texttt{Variance} for the \texttt{lemma} ($1.29$) random intercept is the estimate of $\sigma_l^2$.
-The estimate for \texttt{discourse1} ($1.5064$) corresponds to the estimate of $\beta_d$.
+In this output, the \texttt{(Intercept)} estimate ($0.7638$) is $\hat{\mu}_l$, and the \texttt{Variance} estimate for the \texttt{lemma} random intercept ($1.29$) is $\hat{\sigma}_l^2$.%
+\footnote{In general, the notation $\hat{v}$ denotes an estimate of the variable $v$.}
+The estimate for \texttt{discourse1} ($1.5064$) corresponds to $\hat{\beta}_d$.
 Finally, we learn that there were five different lemmas and $250$ observations in total.
 
 To see whether the random intercept has a considerable influence, we should first look at the variance estimate.
@@ -774,22 +822,22 @@ Assuming the original model was stored in \texttt{alternation}, the following tw
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
   confint(alternation, parm="theta_", method = "profile")
   confint(alternation, parm="theta_", method = "boot",
-          nsim = 1000)
+          nsim = 250)
 \end{lstlisting}
 
 The profile method uses LR tests and the bootstrap method uses a parametric bootstrap.
-For this model (where the variance estimate was $1.29$ and the true value used to generate the data was $1.5$), the profile method gives $0.5808\dots2.6433$ and the bootstrap with $1,000$ simulations gives $0.0015\dots1.9137$ as the $95\%$ confidence interval.
-Since the bootstrap process tends to run into replications where the estimation of the variance fails and is close to $0$, the bootstrap interval is skewed to the left, while the profile confidence interval frames the true value symmetrically.
-The bootstrap is thus not always more robust or better.
+For this model (where the variance estimate was $1.29$ and the true value used to generate the data was $1.5$), the profile method gives $0.5808\dots2.6433$ and the bootstrap with $250$ simulations gives $3.9665\cdot10^{-6}\dots1.8023$ as the $95\%$ confidence interval.
+Since the bootstrap (especially with smaller original sample sizes) tends to run into replications where the estimation of the variance fails and is thus output as $0$, the bootstrap interval is skewed to the left, while the profile confidence interval frames the true value symmetrically.
+The bootstrap is thus not always more robust or intrinsically better.
 
-Although the authors of the lme4 package advise against it, a significance test on the deviance of a simple GLMM and a GLMM with an added single random effect can be performed with the \texttt{anova} function.
+Although the authors of the lme4 package advise against it, a significance test on the deviances of a simple GLMM and a GLMM with an added single random effect can be performed with the \texttt{anova} function.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 alternation.null <- glm(construction ~ discourse,
                         data = observations,
 			family = binomial(link=logit))
@@ -797,12 +845,11 @@ anova(alternation, alternation.null)
 \end{lstlisting}
 
 The GLMM must be the first argument to \texttt{anova}.
-In this case, the output looks like this (AIC and BIC removed for space reasons), indicating a significant effect.
-However, the p-values are not reliable.
+In this case, the output looks like this (AIC and BIC removed for space reasons), indicating a significant effect, although the p-values should not be considered highly reliable.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 Data: observations
 Models:
 null.model: construction ~ discourse
@@ -816,7 +863,7 @@ The coefficient of determination (pseudo-$R^2$) can be computed using the functi
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 library(MuMIn)
 r.squaredGLMM(alternation)
 \end{lstlisting}
@@ -827,7 +874,7 @@ To inspect the conditional modes, the \texttt{ranef} function can be used, and i
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 ranef(alternation, drop = T, condVar = T)
 \end{lstlisting}
 
@@ -836,7 +883,7 @@ Notice that calls the conditional modes BLUPs (best linear unbiased predictors),
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 sjp.glmer(alternation, sort.est = "sort.all",
           facet.grid = F, show.ci = T)
 \end{lstlisting}
@@ -854,7 +901,7 @@ If we add a varying slope to the model as in (\ref{eq:glmm05}), the most importa
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
 Random effects:
  Groups Name        Variance Std.Dev. Corr 
  lemma  (Intercept) 0.6103   0.7812        
@@ -868,22 +915,22 @@ discourse    -1.0428     0.1492  -6.990 2.75e-12 ***
 \end{lstlisting}
 
 This output tells us that the estimated variance in the intercepts is $\hat{\sigma}_{\alpha}^2=0.6103$, the estimated variance in the slopes is $\hat{\sigma}_{\beta}^2=0.8944$, and the covariance coefficient estimate is $\hat{\rho}=-0.39$.
-The means are given by $\mu_{\alpha}=0.6332$ and $\mu_{\beta}=-1.0428$.
-Compare this to Section~\ref{sec:varyinginterceptsandslopes}), especially (\ref{eq:glmm06}).
+The means are estimated as $\hat{\mu}_{\alpha}=0.6332$ and $\hat{\mu}_{\beta}=-1.0428$.
+Compare this to Section~\ref{sec:morecomplexmodels}), especially (\ref{eq:glmm06}).
 It is possible to reconstruct group-wise models from this output and a lookup of the group-specific predictions.
 For the first group, for example, the following can be done.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
-ranef(alternation)$ $lemma[1,]
+\begin{lstlisting}
+ranef(alternation)$lemma[1,]
 \end{lstlisting}
 
 The output is as follows.
 
 \vspace{0.5\baselineskip}
 
-\begin{lstlisting}[frame=trbl]
+\begin{lstlisting}
      (Intercept) discourse
 0001   0.4351156 -1.227842
 \end{lstlisting}
@@ -896,9 +943,31 @@ Compare this to (\ref{eq:glmm05}).
   \label{eq:glmm012}
 \end{equation}
 
+\subsection{Summary and recommendations for a protocol}
+\label{sec:summaryandrecommendationsforaprotocol}
+
 In this chapter, readers should have learned that the output of R is transparent when practitioners are able to relate it to (1) the structure of their data set and (2) the specification of the model.
 As a general protocol, it is recommended that for each study, researchers first examine their data set, then specify a model in mathematical notation \textit{including the variance-covariance matrix} based on their knowledge of the data and the theory behind their study.
 After the re-specification in R and the estimation, the R output and the model specification can be easily related, and informed inferences can be made.
+
+\section{Representative studies}
+
+\begin{boxedminipage}{\textwidth}
+  \subsection*{\citet{WolkEa2013}}
+  \paragraph{Research questions}
+  \paragraph{Data}
+  \paragraph{Method}
+  \paragraph{Results}
+\end{boxedminipage}
+
+\begin{boxedminipage}{\textwidth}
+  \subsection*{\citet{Gries2015}}
+  \paragraph{Research questions}
+  \paragraph{Data}
+  \paragraph{Method}
+  \paragraph{Results}
+\end{boxedminipage}
+
 
 \section{Further reading}
 \label{sec:furtherreading}

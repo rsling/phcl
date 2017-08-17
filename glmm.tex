@@ -115,10 +115,10 @@ A single observation (or \textit{data point} or \textit{measurement} or \textit{
 In corpus linguistics, single observations can be understood as a single line in a concordance, and they typically represent, for example (and with reference to the above examples), a clause or sentence in which one of the alternants of a case alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
 When such observations are grouped, it is often plausible to assume that some variance in the choice of the alternating forms or constructions occurs at the group-level and not at the level of observations.
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
-Since the estimator works under the assumption of non-correlated errors, standard errors for model coefficients can be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.
+Since the estimator works under the assumption of non-correlated errors, standard errors for model coefficients can be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
+\footnote{Type I errors occur when the null hypothesis is rejected although it is true.}
 This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the regressors, \ie when there is an interaction between the grouping factor and other regressors (\eg \citealt{SchielzethForstmeier2009}).
-This is why known variation by group should always be accounted for in the model.
-Random effects are often a convenient way to do so.
+This is why known variation by group should always be accounted for in the model, and random effects are often a convenient way to do so.
 
 Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), their sex and gender, the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.
 If the concordance in a study contains, say, ten exemplars each written by ten speakers, then the speaker grouping factor has ten levels and defines ten groups.
@@ -282,7 +282,7 @@ This might, however, lead to situations where practitioners specify multilevel m
 % Before moving on to the more technical discussion of hierarchical model specification in Section~\ref{sec:modelspecificationandmodelingassumptions}, one more basic concept will be discussed in this section, namely
 This section introduces the data patterns that gives rise to \textit{varying intercepts} and \textit{varying slopes}. 
 Varying intercepts are an adequate modeling tool when the overall tendency in the outcome variable changes with the levels of the grouping factor.
-It is shown that random slopes are just another way of modeling an interaction between influencing factors.
+% It is shown that random slopes are just another way of modeling an interaction between influencing factors.
 
 \begin{figure}[!htpb]
   \centering
@@ -308,10 +308,10 @@ Which one is more appropriate will be argued to be better understood as a techni
 \label{sec:modelspecificationandmodelingassumptions}
 
 In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
-A major focus is on the question of when to use fixed and random effects.
-The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced to enable readers to understand both the output of \texttt{lme4} and other packages in R as well as the literature on mixed models.
+It is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
+% A major focus is on the question of when to use fixed and random effects.
+% The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced to enable readers to understand both the output of \texttt{lme4} and other packages in R as well as the literature on mixed models.
 % To make successful practical use of mixed models, some level of fundamental understanding is required.
-This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
 
 \subsubsection{Simple random intercepts}
 \label{sec:simplerandomintercepts}
@@ -352,7 +352,7 @@ The model specification then looks like in (\ref{eq:glmm01}).
   \label{eq:glmm01}
 \end{equation}
 
-We now have an intercept $\alpha_l^{j[i]}$ that varies by group (instead of one term with its own coefficient per group).
+We now have an intercept $\alpha_l^{j[i]}$ which varies by group (instead of one term with its own coefficient per group).
 We use the notation $\alpha_l^{j[i]}$ (borrowed in a modified form from \citealt{GelmanHill2006}) to indicate that the correct $j$-th lemma intercept is chosen for the $i$-th observation.
 For example, if in exemplar $64$, the lemma is \textit{give}, which is group $12$, then $i=64$ and $j[64]=12$ (\ie the group appropriate for exemplar $64$ is group $12$), and $\alpha_l^{j[64]}=\alpha_l^{12}$.
 The term $\beta_d\cdot x_d^i$ for the effect of discourse status remains unchanged when going from (\ref{eq:glm01}) to (\ref{eq:glmm01}).
@@ -632,7 +632,7 @@ The second level model to go with (\ref{eq:glmm013}) is (\ref{eq:glmm14}).
 \end{equation}
 
 Although this is a quite complex model already, there might be more problems.
-Since the performance of learners after $n+1$ years of learning is usually correlated to a high degree with their performance after $n$ years.
+The performance of learners after $n+1$ years of learning is usually correlated to a high degree with their performance after $n$ years.
 This can lead to \textit{autocorrelation} in the errors, violating basic modeling assumptions.
 To take care of this, model which allow for explicitly specified error structures must be used.
 Anyone wishing to use such models will should consult further references (\eg \citealt{Fox2016} and \citealt{ZuurEa2009}).
@@ -985,6 +985,7 @@ Compare this to (\ref{eq:glmm05}).
 
 \begin{mdframed}
   \subsection*{\citet{WolkEa2013}}
+  
   \paragraph{Research questions}
 
   The authors aim to achieve two things.
@@ -1003,8 +1004,7 @@ Compare this to (\ref{eq:glmm05}).
 
   Two mixed effects logistic regression models are estimated.
   For the genitive alternation, the text ID and the possessor head lemma are used as crossed random effects.
-  The authors state on p.~399 that they collapsed all head noun lemmas with less than four occurrences into one category.
-  They do not give any reason except that otherwise ``difficulties'' would arise.
+  The authors state on p.~399 that they collapsed all head noun lemmas with less than four occurrences into one category because otherwise ``difficulties'' would arise.
   However, it is the advantage of random effects modeling that it can deal with a situation where categories have low numbers of observations (see \textit{shrinkage} in Section~\ref{sec:choosingbetweenrandomandfixedeffects}).
   For the dative alternation, the model includes the text ID, the register (which nests the text ID) as well as the lemma of the theme argument and the verb. 
 
@@ -1021,10 +1021,36 @@ Compare this to (\ref{eq:glmm05}).
 \begin{mdframed}
 
   \subsection*{\citet{Gries2015}}
+
   \paragraph{Research questions}
+  
+  The paper is programmatic in nature.
+  The author re-analyses data from a previously published study on verb particle placement in English.
+  He uses a GLMM instead of a fixed-effects logistic regression to show that including random effects in order to account for variation related to mode, register, and subregister increases the quality and predictive power of the model.
+  He also argues that not doing so, corpus linguists risk violating fundamental assumptions about the independence of the error terms in models.
+  
   \paragraph{Data}
+  
+  The data are $2,321$ instances of particle verbs showing either verb--direct object--particle or verb--particle--direct object order, taken from the ICE-GB.
+  The grouping factors taken from the structure of the corpus are mode (only two levels), register (five levels), and subregister ($13$ levels).
+  They are nested: mode nests register, which nests subregister.
+  Additionally, verb and particle lemma grouping factors are annotated.
+  Finally, two fixed effects candidates are annotated (the type of the head of direct object and the logarithmized length of the direct object in words).
+  
   \paragraph{Method}
+  
+  The author uses the model selection protocol described in \citet{ZuurEa2009} to first find the optimal random effects structure using ANOVAs and AIC comparisons as well as analyses of the estimated variance for single random effects.
+  He then goes on to find the optimal fixed effects structure.
+  Additionally, he compares the pseudo-$R^2$ measure of the resulting mixed models.
+  
   \paragraph{Results}
+
+  It is found that the verb and particle lemma play and the subregister play a significant role.
+  Notably, the variance estimate for mode is close to $0$ from the beginning of the model selection procedure.
+  This is not surprising, as two levels are not nearly enough in order for the variance to be reliably estimated, and it could maybe be used as a second-level predictor for (sub)register instead.
+  The $R^2$ values of the final model are very high, with a considerable difference between marginal $R^2_m=0.57$ and conditional $R^2_c=0.748$, which indicates that the random effects do in fact improve the model fit.
+  It is also shown that the classification accuracy is considerably improved over that of a GLM without random effects for different lexical groups and subregisters.
+  The paper thus shows that it is not appropriate to ignore lexical grouping factors and grouping factors derived from the corpus structure, especially as both are easy to annotate automatically.
 
 \end{mdframed}
 

@@ -29,6 +29,8 @@
 \usepackage{colortbl}
 \usepackage{gb4e-}
 \usepackage{graphicx}
+\usepackage{mdframed}
+\usepackage{hyperref}
 
 \usepackage{boxedminipage2e}
 
@@ -98,7 +100,7 @@ Readers are assumed to be familiar with the concepts covered in the previous cha
 \label{sec:introductiontorandomeffects}
 
 % \textit{Generalized Linear Models} (GLMs), as discussed in the previous chapter, allow us to estimate the effects which various \textit{predictors} or \textit{regressors} (\ie corpus linguistic variables) have on an \textit{outcome} or \textit{response} (\ie another corpus linguistic variable).
-% Surely, the most typical application (in corpus linguistics) is the modeling of \textit{alternations}, \ie phenomena where the response variable of interest encodes a choice of forms or constructions, for example a case alternation (a binary or multi-valued categorical response, depending on the richness of the language's case system), alternations of graphemic form such as contracted vs.\ non-contracted, ordering preferences such as the order of prenominal adjectives, or syntactic\slash constructional alternations such as the dative alternation.%
+% Surely, the most typical application (in corpus linguistics) is the modeling of \textit{alternations}, \ie phenomena where the response variable of interest encodes a choice of forms or constructions, for example a case alternation (a binary or multi-valued categorical response), alternations of graphemic forms such as contracted vs.\ non-contracted, ordering preferences such as the order of prenominal adjectives, or syntactic\slash constructional alternations such as the dative alternation.%
 % \footnote{In this article, I restrict the discussion to GL(M)Ms with categorical responses, simply because the continuous responses in Linear (Mixed) Models -- or LM(M)s – are not found very often in corpus linguistics.
 % Also, an L(M)M can be understood as a GL(M)M with an identity link function and a Gaussian distribution for the residuals.}
 % The approach is called \textit{generalized} in contrast to normal linear models because the response need not be numerical, and the \textit{errors} or \textit{residuals} do not have to be (approximately) normally distributed.
@@ -133,7 +135,7 @@ Random effects structures are very suitable for accounting for group-level varia
 The remainder of Section~\ref{sec:whenrandomeffectsareuseful} introduces three important points to consider about the structure of the data typically used in mixed modeling.
 % This is intended to show readers that mixed or multilevel\slash hierarchical modeling is simply a matter of doing justice to the structure of the data.
 Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provides a moderately technical introduction to modeling.
-Section~\ref{sec:specifyingmodelsusinglme4inr} then shows how mixed models are specified using tze \texttt{lme4} package in R, and Section~\ref{sec:interpretingtheoutputoflme4} deals with the interpretation of the output.
+Section~\ref{sec:specifyingmodelsusinglme4inr} then shows how mixed models are specified using tze \texttt{lme4} package in R, and Section~\ref{sec:afterfittingmodelswithlme4} deals with the interpretation of the output.
 
 
 \subsubsection{Crossed an nested effects}
@@ -229,10 +231,10 @@ Additionally, we suspect or know that a lexeme's overall frequency influences it
 % However, frequency obviously is a numerical and not a categorical variable, and by using it as a grouping factor we would destroy valuable information.
 A similar situation would arise in a study of learner corpus data with a learner grouping factor if we also knew that the number of years learners have learned a language influences their performance with regard to a specific phenomenon.
 In such cases, variables like \textit{frequency} and \textit{number of learning years} are constant for each level of the grouping factor (\textit{lexeme} and \textit{learner}, respectively).
-In other words, each lexeme has exactly one overall frequency, and each learner has had a fixed number of years of learning the language.
-% \footnote{In the given example, things would get more complicated if the corpus contained data by single learners from different points in time.
-% We simplify the scenario for the sake of an easier-to-follow introduction.
-% See also the last subsection of Section~\ref{sec:morecomplexmodels}.}
+In other words, each lexeme has exactly one overall frequency, and each learner has had a fixed number of years of learning the language.%
+\footnote{In the given example, things would get more complicated if the corpus contained data by single learners from different points in time.
+We simplify the scenario for the sake of an easier-to-follow introduction.
+See also the last subsection of Section~\ref{sec:morecomplexmodels}.}
 
 \begin{table}
   \centering
@@ -290,7 +292,7 @@ It is shown that random slopes are just another way of modeling an interaction b
 \end{figure}
 
 We assume that we are looking at an alternation phenomenon like the dative alternation, wherein we are interested in the probability that, under given circumstances, the dative shift construction is chosen.
-Looking at data set, it turns out that the probability of the dative shift changes for \textit{old} and \textit{new} dative NPs.
+When examining the data, it turns out that the probability of the dative shift changes for \textit{old} and \textit{new} dative NPs.
 The verb lemma -- a typical candidate to be used as a random effect -- also influences the probability of either variant being used.
 The situation can now be as in the left or the right panel of Figure~\ref{fig:varintlsope}.
 In the left panel, the overall level in probability changes with the verb lemma, but for each verb lemma, the values change roughly accordingly in exemplars with old and new dative NPs.
@@ -305,11 +307,11 @@ Which one is more appropriate will be argued to be better understood as a techni
 \subsection{Model specification and modeling assumptions}
 \label{sec:modelspecificationandmodelingassumptions}
 
-% In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
-% A major focus is on the question of when to use fixed and random effects.
-% The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced as the absolute minimum required to understand both the output of \texttt{lme4} and other packages in R as well as the literature on mixed models.
+In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
+A major focus is on the question of when to use fixed and random effects.
+The amount of technicality and notation is kept at the absolute minimum, but a few notational conventions are introduced to enable readers to understand both the output of \texttt{lme4} and other packages in R as well as the literature on mixed models.
 % To make successful practical use of mixed models, some level of fundamental understanding is required.
-% This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
+This section is based mostly on Part 2A of \citet{GelmanHill2006} (pp.~235--342).
 
 \subsubsection{Simple random intercepts}
 \label{sec:simplerandomintercepts}
@@ -334,9 +336,9 @@ $x_d^i$ is the value of the variable that encodes the discourse status for exemp
 Furthermore, $\beta_{l_j}$ are the coefficients for the lemma dummy variables.
 Finally, $x_{l_j}^i$ is the value ($0$ or $1$) for lemma $j$ in observation $i$.
 If in exemplar $64$, the lemma is \textit{give} and \textit{give} is encoded as group $12$, then $i=64$, $j=12$, and $x_{l_{12}}^{64}=1$, whereas all $x_{l_j}^{64}=0$ with $j\neq12$.
-Because one verb lemma dummy variable is on the intercept $\alpha_0$ and thus used as a reference, we only estimate $m-1$ instead of $m$ coefficients, \ie $j=1,\cdots,m-1$.
-% \footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist because one could simply add a constant to the intercept and subtract it from the dummies.
-% However, the estimator works under the assumption that there is a unique maximum likelihood estimate for the coefficient matrix.}
+Because one verb lemma dummy variable is on the intercept $\alpha_0$ and thus used as a reference, we only estimate $m-1$ instead of $m$ coefficients, \ie $j=1,\cdots,m-1$.%
+\footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist because one could simply add a constant to the intercept and subtract it from the dummies.
+However, the estimator works under the assumption that there is a unique maximum likelihood estimate for the coefficient matrix.}
 The function $logit^{-1}$ is the \textit{link function}, and its argument is the \textit{linear term} of the model.
 It is obvious that in such a model, the effect of each verb lemma is treated as a fixed population parameter, exactly the same as the effect of discourse status.
 % The coefficient $\beta_d$ is estimated in exactly the same way as each $\beta_{l_j}$.
@@ -389,7 +391,7 @@ As mentioned at the outset of this section, alternatives to using a random effec
 In both cases the effects are not treated as random variables, and fixed coefficients per group are estimated without taking the between-group variance into account.
 % The estimation of coefficients for a (dummy-coded) fixed effect becomes less precise and feasible with large numbers of levels or when there are levels with very few observations.
 With a random effect, however, the conditional modes are pulled (\textit{shrunken}) towards the overall intercept (\textit{shrinkage}).
-When there the number of observations in a group is low, the conditional mode is simply shrunken more strongly, predicting only a small deviation from the overall tendency.
+When there the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly, predicting only a small deviation from the overall tendency.
 Fixed effect estimates, on the other hand, become inexact and will probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, non-significance) when the number of observations in a levels is low.
 Put differently, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
 Random effects can deal with situations like this much better because of shrinkage.
@@ -409,7 +411,7 @@ We drop the subscripts on $\alpha$, $\beta$, and $\mu$ for convenience since the
 \end{align}
 
 Again, this could be a model of a binary alternation.
-$x_1$ was a binary variable (such as given\slash new) and $x_2$ a continuous variable (such as NP length).
+$x_1$ is a binary variable (such as given\slash new) and $x_2$ a continuous variable (such as NP length).
 Since the data were simulated, the parameters to be estimated were known: $\beta_1=0.8$, $\beta_2=-1.3$, $\mu=0$, $\sigma=1.5$.
 The number of groups was set to $5$, the simulated values of the grouping factor were identical in each simulation, and there were $20$ observations per group.
 Figure~\ref{fig:glmmj5i20} shows the distribution of the group levels based on the conditional modes predicted of all but the first group in the $1,000$ simulations.
@@ -431,7 +433,8 @@ This is what was pre-specified in the simulations.}
   \label{fig:glmj5i20}
 \end{figure}
 
-The per-group predictions lean slightly towards $0$ in the GLMM (Figure~\ref{fig:glmmj5i20}), but the fixed effects estimates in the GLM are prone to massive misestimations (see the large spread and increased 95\% intervals).
+The per-group predictions lean slightly towards $0$ in the GLMM (Figure~\ref{fig:glmmj5i20}), but the fixed effects estimates in the GLM are prone to occasional misestimations.
+While the overall spread is roughly the same for both approaches, the GLM estimates have massive outliers (down to approximately $-10$ and up to $20$), which leads to slightly larger 95\% intervals.
 Even with as few as five levels of a grouping factor, however, random and fixed effects lead to very similar results, albeit with different advantages and disadvantages.
 A few more differences will be discussed in Sections~\ref{sec:significancetestingandcoefficientsofdetermination} and \ref{sec:morecomplexmodels}.
 
@@ -461,7 +464,7 @@ In LMMs, it is possible to compare the residual (observation-level) variance wit
 If, for example, the residual variance is $\sigma_{\epsilon}=0.2$ and the between-group variance is $\sigma_{\alpha}=0.8$, then we can say that the between-group variance is four times larger than the residual variance, which would indicate a high importance of the random effect.
 This comparison is impossible in GLMMs because their (several types of) residuals do not have the same straightforward interpretation as in LMMs.
 Furthermore, likelihood ratio (LR) tests are available for comparing a model including the random effect and a model not including it.
-% Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
+Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
 An alternative option are parametric bootstrap replacements for the LR test.
 %(see Section~\ref{sec:specifyingmodelsusinglme4inr}).
 It is \textit{not} appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
@@ -491,7 +494,7 @@ It should be noted that the simulations were explicitly designed such that the g
 \subsubsection{More complex models}
 \label{sec:morecomplexmodels}
 
-% This section shows briefly how more complex models are specified before Section~\ref{sec:specifyingmodelsusinglme4inr} demonstrated how models are estimated in R, including interpretations of the output.
+% This section shows briefly how more complex models are specified before Section~\ref{sec:specifyingmodelsusinglme4inr} demonstrates how models are estimated in R, including interpretations of the output.
 
 \paragraph{Varying intercepts and slopes}
 
@@ -520,7 +523,7 @@ Therefore, condition (\ref{eq:glmm06}) is added, where the indices $l$ and $d:l$
   \label{eq:glmm06}
 \end{equation}
 
-(\ref{eq:glmm06}) says that the joint distribution of the intercepts $\alpha^j$ and the slopes $\beta^j$ follow a bivariate normal distribution with means $\mu_{\alpha}$ and $\mu_{\beta}$.
+(\ref{eq:glmm06}) says that the joint distribution of the intercepts $\alpha^j$ and the slopes $\beta^j$ follows a bivariate normal distribution with means $\mu_{\alpha}$ and $\mu_{\beta}$.
 The variance in the intercepts is $\sigma_{\alpha}$, the variance in the slopes is $\sigma_{\beta}$, and the coefficient for the covariance between them is $\rho$.
 Figure~\ref{fig:multnorm} shows the bivariate density distributions for two (1) negatively correlated, (2) non-correlated, and (3) positively correlated normally distributed variables.
 
@@ -534,7 +537,7 @@ Figure~\ref{fig:multnorm} shows the bivariate density distributions for two (1) 
 The number of variance parameters to be estimated obviously increases with more complex model specifications, and the estimation of the parameters in the presence of complex variance-covariance matrices requires considerably more data than estimating a single variance parameter.
 The estimator might converge, but typically covariance estimates of $-1$ or $1$ indicate that the data was too sparse for a successful estimation of the parameter.
 In this case, the model is \textit{over-parametrized} and needs to be simplified.
-% In Section~\ref{sec:interpretingtheoutputoflme4}, it will be shown how to interpret the \texttt{lme4} output appropriately.
+% In Section~\ref{sec:afterfittingmodelswithlme4}, it will be shown how to interpret the \texttt{lme4} output appropriately.
 
 \paragraph{Nested and crossed random effects}
 
@@ -690,7 +693,7 @@ The following is the recommended specification for models like (\ref{eq:glmm07})
 
 \begin{lstlisting}
 construction ~ discourse + (1 + | lemma) +
-               ( 1 | semantics )
+               (1 | semantics)
 \end{lstlisting}
 
 Sometimes the recommendation is found to use the following notation for nested random effects, where \texttt{semantics} nests \texttt{lemma}.
@@ -698,7 +701,7 @@ Sometimes the recommendation is found to use the following notation for nested r
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-construction ~ discourse + ( 1 | semantics / lemma )
+construction ~ discourse + (1 | semantics / lemma)
 \end{lstlisting}
 
 \texttt{lme4} expands this to the following underlying syntax, which shows more clearly that nesting is handled as a kind of interaction.
@@ -706,8 +709,8 @@ construction ~ discourse + ( 1 | semantics / lemma )
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-construction ~ discourse + ( 1 | semantics ) +
-               ( 1 | semantics : lemma )
+construction ~ discourse + (1 | semantics) +
+               (1 | semantics : lemma)
 \end{lstlisting}
 
 There is a random intercept for \texttt{semantics} and one for each combination of \texttt{semantics} and \texttt{lemma}
@@ -721,9 +724,9 @@ However, the following specification is \textit{not} equivalent and leads to pro
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-construction ~ discourse + ( 1 | semantics ) +
-               ( 1 | lemma ) +
-               ( 1 | semantics : lemma )
+construction ~ discourse + (1 | semantics) +
+               (1 | lemma) +
+               (1 | semantics : lemma)
 \end{lstlisting}
 
 This instructs \texttt{lme4} to estimate the variance of \texttt{lemma} not just restricted to specific permutations of the levels of \texttt{lemma} and \texttt{semantics} (\ie \texttt{semantics : lemma}), but also outside of these specific permutations.
@@ -764,7 +767,7 @@ It would, of course, be better \textit{not} to organize data that way.
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-construction ~ discourse + frequency + ( 1 | lemma )
+construction ~ discourse + frequency + (1 | lemma)
 \end{lstlisting}
 
 If the data is organized as shown in Table~\ref{tab:multilevel} -- \ie, with the second-level regressor not having any variance within the levels of the grouping factor --, \texttt{lme4} will detect this and treat \texttt{frequency} as a second-level effect.
@@ -777,19 +780,19 @@ Assuming that the effect of discourse status varies with the lemma, which itself
 \begin{lstlisting}
 construction ~ discourse + frequency +
                discourse : frequency +
-	       ( 1 + discourse | lemma )
+	       (1 + discourse | lemma)
 \end{lstlisting}
 
 A second-level regressor on a varying slope is thus an interaction between a first-level and a second-level fixed effect.
 
-\subsection{Interpreting the output of \texttt{lme4}}
-\label{sec:interpretingtheoutputoflme4}
+\subsection{After fitting models with \texttt{lme4}}
+\label{sec:afterfittingmodelswithlme4}
 
 \paragraph{Basics and varying intercepts}
 
 The output for GLMMs in \texttt{lme4} can be understood straightforwardly after what was said in Sections~\ref{sec:fundamentals}.
 Here is a possible output of the \texttt{summary} function for a fit of model (\ref{eq:glmm01}) and (\ref{eq:glmm02}), repeated here as (\ref{eq:glmm01r}) and (\ref{eq:glmm02r}).
-Artificial data was used for the estimation.
+Simulated data was used.
 
 \begin{align}
   P(y^i=1) & = logit^{-1}(\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
@@ -824,7 +827,7 @@ The estimate for \texttt{discourse1} ($1.5064$) corresponds to $\hat{\beta}_d$.
 Finally, we learn that there were five different lemmas and $250$ observations in total.
 
 To see whether the random intercept has a considerable influence, we should first look at the variance estimate.
-Here, it is above one, which would be surprising if there were nothing going on in terms of between-lemma variation.
+Here, it is larger than one, which would be surprising if there were nothing going on in terms of between-lemma variation.
 It is possible to compute confidence intervals for the variance estimate using the \texttt{confint} function.
 Assuming the original model was stored in \texttt{alternation}, the following two alternatives work.
 
@@ -838,10 +841,10 @@ Assuming the original model was stored in \texttt{alternation}, the following tw
 
 The profile method uses LR tests and the bootstrap method uses a parametric bootstrap.
 For this model (where the variance estimate was $1.29$ and the true value used to generate the data was $1.5$), the profile method gives $0.5808\dots2.6433$ and the bootstrap with $250$ simulations gives $3.9665\cdot10^{-6}\dots1.8023$ as the $95\%$ confidence interval.
-Since the bootstrap (especially with smaller original sample sizes) tends to run into replications where the estimation of the variance fails and is thus output as $0$, the bootstrap interval is skewed to the left, while the profile confidence interval frames the true value symmetrically.
+Since the bootstrap (especially with smaller original sample sizes as in this case) typically tends to run into replications where the estimation of the variance fails and is thus returned as $0$, the bootstrap interval is skewed to the left, while the profile confidence interval frames the true value symmetrically.
 The bootstrap is thus not always more robust or intrinsically better.
 
-Although the authors of the \texttt{lme4} package advise against it, a significance test on the deviances of a simple GLMM and a GLMM with an added single random effect can be performed with the \texttt{anova} function.
+Although the authors of the \texttt{lme4} package advise against it, a significance test on the deviances of a simple GLM and a GLMM with an added single random effect can be performed with the \texttt{anova} function.
 
 \vspace{0.5\baselineskip}
 
@@ -867,12 +870,30 @@ null.model 2 -134.52   269.05
 full.model 3 -119.12   238.24 30.801      1  2.859e-08 ***
 \end{lstlisting}
 
-The coefficient of determination (pseudo-$R^2$) can be computed using the function \texttt{r.squaredGLMM} from the \texttt{MuMIn} package.
+If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model, and in addition to the \texttt{anova} command, there is a drop-in replacement for LR tests using bootstrap methods in the \texttt{PBmodcomp} package.
 
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-library(MuMIn)
+alternation.1 <- glmer(construction ~ discourse +
+                       (1 + | lemma) + (1 | semantics),
+	               family = binominal(link=logit),
+		       data = my.data)
+alternation.2 <- update(object = alternation,
+                        formula = construction ~
+			          discourse +
+                                  (1 + | lemma))
+
+require(pbkrtest)
+PBmodcomp(alternation.1, alternation.2, nsim = 250)
+\end{lstlisting}
+
+The coefficient of determination (pseudo-$R^2$) according to \citet{NakagawaSchielzeth2013} can be computed using the function \texttt{r.squaredGLMM} from the \texttt{MuMIn} package.
+
+\vspace{0.5\baselineskip}
+
+\begin{lstlisting}
+require(MuMIn)
 r.squaredGLMM(alternation)
 \end{lstlisting}
 
@@ -906,6 +927,8 @@ ranef(alternation, drop = T, condVar = T)
 \paragraph{Varying intercepts and slopes}
 
 If we add a varying slope to the model as in (\ref{eq:glmm05}), the most important thing to look for is the report of the variances and covariances.
+In the \texttt{summary} output for \texttt{glmer}, the columns \texttt{Variance} and \texttt{Corr} can be regarded as specifying the lower triangle of the variance-covariance matrix.%
+\footnote{Alternatively, the \texttt{VarCorr} function could be used to extract this information.}
 
 \vspace{0.5\baselineskip}
 
@@ -924,8 +947,8 @@ discourse    -1.0428     0.1492  -6.990 2.75e-12 ***
 
 This output tells us that the estimated variance in the intercepts is $\hat{\sigma}_{\alpha}^2=0.6103$, the estimated variance in the slopes is $\hat{\sigma}_{\beta}^2=0.8944$, and the covariance coefficient estimate is $\hat{\rho}=-0.39$.
 The means are estimated as $\hat{\mu}_{\alpha}=0.6332$ and $\hat{\mu}_{\beta}=-1.0428$.
-Compare this to Section~\ref{sec:morecomplexmodels}), especially (\ref{eq:glmm06}).
-It is possible to reconstruct group-wise models from this output and a lookup of the group-specific predictions.
+Compare this to Section~\ref{sec:morecomplexmodels}, especially (\ref{eq:glmm06}).
+It is possible to reconstruct group-wise models from this output and a lookup of the group-specific predictions using the \texttt{ranef} function.
 For the first group, for example, the following can be done.
 
 \vspace{0.5\baselineskip}
@@ -960,8 +983,7 @@ Compare this to (\ref{eq:glmm05}).
 
 \section{Representative studies}
 
-\begin{boxedminipage}{\textwidth}
-  \footnotesize
+\begin{mdframed}
   \subsection*{\citet{WolkEa2013}}
   \paragraph{Research questions}
 
@@ -992,28 +1014,31 @@ Compare this to (\ref{eq:glmm05}).
   It is also argued that the observed tendencies -- such as \textit{short-before-long} and \textit{animate referents first} -- are in line with synchronic corpus based and experimental findings about general cognitive principles underlying the framework of probabilistic grammar.
   These tendencies remain stable, but their influence strength changes over time.
 
-\end{boxedminipage}
+\end{mdframed}
 
 \vspace{2\baselineskip}
 
-\begin{boxedminipage}{\textwidth}
+\begin{mdframed}
+
   \subsection*{\citet{Gries2015}}
   \paragraph{Research questions}
   \paragraph{Data}
   \paragraph{Method}
   \paragraph{Results}
-\end{boxedminipage}
 
+\end{mdframed}
 
 \section{Further reading}
 \label{sec:furtherreading}
 
-This article was written in a way such that readers should be able to move on to text books written by statisticians rather than practitioners.
-That said, Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for R and \texttt{lme4} users.
+This article was written in a way such that readers should be able to move on to more advanced text books written by statisticians instead of practitioners.
+There are, however, no up-to-date, comprehensive, and accessible text books written for linguists, and readers will have to live with the fact that examples in these text books are taken from political or social science, biology, etc. 
+Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for R and \texttt{lme4} users.
 Similarly, \citet{ZuurEa2009} has a reputation among R users of mixed effects models in many fields.
 % Also, \cite{Fox2016} is a helpful resource.
 % The non-technical passages of \citet{FahrmeirEa2013} could be considered.
-The companion to \texttt{lme4}, \citet{Bates2010} is an obligatory read for users of \texttt{lme4}.
+The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
+The GLMM FAQ collected by Ben Bolker is also a de-facto standard among R users working with GLMMs: \url{http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html}
 
 \printbibliography
 

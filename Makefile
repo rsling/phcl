@@ -17,7 +17,7 @@ quick:
 	-$(LX) $(TEXFLAGS) $(FILEN) | grep 'Warning'
 
 clean:
-	\rm *.adx *.and *.aux *.bbl *.blg *.idx *.ilg *.ldx *.lnd *.log *.out *.pdf *.rdx *.run.xml *.sdx *.snd *.toc *.wdx *.xdv
+	\rm *.adx *.and *.aux *.bbl *.blg *.idx *.ilg *.ldx *.lnd *.log *.out *.pdf *.rdx *.run.xml *.sdx *.snd *.toc *.wdx *.xdv *.bcf
 
 all:
 	-$(LX) $(TEXFLAGS) $(PREFLAGS) $(FILEN)

@@ -135,7 +135,7 @@ Random effects structures are very suitable for accounting for group-level varia
 The remainder of Section~\ref{sec:whenrandomeffectsareuseful} introduces three important points to consider about the structure of the data typically used in mixed modeling.
 % This is intended to show readers that mixed or multilevel\slash hierarchical modeling is simply a matter of doing justice to the structure of the data.
 Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provides a moderately technical introduction to modeling.
-Section~\ref{sec:specifyingmodelsusinglme4inr} then shows how mixed models are specified using tze \texttt{lme4} package in R, and Section~\ref{sec:afterfittingmodelswithlme4} deals with the interpretation of the output.
+Section~\ref{sec:specifyingmodelsusinglme4inr} then shows how mixed models are specified using the \texttt{lme4} package in R, and Section~\ref{sec:afterfittingmodelswithlme4} deals with the interpretation of the output.
 
 
 \subsubsection{Crossed an nested effects}
@@ -870,7 +870,7 @@ null.model 2 -134.52   269.05
 full.model 3 -119.12   238.24 30.801      1  2.859e-08 ***
 \end{lstlisting}
 
-If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model, and in addition to the \texttt{anova} command, there is a drop-in replacement for LR tests using bootstrap methods in the \texttt{PBmodcomp} package.
+If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model, and in addition to the \texttt{anova} command, there is a drop-in replacement for LR tests using bootstrap methods in the \texttt{pbkrtest} package \citep{HalekohHojsgaard2014}.
 
 \vspace{0.5\baselineskip}
 
@@ -888,7 +888,7 @@ require(pbkrtest)
 PBmodcomp(alternation.1, alternation.2, nsim = 250)
 \end{lstlisting}
 
-The coefficient of determination (pseudo-$R^2$) according to \citet{NakagawaSchielzeth2013} can be computed using the function \texttt{r.squaredGLMM} from the \texttt{MuMIn} package.
+The coefficient of determination (pseudo-$R^2$) according to \citet{NakagawaSchielzeth2013} can be computed using the function \texttt{r.squaredGLMM} from the \texttt{MuMIn} package \citep{Barton2016}.
 
 \vspace{0.5\baselineskip}
 

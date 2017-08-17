@@ -117,11 +117,11 @@ When such observations are grouped, it is often plausible to assume that some va
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
 Since the estimator works under the assumption of non-correlated errors, standard errors for model coefficients can be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
 \footnote{Type I errors occur when the null hypothesis is rejected although it is true.}
-This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the regressors, \ie when there is an interaction between the grouping factor and other regressors (\eg \citealt{SchielzethForstmeier2009}).
+This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
 This is why known variation by group should always be accounted for in the model, and random effects are often a convenient way to do so.
 
 Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), their sex and gender, the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.
-If the concordance in a study contains, say, ten exemplars each written by ten speakers, then the speaker grouping factor has ten levels and defines ten groups.
+% If the concordance in a study contains, say, ten exemplars each written by ten speakers, then the speaker grouping factor has ten levels and defines ten groups.
 We know that preferences vary between speakers, and it is therefore reasonable to take care of this variance in our statistics in some way.
 % The same goes for the other possible groups just mentioned.
 Furthermore, it is known that specific lexemes often have idiosyncratic affinities towards alternants in alternating constructions.
@@ -216,15 +216,14 @@ Mode could nest genre if genres are defined such that each genre is either exclu
 Similarly, we might want to describe -- in a given study on adjectives -- adjectives as being either intersective or non-intersective.
 Within the two groups, a finer-grained semantic classification might be nested, which itself nests single adjective lexemes.
 However, not all of these structures should be modeled as nested random effects.
-In the latter case, for example, the low number of levels in one factor (intersectivity) predestines it as a second-level predictor rather than a nesting factor.
-See the next section.
+In the latter case, for example, the low number of levels in one factor (intersectivity) predestines it as a second-level predictor rather than a nesting factor; see Section~\ref{sec:hierarchicalormultilevelmodels}.
 
 \subsubsection{Hierarchical or multilevel modeling}
 \label{sec:hierarchicalormultilevelmodels}
 
 % This section introduces the idea that so-called random effects actually introduce new levels of modeling, or \textit{secondary models}.
 % It is argued that this is not a technical matter but required by the structure of certain data sets.
-This section describes the type of data to be used in true multilevel models.
+This section describes the types of data to be used in true multilevel models.
 Let us assume that we wanted to account for lexeme-specific variation in a study on an alternation phenomenon by specifying the lexeme as a random effect in the model.
 Additionally, we suspect or know that a lexeme's overall frequency influences its preferences for occurring in the construction alternants.
 % Now, we could simply quantize the frequency variable and turn it into an ordinal variable (for example in the form of frequency bands) and interpret it as a grouping factor which nests the lexeme grouping factor.
@@ -293,7 +292,7 @@ Varying intercepts are an adequate modeling tool when the overall tendency in th
 
 We assume that we are looking at an alternation phenomenon like the dative alternation, wherein we are interested in the probability that, under given circumstances, the dative shift construction is chosen.
 When examining the data, it turns out that the probability of the dative shift changes for \textit{old} and \textit{new} dative NPs.
-The verb lemma -- a typical candidate to be used as a random effect -- also influences the probability of either variant being used.
+The verb lemma also influences the probability of either variant being used.
 The situation can now be as in the left or the right panel of Figure~\ref{fig:varintlsope}.
 In the left panel, the overall level in probability changes with the verb lemma, but for each verb lemma, the values change roughly accordingly in exemplars with old and new dative NPs.
 Note that the lines are not perfectly parallel because the figure is supposed to be an illustration of a data set rather than a fitted model, and we always expect some chance variation in data sets.
@@ -387,10 +386,10 @@ Even if there is a default recommendation to use a speaker grouping variable as 
 % Thus, a random effect might be the best option for technical reasons.
 
 If, however, the number of groups is reasonably large, the next thing to consider is the number of observations per group.
-As mentioned at the outset of this section, alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
+Alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed coefficients per group are estimated without taking the between-group variance into account.
 % The estimation of coefficients for a (dummy-coded) fixed effect becomes less precise and feasible with large numbers of levels or when there are levels with very few observations.
-With a random effect, however, the conditional modes are pulled (\textit{shrunken}) towards the overall intercept (\textit{shrinkage}).
+With a random effect, however, the conditional modes\slash means are pulled (\textit{shrunken}) towards the overall intercept (\textit{shrinkage}).
 When there the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly, predicting only a small deviation from the overall tendency.
 Fixed effect estimates, on the other hand, become inexact and will probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, non-significance) when the number of observations in a levels is low.
 Put differently, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
@@ -454,11 +453,11 @@ There are ways of calculating confidence intervals for conditional modes (see Se
 % If this is absolutely required, fixed effects are the way to go.
 Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
 Also, the simulation in Section~\ref{sec:choosingbetweenrandomandfixedeffects} shows that we can use a random effect and still get a good idea of the per-group tendencies.
-Furthermore, a random effect allows the researcher to quantify the between-group variance, which is not possible in the same way with fixed effects.
+Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible in the same way with fixed effects.
 
 A related question is \textit{model selection}, \ie whether the inclusion of the random effect improves the model quality.
 It is recommended here to include all conceptually necessary random effects and only remove them if they have no effect.
-To check this, the between-group variance can be checked.
+To check this, the estimated between-group variance is the first thing to look at.
 If it is close to $0$, there is most likely not much going on between groups, or there simply was not enough data to estimate the variance.
 In LMMs, it is possible to compare the residual (observation-level) variance with the between-group variance to see which one is larger, and to which degree.
 If, for example, the residual variance is $\sigma_{\epsilon}=0.2$ and the between-group variance is $\sigma_{\alpha}=0.8$, then we can say that the between-group variance is four times larger than the residual variance, which would indicate a high importance of the random effect.
@@ -467,7 +466,7 @@ Furthermore, likelihood ratio (LR) tests are available for comparing a model inc
 Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
 An alternative option are parametric bootstrap replacements for the LR test.
 %(see Section~\ref{sec:specifyingmodelsusinglme4inr}).
-It is \textit{not} appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using \textit{any} test or metric (including information criteria).
+It is not appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including information criteria).
 
 Coefficients of determination (pseudo-$R^2$) can be used to give some idea of the model fit.
 %should not be used for model selection, because they usually do not penalize complexity enough (\ie the pseudo-$R^2$ measures rise with added complexity).
@@ -475,7 +474,7 @@ Coefficients of determination (pseudo-$R^2$) can be used to give some idea of th
 For GLMMs, \citet{NakagawaSchielzeth2013} have proposed a method that distinguishes between \textit{marginal} $R^2$ (fixed-effects-only) and \textit{conditional} $R^2$ (including random effects).
 This has become a de facto standard, and we now show its consistency with Nagelkerke's $R^2$ for GLMs.
 Using the simulations described in the last section, Figures~\ref{fig:rsqglmmj5i20} and \ref{fig:rsqglmj5i20} show that the marginal $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which ignores the grouping factor, and the conditional $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which includes the grouping factor as a fixed effect.
-It should be noted that the simulations were explicitly designed such that the grouping factor (five levels with enough observations per level) could be used successfully as a fixed effect and a random effect.
+It should be noted that the simulations were explicitly designed such that the grouping factor (five levels with enough observations per level) could be used successfully as a fixed effect and a random effect, which is usually not the case with real data.
 
 \begin{figure}[!htpb]
   \centering
@@ -542,7 +541,7 @@ In this case, the model is \textit{over-parametrized} and needs to be simplified
 \paragraph{Nested and crossed random effects}
 
 As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are adequate when grouping factors are nested within other grouping factors.
-Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts ca be understood interactions between two or more random effects.
+Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts can be understood interactions between two or more random effects.
 Crossed random effects are just several unrelated random effects.
 (\ref{eq:glmm07}) shows the model specification, extending (\ref{eq:glmm01}) with a varying intercept $\alpha_s$.
 This could be for example semantic classes which nest individual lemmas.
@@ -555,7 +554,7 @@ It could also be another grouping factor for speaker, completely unrelated to th
 
 The difference is that in the nested case, $k[i]=k[j]$, \ie the level of the nesting factor can be selected based on the nested factor as well as based on the single observation.
 As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the questions is rather one of how the way the data are organised.
-In the model specification, there are no obvious differences.
+% In the model specification, there are no obvious differences.
 
 \paragraph{Second-level predictors}
 
@@ -581,9 +580,9 @@ However, instead of (\ref{eq:glmm02}), the varying intercept is predicted from (
 Instead of just the mean of the $\alpha_j$ values, the model in (\ref{eq:glmm09}) specifies a second-level intercept $\gamma_0$ and a second-level fixed coefficient $\gamma_f$.
 % If the lemma frequency plays a role, this approach can lead to a more precise prediction of the varying first-level intercept compared to the less elaborate approach in (\ref{eq:glmm02}).
 % True multilevel models increase the complexity of GLMMs, especially if third-level models, fourth-level models, etc. are used.
-Situations for multilevel modeling are quite frequently encountered, however.
-Especially when it comes to speakers as random effects, the age, the gender, the region of birth (if this grouping factor has too few levels to be used as a random effect nesting speakers), etc.\ are ideal second-level predictors.
-The \texttt{lme4} syntax treats second-level predictors like interactions between a fixed and a random effect, see also Section~\ref{sec:specifyingmodelsusinglme4inr}.
+% Situations for multilevel modeling are quite frequently encountered, however.
+% Especially when it comes to speakers as random effects, the age, the gender, the region of birth (if this grouping factor has too few levels to be used as a random effect nesting speakers), etc.\ are ideal second-level predictors.
+% The \texttt{lme4} syntax treats second-level predictors like interactions between a fixed and a random effect, see also Section~\ref{sec:specifyingmodelsusinglme4inr}.
 
 % Readers finding it difficult to see why (\ref{eq:glmm09}) is a plain linear model could consider the equivalent formulation in (\ref{eq:glmm10}) and (\ref{eq:glmm11}).
 %  
@@ -592,7 +591,7 @@ The \texttt{lme4} syntax treats second-level predictors like interactions betwee
 %   \epsilon_l^j \sim & N(0, \sigma^2) \label{eq:glmm11}
 % \end{align}
 
-\paragraph{Models for longitudinal studies}
+\paragraph{Remarks on models for longitudinal studies}
 
 A longitudinal study is one wherein single subjects (usually speakers) are observed at different points in time, for example second-language learners after different years of learning a second language.
 % This section briefly discusses the main points to consider when such models -- which can get quite complex -- are specified.
@@ -641,10 +640,11 @@ Anyone wishing to use such models will should consult further references (\eg \c
 \label{sec:specifyingmodelsusinglme4inr}
 
 This section and the next focus on \texttt{lme4}, the standard package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
+
 \paragraph{Varying intercepts}
 
 The functions \texttt{lmer} and \texttt{glmer} extend the syntax of \texttt{lm} and \texttt{glm}.
-The varying intercept model in (\ref{eq:glmm01}) looks as follows in R (using informative variable names instead of Greek letters).
+The varying intercept model in (\ref{eq:glmm01}) is specified as follows in R (using informative variable names instead of Greek letters).
 
 \vspace{0.5\baselineskip}
 
@@ -653,8 +653,8 @@ glmer(formula = construction ~ discourse + (1 | lemma),
       family = binominal(link=logit), data = my.data)
 \end{lstlisting}
 
-The pipe operator \texttt{x1 | x2} can be read as \textit{x1 varies by x2}.
-The intercept is denoted by \texttt{1}, and hence \texttt{(1 | lemma)} simply says that the intercept varies by lemma.
+The pipe operator \texttt{x1|x2} can be read as \textit{x1 varies by x2}.
+The intercept is denoted by \texttt{1}, and hence \texttt{(1|lemma)} simply says that the intercept varies by lemma.
 
 \paragraph{Varying intercepts and slopes}
 
@@ -667,7 +667,7 @@ construction ~ discourse + (1 + discourse | lemma)
 \end{lstlisting}
 
 Before the pipe, the part of the model is repeated that should be modeled as varying by the grouping factor after the pipe.
-If a varying slope is specified, the lemma is automatically also modeled as varying. 
+If a varying slope is specified, a varying intercept is silently assumed.
 The last formula can therefore be abbreviated to the following equivalent one.
 
 \vspace{0.5\baselineskip}
@@ -696,7 +696,7 @@ construction ~ discourse + (1 + | lemma) +
                (1 | semantics)
 \end{lstlisting}
 
-Sometimes the recommendation is found to use the following notation for nested random effects, where \texttt{semantics} nests \texttt{lemma}.
+Sometimes the following notation is used for nested random effects, where \texttt{semantics} nests \texttt{lemma}.
 
 \vspace{0.5\baselineskip}
 
@@ -715,9 +715,7 @@ construction ~ discourse + (1 | semantics) +
 
 There is a random intercept for \texttt{semantics} and one for each combination of \texttt{semantics} and \texttt{lemma}
 While these notations are seemingly very explicit about the nesting structure, they are not necessary under normal circumstances.
-If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested})
-% for an illustration of what this means in terms of the data structure)
-, \texttt{lme4} automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
+If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested}), \texttt{lme4} automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
 
 However, the following specification is \textit{not} equivalent and leads to problematic results.
 
@@ -856,7 +854,7 @@ anova(alternation, alternation.null)
 \end{lstlisting}
 
 The GLMM must be the first argument to \texttt{anova}.
-In this case, the output looks like this (AIC and BIC removed for space reasons), indicating a significant effect, although the p-values should not be considered highly reliable.
+In this case, the output looks like this, indicating a significant effect, although the p-values should not be considered highly reliable.
 
 \vspace{0.5\baselineskip}
 
@@ -870,7 +868,8 @@ null.model 2 -134.52   269.05
 full.model 3 -119.12   238.24 30.801      1  2.859e-08 ***
 \end{lstlisting}
 
-If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model, and in addition to the \texttt{anova} command, there is a drop-in replacement for LR tests using bootstrap methods in the \texttt{pbkrtest} package \citep{HalekohHojsgaard2014}.
+If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model.
+Also, in addition to the \texttt{anova} command, there is a drop-in replacement for LR tests using bootstrap methods in the \texttt{pbkrtest} package \citep{HalekohHojsgaard2014}.
 
 \vspace{0.5\baselineskip}
 
@@ -926,8 +925,7 @@ ranef(alternation, drop = T, condVar = T)
 
 \paragraph{Varying intercepts and slopes}
 
-If we add a varying slope to the model as in (\ref{eq:glmm05}), the most important thing to look for is the report of the variances and covariances.
-In the \texttt{summary} output for \texttt{glmer}, the columns \texttt{Variance} and \texttt{Corr} can be regarded as specifying the lower triangle of the variance-covariance matrix.%
+In the \texttt{summary} output for a VIVS model such as (\ref{eq:glmm05}), the columns \texttt{Variance} and \texttt{Corr} can be regarded as specifying the lower triangle of the variance-covariance matrix.%
 \footnote{Alternatively, the \texttt{VarCorr} function could be used to extract this information.}
 
 \vspace{0.5\baselineskip}
@@ -945,7 +943,7 @@ Fixed effects:
 discourse    -1.0428     0.1492  -6.990 2.75e-12 ***
 \end{lstlisting}
 
-This output tells us that the estimated variance in the intercepts is $\hat{\sigma}_{\alpha}^2=0.6103$, the estimated variance in the slopes is $\hat{\sigma}_{\beta}^2=0.8944$, and the covariance coefficient estimate is $\hat{\rho}=-0.39$.
+This output tells us that the estimated variance in the intercepts is $\hat{\sigma}_{\alpha}^2=0.6103$, the estimated variance in the slopes is $\hat{\sigma}_{\beta}^2=0.8944$, and the covariance coefficient estimate is $\hat{\rho}=-0.39$ (a healthy value).
 The means are estimated as $\hat{\mu}_{\alpha}=0.6332$ and $\hat{\mu}_{\beta}=-1.0428$.
 Compare this to Section~\ref{sec:morecomplexmodels}, especially (\ref{eq:glmm06}).
 It is possible to reconstruct group-wise models from this output and a lookup of the group-specific predictions using the \texttt{ranef} function.
@@ -1057,14 +1055,14 @@ Compare this to (\ref{eq:glmm05}).
 \section{Further reading}
 \label{sec:furtherreading}
 
-This article was written in a way such that readers should be able to move on to more advanced text books written by statisticians instead of practitioners.
-There are, however, no up-to-date, comprehensive, and accessible text books written for linguists, and readers will have to live with the fact that examples in these text books are taken from political or social science, biology, etc. 
+% This article was written in a way such that readers should be able to move on to more advanced text books written by statisticians instead of practitioners.
+% There are, however, no up-to-date, comprehensive, and accessible text books written for linguists, and readers will have to live with the fact that examples in these text books are taken from political or social science, biology, etc. 
 Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for R and \texttt{lme4} users.
 Similarly, \citet{ZuurEa2009} has a reputation among R users of mixed effects models in many fields.
 % Also, \cite{Fox2016} is a helpful resource.
 % The non-technical passages of \citet{FahrmeirEa2013} could be considered.
 The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
-The GLMM FAQ collected by Ben Bolker is also a de-facto standard among R users working with GLMMs: \url{http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html}
+% The GLMM FAQ collected by Ben Bolker is also a de-facto standard among R users working with GLMMs: \url{http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html}
 
 \printbibliography
 

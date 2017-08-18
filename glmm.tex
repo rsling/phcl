@@ -115,7 +115,7 @@ A single observation (or \textit{data point} or \textit{measurement} or \textit{
 In corpus linguistics, single observations can be understood as a single line in a concordance, and they represent, for example, a clause or sentence in which one of the alternants of a morpho-syntactic alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
 When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions at the group-level.
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
-Since the estimators used for estimating GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally, leading to increased Type I error rates in inferences about the coefficients.%
+Since the estimators used for estimating GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
 \footnote{Type I errors occur when the null hypothesis is rejected although it is true.}
 This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
 This is why known variation by group should always be accounted for in the model, and random effects are often a convenient way to do so.
@@ -301,7 +301,7 @@ Note that the lines are not perfectly parallel because the figure is supposed to
 In the right panel, however, the overall levels are different between lemmas, but the lemma-specific tendencies also vary between exemplars with old and new NPs.
 This is actually nothing but an interaction between two factors (verb lemma and discourse status).
 However, if the verb lemma factor is used as a random effect grouping factor, the interaction is modeled as a so-called \textit{random slope}.
-In the next section, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects.
+In the next section, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects models.
 Which one is more appropriate will be argued to be better understood as a technical rather than a conceptual question.
 
 \subsection{Model specification and modeling assumptions}
@@ -383,7 +383,7 @@ From the estimated variance and the data, the estimator then predicts the \texti
 This procedure, however, requires that the number of groups must not be too low to effectively achieve this.
 As a rule of thumb, fewer than five levels means that a grouping factor should be included as a fixed effect, regardless of its conceptual nature.
 Even if there is a default recommendation to use a speaker grouping variable as a random effect, it is ill-advised to do so if there are exemplars from less than five speakers in the sample.
-Along the same lines, mode (typically spoken vs.\ written) is not a suitable grouping factor for use as a random effect.
+Along the same lines, mode (typically spoken vs.\ written) is no suitable grouping factor for use as a random effect.
 % Very often, the estimator will fail anyway under such conditions.
 % Thus, a random effect might be the best option for technical reasons.
 
@@ -396,7 +396,7 @@ When there the number of observations in a group is low, the conditional mode\sl
 Fixed effect estimates, on the other hand, become inexact and will probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, non-significance) when the number of observations in a levels is low.
 Put differently, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
 Random effects can deal with situations like this much better because of shrinkage.
-On the downside, a conditional mode that was strongly shrunken (due to a low number of observations) cannot be distinguished straightforwardly from a conditional mode of a group which simply does not deviate a lot from the mean.
+On the downside, a conditional mode that was strongly shrunken (due to a low number of observations) cannot be distinguished straightforwardly from a conditional mode of a group which simply does not deviate a lot from the average tendency.
 For fixed effects, we have both a parameter estimate and a possible significance test, but for random effects, we only have the prediction of the conditional mode\slash mean.
 Still, including a grouping factor as a random effect might be the only way of using it at all when the estimation as a fixed effect fails.
 
@@ -476,7 +476,7 @@ Coefficients of determination (pseudo-$R^2$) can be used to give some idea of th
 For GLMMs, \citet{NakagawaSchielzeth2013} have proposed a method that distinguishes between \textit{marginal} $R^2$ (fixed-effects-only) and \textit{conditional} $R^2$ (including random effects).
 This has become a de facto standard, and we now show its consistency with Nagelkerke's $R^2$ for GLMs.
 Using the simulations described in the last section, Figures~\ref{fig:rsqglmmj5i20} and \ref{fig:rsqglmj5i20} show that the marginal $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which ignores the grouping factor, and the conditional $R^2$ is roughly the same as Nagelkerke's $R^2$ in a GLM which includes the grouping factor as a fixed effect.
-It should be noted that the simulations were explicitly designed such that the grouping factor (five levels with enough observations per level) could be used successfully as a fixed effect and a random effect, which is usually not the case with real data.
+It should be noted that the simulations were explicitly designed such that the grouping factor (five levels with enough observations per level) could be used successfully as a fixed effect or a random effect, which is usually not the case with real data.
 
 \begin{figure}[!htpb]
   \centering
@@ -723,7 +723,7 @@ construction ~ discourse + (1 | semantics) +
 
 There is a random intercept for \texttt{semantics} and one for each combination of \texttt{semantics} and \texttt{lemma}.
 While these notations are seemingly very explicit about the nesting structure, they are not necessary under normal circumstances.
-If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested}), \texttt{lme4} automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
+If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested} for a similar situation), \texttt{lme4} automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
 
 However, the following specification is \textit{not} equivalent and leads to problematic results.
 
@@ -855,10 +855,10 @@ Although the authors of the \texttt{lme4} package advise against it, a significa
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-alternation.null <- glm(construction ~ discourse,
-                        data = observations,
-			family = binomial(link=logit))
-anova(alternation, alternation.null)
+alternation.0 <- glm(construction ~ discourse,
+                     data = observations,
+		     family = binomial(link=logit))
+anova(alternation, alternation.0)
 \end{lstlisting}
 
 The GLMM must be the first argument to \texttt{anova}.
@@ -869,11 +869,12 @@ In this case, the output looks like this, indicating a significant effect, altho
 \begin{lstlisting}
 Data: observations
 Models:
-null.model: construction ~ discourse
-full.model: construction ~ discourse + (1 | lemma)
-          Df  logLik deviance  Chisq Chi Df Pr(>Chisq)    
-null.model 2 -134.52   269.05                             
-full.model 3 -119.12   238.24 30.801      1  2.859e-08 ***
+alternation.0: construction ~ discourse
+alternation:   construction ~ discourse + (1 | lemma)
+\pagebreak
+             Df  logLik deviance  Chisq Df Pr(>Chisq)    
+alternation.0 2 -134.52   269.05                         
+alternation   3 -119.12   238.24 30.801  1  2.859e-08 ***
 \end{lstlisting}
 
 If the nested (simpler) model still contains a random effect, the \texttt{update} function can be used to build the simpler model.
@@ -903,8 +904,6 @@ The coefficient of determination (pseudo-$R^2$) according to \citet{NakagawaSchi
 require(MuMIn)
 r.squaredGLMM(alternation)
 \end{lstlisting}
-
-\enlargethispage{\baselineskip}
 
 In this case, it gives us \texttt{R2m = 0.1101} and \texttt{R2c = 0.3608}, so there is a considerable difference between the marginal $R^2$ (without random effects) and conditional $R^2$ (with random effects).
 

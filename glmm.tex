@@ -451,7 +451,7 @@ In this chapter, a more technical approach was therefore suggested.
 
 However, it is not adequate to do any kind of significance test on the levels of the random effect because they are not estimates in the technical sense.
 % The conditional modes are not estimates, and only for estimates is significance testing a well-defined activity.
-There are ways of calculating confidence intervals for conditional modes (see Section~\ref{sec:specifyingmodelsusinglme4inr}), but they should not be misused for talking about significance.
+There are ways of calculating \textit{prediction intervals} (which are not exactly the same as confidence intervals) for conditional modes (see Section~\ref{sec:specifyingmodelsusinglme4inr}), but they should not be misused for talking about significance.
 % If this is absolutely required, fixed effects are the way to go.
 Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
 Also, the simulation in Section~\ref{sec:choosingbetweenrandomandfixedeffects} shows that we can use a random effect and still get a good idea of the per-group tendencies.
@@ -928,7 +928,7 @@ ranef(alternation, drop = T, condVar = T)
 % \begin{figure}[!htpb]
 %   \centering
 %   \includegraphics[width=0.9\textwidth]{graphics/blups}
-%   \caption{Estimated conditional modes with confidence intervals}
+%   \caption{Estimated conditional modes with prediction intervals}
 %   \label{fig:blups}
 % \end{figure}
 

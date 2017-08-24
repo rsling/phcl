@@ -16,7 +16,7 @@
 \usepackage{inconsolata}
 \setmonofont{inconsolata}
 
-\usepackage{color}
+\usepackage{xcolor}
 \definecolor{lightgray}{gray}{0.9}
 \usepackage{listings}
 \lstset{language=R, keywordstyle=\color{black}, basicstyle=\ttfamily\small,backgroundcolor = \color{lightgray}, frame=trbl, rulecolor=\color{black}, framesep=10pt}
@@ -47,6 +47,9 @@
 \usepackage{fancyhdr}
 \pagestyle{headings}
 
+\usepackage[printwatermark]{xwatermark}
+\newwatermark[allpages, color=red!25, angle=45, scale=3, xpos=-15, ypos=12]{\sffamily DRAFT}
+
 \newcommand{\Lf}{
   \setlength{\itemsep}{1pt}
   \setlength{\parskip}{0pt}
@@ -70,7 +73,7 @@
 
 \bibliography{glmm}
 
-\title{{\small DRAFT}\\Mixed-effects regression modeling\\\small to appear in: St.~Gries \& M.~Paquot (eds.), Practical Handbook of Corpus Linguistics}
+\title{{\small DRAFT of \today}\\Mixed-effects regression modeling\\\small to appear in: St.~Gries \& M.~Paquot (eds.), Practical Handbook of Corpus Linguistics}
 \author{Roland Schäfer}
 \affil{Freie Universität Berlin}
 \date{\today}
@@ -88,9 +91,9 @@
 Mixed effects modeling -- alternatively called \textit{hierarchical} or \textit{multilevel modeling} is a straightforward extension of (generalized) linear modeling as discussed in the previous chapter.
 A common characterization of mixed-effects modeling is that it accounts for situations where observations are \textit{clustered} or \textit{come in groups}.
 In corpus linguistics, there could be clusters of observations defined by individual speakers, registers, genres, modes, lemmas, etc.
-Instead of estimating coefficients for each level of such a grouping factor (so-called \textit{fixed effects}), in a mixed model they can be modeled as normally distributed random variable (a so-called \textit{random effect}) with predictions being made for each group.
+Instead of estimating coefficients for each level of such a grouping factor (so-called \textit{fixed effects}), in a mixed model they can be modeled as normally distributed random variables (so-called \textit{random effects}) with predictions being made for each group.
 This chapter introduces readers to the situations where mixed-effects modeling is useful or necessary.
-The proper specification of models are discussed, as well as some model diagnostics and ways of interpreting the output.
+The proper specification of models is discussed, as well as some model diagnostics and ways of interpreting the output.
 Readers are assumed to be familiar with the concepts covered in the previous chapter.
 
 \section{Fundamentals}

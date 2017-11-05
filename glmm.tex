@@ -47,8 +47,8 @@
 \usepackage{fancyhdr}
 \pagestyle{headings}
 
-% \usepackage[printwatermark]{xwatermark}
-% \newwatermark[allpages, color=red!25, angle=45, scale=3, xpos=-15, ypos=12]{\sffamily DRAFT}
+\usepackage[printwatermark]{xwatermark}
+\newwatermark[allpages, color=red!25, angle=45, scale=3, xpos=-15, ypos=12]{\sffamily DRAFT}
 
 \newcommand{\Lf}{
   \setlength{\itemsep}{1pt}
@@ -118,10 +118,10 @@ Alternatively, statisticians speak of \textit{multilevel models} or \textit{hier
 
 The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (or \textit{data point} or \textit{measurement} or \textit{unit}) is one atomic exemplar entering into the statistical analysis of a study.
-In corpus linguistics, single observations can be understood as a single line in a concordance, and they represent, for example, a clause or sentence in which one of the alternants of a morpho-syntactic alternation occurs, an NP where two pre-nominal adjectives are used, a single occurrence of a contracted or non-contracted form, etc.
+In corpus linguistics, single observations can be understood as single lines in a concordance, and they represent, for example, clauses or sentences in which one of the alternants of a morpho-syntactic alternation occurs, NPs where two pre-nominal adjectives are used, single occurrences of a contracted or non-contracted form, etc.
 When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions at the group-level.
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
-Since the estimators used for estimating GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
+Since the estimators used for estimating the parameters of GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
 \footnote{Type I errors occur when the null hypothesis is rejected although it is true.}
 This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
 This is why known variation by group should always be accounted for in the model, and random effects are often a convenient way to do so.
@@ -341,7 +341,7 @@ Furthermore, $\beta_{l_j}$ are the coefficients for the lemma dummy variables.
 Finally, $x_{l_j}^i$ is the value ($0$ or $1$) for lemma $j$ in observation $i$.
 If in exemplar $64$, the lemma is \textit{give} and \textit{give} is encoded as group $12$, then $i=64$, $j=12$, and $x_{l_{12}}^{64}=1$, whereas all $x_{l_j}^{64}=0$ with $j\neq12$.
 Because one verb lemma dummy variable is on the intercept $\alpha_0$ and thus used as a reference, we only estimate $m-1$ instead of $m$ coefficients, \ie $j=1,\cdots,m-1$.%
-\footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist because one could simply add an arbitrary constant to the intercept.
+\footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist because one could simply add any arbitrary constant to the intercept.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate.}
 The function $logit^{-1}$ is the \textit{link function}, and its argument is the \textit{linear term} of the model.
 It is obvious that in such a model, the effect of each verb lemma is treated as a fixed population parameter, exactly the same as the effect of discourse status.
@@ -871,7 +871,6 @@ Data: observations
 Models:
 alternation.0: construction ~ discourse
 alternation:   construction ~ discourse + (1 | lemma)
-\pagebreak
              Df  logLik deviance  Chisq Df Pr(>Chisq)    
 alternation.0 2 -134.52   269.05                         
 alternation   3 -119.12   238.24 30.801  1  2.859e-08 ***

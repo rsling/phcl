@@ -132,7 +132,6 @@ construction ~ given + frequency + (1 | lemma)
 \end{lstlisting}
 
 If the data is organised as shown in Table~\ref{tab:multilevel} -- \ie, with the second-level regressor not having any variance within the levels of the grouping factor --, \texttt{lme4} will detect this and treat \texttt{frequency} as a second-level effect.
-% This should be kept in mind when interpreting the results of the estimation.
 However, second-level predictors for random slopes are more tricky to specify (see \citealt[280-282]{GelmanHill2006}).
 Assuming that the effect of givenness varies with the lemma, which itself comes with a second-level model including frequency as a regressor, the specification looks as follows.
 

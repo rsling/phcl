@@ -120,22 +120,6 @@ To inspect the conditional modes, the \texttt{ranef} function can be used, and i
 ranef(alternation, drop = T, condVar = T)
 \end{lstlisting}
 
-% To plot the predictions for the levels of a random effect, packages like \texttt{sjPlot} offer customisable functions, as in the following example, which plots Figure~\ref{fig:blups}.
-% Notice that calls the conditional modes BLUPs (best linear unbiased predictors), which is an alternative term for conditional means in linear models.
-% 
-% \vspace{0.5\baselineskip}
-% 
-% \begin{lstlisting}
-% sjp.glmer(alternation, sort.est = "sort.all",
-%           facet.grid = F, show.ci = T)
-% \end{lstlisting}
-% 
-% \begin{figure}[!htpb]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{graphics/blups}
-%   \caption{Estimated conditional modes with prediction intervals}
-%   \label{fig:blups}
-% \end{figure}
 
 \paragraph{Varying intercepts and slopes}
 
@@ -185,11 +169,4 @@ Compare this to (\ref{eq:glmm05}).
   Pr(y^i=1)=logit^{-1}( [0.63+0.44] + [-1.04-1.23]\cdot x_d^i )
   \label{eq:glmm012}
 \end{equation}
-
-% \subsection{Summary and recommendations for a protocol}
-% \label{sec:summaryandrecommendationsforaprotocol}
-% 
-% In this chapter, readers should have learned that the output of \texttt{R} is transparent when practitioners are able to relate it to (1) the structure of their data set and (2) the specification of the model.
-% As a general protocol, it is recommended that for each study, researchers first examine their data set, then specify a model in mathematical notation \textit{including the variance-covariance matrix} based on their knowledge of the data and the theory behind their study.
-% After the re-specification in \texttt{R} and the estimation, the \texttt{R} output and the model specification can be easily related, and informed inferences can be made.
 

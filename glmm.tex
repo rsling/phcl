@@ -85,8 +85,8 @@
 \doublespacing
 
 % For word counting.
-\raggedright
-\pagestyle{empty}
+%\raggedright
+%\pagestyle{empty}
 
 
 \begin{document}       
@@ -96,7 +96,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Mixed effects modeling -- alternatively called \textit{hierarchical} or \textit{multilevel modeling} is a straightforward extension of (generalised) linear modeling as discussed in the previous chapter.
+Mixed effects modeling -- alternatively called \textit{hierarchical} or \textit{multilevel modeling} -- is an extension of (generalised) linear modeling as discussed in the previous chapter.
 A common characterisation of mixed-effects modeling is that it accounts for situations where observations are \textit{clustered} or \textit{come in groups}.
 In corpus linguistics, there could be clusters of observations defined by individual speakers, registers, genres, modes, lemmas, etc.
 Instead of estimating coefficients for each level of such a grouping factor (so-called \textit{fixed effects}), in a mixed model they can alternatively be modeled as a normally distributed random variables (so-called \textit{random effects}) with predictions of group-wise tendencies being made for each group.
@@ -111,6 +111,7 @@ Readers are assumed to be familiar with the concepts covered in the previous cha
 \input{sections/fundamentals2} % Model selection and choosing between fixed and random.
 
 \section{Practical guide with R}
+\label{sec:practicalguidewithr}
 
 \input{sections/practical1} % Model specification in R.
 \input{sections/practical2} % Working with the output.

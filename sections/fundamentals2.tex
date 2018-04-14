@@ -4,14 +4,14 @@
 In this section, it is discussed how the specification of mixed models differs from that of fixed effects models, and that for each model with random effects there is an alternative models with only fixed effects.
 A major focus is on the question of when to use fixed and random effects.
 The amount of technicality and notation is kept at the absolute minimum.
-Prominently, the specification of models in mathematical notation is not shown here, and model specification is introduced via \texttt{R} notation.
-For an appropriate understanding of model specification, readers should urgently consult a more in-depth text book, for example Part~2A of \citet{GelmanHill2006} (pp.~235--342).
-Without any knowledge of the mathematical notation conventions, it is impossible to understand many advanced text books and much of the valuable and in-depth advice available online.
+Prominently, the specification of models in mathematical notation is not always shown, and models are introduced in \texttt{R} notation.
+For an appropriate understanding of model specification, readers should consult a more in-depth text book, for example Part~2A of \citet{GelmanHill2006} (pp.~235--342).
+Without any knowledge of the mathematical notation conventions, it is impossible to understand many advanced text books and much of the valuable advice available online.
 
 \subsubsection{Simple random intercepts}
 \label{sec:simplerandomintercepts}
 
-Readers with experience in fixed effects modeling should be able to see that a grouping factor encoding the verb lemma and all the other grouping factors discussed in the previous sections could be specified as normal fixed effects in a GLM.
+Readers with experience in fixed effects modeling should be able to see that a grouping factor encoding the verb lemma and all the other potential grouping factors discussed in the previous sections could be specified as normal fixed effects in a GLM.
 This section introduces the main difference between the fixed-effect approach and the random-effect approach.
 Logistic regression examples are used throughout this section, and we begin with the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
 We focus only on model specification here, and hence the full \texttt{R} commands including the specification of the link function and the distribution family are not shown.
@@ -21,19 +21,19 @@ First, we specify a minimal model as (\ref{eq:001}) with only the \textit{Lemma}
 
 \Rformula{Construction}{1+Lemma+Givenness}{eq:001}
 
-In the case of logistic regression in alternation modelling, \textit{Construction} is binary (levels 0 or 1, corresponding to the two alternants in the example).
+In the case of logistic regression in alternation modelling, \textit{Construction} is binary (levels 0 or 1, corresponding to the two alternants).
 Furthermore, \textit{Lemma} has $m$ levels (one for each lemma), and \textit{Givenness} is also binary (levels 0 and 1, corresponding to \textit{not given} and \textit{given}).
-A line like (\ref{eq:001}) encodes a theoretical commitment to what the researcher thinks is the mechanism that determines which alternant is chosen.
-Concretely, it encodes the assumption that the probability of the outcome labelled 1 (often called the ``success'', which in the example corresponds to one of the alternants) can be predicted from the additive linear term specified as \textit{1+Lemma+Givenness}.
-Because the influence of the regressors on the outcome is not linear in many cases, the additive linear term is transformed through the link function (here assumed to be the logit function), which is not encoded directly in \texttt{R}-type model formulæ.
+A statement like (\ref{eq:001}) encodes a theoretical commitment to what the researcher thinks is the mechanism that determines which alternant is chosen.
+Concretely, it encodes the assumption that the probability of the outcome which is labeled as 1 (often called the ``success'') can be predicted from the additive linear term specified as \textit{1+Lemma+Givenness}.
+Because the influence of the regressors on the outcome is not linear in many cases, the additive linear term is transformed through the link function (here assumed to be the inverse logit function), which is not encoded directly in \texttt{R}-type model formulæ.
 Also not part of the model formula in \texttt{R} is the specification of the distribution of the residuals (assumed to be binomial), which encodes the assumption that the distribution of the prediction errors follows the binomial distribution.%
-\footnote{As the example is still a GLM, this is a recapitulation of the previous chapter.
+\footnote{As the example is still a GLM, this is merely a recapitulation of the previous chapter.
 Also, this might be significantly easier to understand in mathematical notation.
 Readers are encouraged to consult \citet{GelmanHill2006}.}
 If another distribution (such as the Poisson distribution) and another link function (such as the logarithm, which is the default for Poisson models) is chosen, the specification in (\ref{eq:001}) remains the same.
 
 In any type of GL(M)M, the additive linear term consists of a number of sub-terms which are simply added up.
-Each of these sub-terms (except for the intercepts) multiplies the (estimated) \textit{coefficient} with an observed \textit{value} of one of the variables.
+Each of these sub-terms (except for the intercepts) consists of the multiplication of the (estimated) \textit{coefficient} with an observed \textit{value} of one of the variables.
 However, \texttt{R} notation for model formulæ simplifies the specification of the actual linear term.
 First of all, the 1 in \textit{1+Lemma+Givenness} is \texttt{R}'s way of encoding the fact that an \textit{intercept} is part of the model.
 An intercept is a constant sub-term to which all other terms are added, and it can be seen as the reference value when all other sub-terms (corresponding to categorical or numeric regressors) assume 0 as their value.
@@ -41,9 +41,9 @@ An intercept is a constant sub-term to which all other terms are added, and it c
 For binary regressors like \textit{Givenness}, the only coefficient that is estimated directly encodes the value added to (in case of a positive coefficient) or subtracted from (in case of a negative coefficient) the linear term when the value of the regressor is 1 (in the example, when the referent is given).
 When the value of the regressor is 0 (for example, when the referent is not given), 0 is added to the intercept.
 The intercept thus encodes (among other things) something like a default for a binary regressor.
-If the default corresponds to, as in the example, non-givenness, phrases like ``non-givenness is on the intercept'' or ``givenness equals zero is on the intercept'' are often used.
+If the default corresponds to, as in the example, non-givenness, phrases like ``non-givenness is on the intercept'' or ```givenness equals zero' is on the intercept'' are often used.
 
-\begin{table}[b]
+\begin{table}
   \centering
   \begin{tabular}{cccc}
     \toprule
@@ -63,7 +63,7 @@ If the default corresponds to, as in the example, non-givenness, phrases like ``
 However, a grouping factor such as \textit{Lemma} is usually a categorical variable with more than two levels.
 In such a case, each of the $m$ levels of the grouping factor are \textit{dummy-coded}, and for all but one of these binary dummy variables, a coefficient is estimated.
 Dummy coding is a way of encoding a categorical variable as a number of binary variables, see Table~\ref{tab:dummy}.
-Because the first of the $m$ levels of the grouping factor is encoded as the value 0 for all dummy variables, no coefficient is estimated for this level, and only $m-1$ sub-terms are added to the model, which means that only $m-1$ coefficients will be estimated.
+Because the first of the $m$ levels of the grouping factor is encoded by all dummy variables assuming the value 0, only $m-1$ sub-terms are added to the model, which means that only $m-1$ coefficients have to be estimated.
 The first level of the grouping factor is thus ``on the intercept'' and becomes the reference to which all other levels are compared.%
 \footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate.
@@ -78,9 +78,9 @@ To sum up and clarify, if in a given study \textit{Lemma} has four levels dummy-
 \end{equation}
 
 In plain English: the probability $Pr$ that the alternant of the construction coded as $1$ is chosen $Pr(c=1)$ is calculated as the inverse logit of the linear term.
-The linear term is just the addition of the intercept $\alpha_0$ and the measured values, each multiplied by its corresponding coefficient labelled $\beta$.
+The linear term is just the sum of the intercept $\alpha_0$ and the measured values, each multiplied by its corresponding coefficient labelled $\beta$.
 
-In such a model, the effect of each verb lemma is treated as a fixed population parameter, exactly the same as the effect of givenness.
+In such a model, the effect of each verb lemma is treated as a fixed population parameter, just like the effect of givenness.
 In other words, the algorithm which estimates the coefficients for the $m-1$ dummy variables tries to find a fixed value for each of them without taking the variation between them into account.
 With many levels, this requires a lot of data, and levels for which only a few observations are available in the data set have very imprecise coefficient estimates with large confidence intervals.
 
@@ -88,7 +88,7 @@ This is where random effects come into play as an alternative.
 If we treat the same grouping factor as a random intercept, we let the intercept vary by group, \ie\ each group is allowed to have its own intercept.
 Furthermore, we give the varying intercepts a (normal) distribution instead of estimating $m-1$ fixed population parameters.
 This means that the group-wise intercepts are assumed to be normally distributed around $0$.
-This is the relevant difference between a fixed effect and a random effect.
+This and nothing else is the crucial difference between a fixed effect and a random effect.
 
 In \texttt{R}, the model specification then looks like (\ref{eq:002}), where ``1|'' can be read as ``an intercept varying by''.
 
@@ -96,16 +96,16 @@ In \texttt{R}, the model specification then looks like (\ref{eq:002}), where ``1
 
 The sub-term \textit{Givenness} remains the same as in (\ref{eq:001}), and it is still treated as a fixed effect.
 The sub-term \textit{(1|Lemma)} encodes that an intercept will be added to the linear term depending on which lemma is observed.
-Notice that the sub-term for the varying intercept (just like the one for the normal intercept) does bot involve multiplication.
+Notice that the sub-term for the varying intercept (just like the one for the normal intercept) does not involve multiplication.
 This is obvious in mathematical notation corresponding to (\ref{eq:002}) as shown in (\ref{eq:002a}).
-In addition to the overall intercept $\alpha_0$, there is another constant term $\alpha_{Lemma}$, which is chosen appropriately for each level of \textit{Lemma}, which is notated as $\alpha_{[Lemma]}$.
+In addition to the overall intercept $\alpha_0$, there is another constant term $\alpha_{[Lemma]}$, which is chosen appropriately for each level of \textit{Lemma}.
 
 \begin{equation}
   Pr(c=1)=logit^{-1}\left[\alpha_0+\alpha_{[Lemma]}+(\beta_{g}\cdot g)\right]
   \label{eq:002a}
 \end{equation}
 
-Crucially, instead of estimating a batch of $m-1$ coefficients for the levels of the grouping variable, one varying intercept (assumed to come from a normal distribution) is predicted for each of its $m$ levels.
+Crucially, instead of estimating a batch of $m-1$ coefficients for the levels of the grouping variable, a varying intercept (assumed to come from a normal distribution) is predicted for each of its $m$ levels.
 All more complex models to be discussed below are extensions of this approach.
 In the next section, it is discussed when fixed and random effects can and should be used.
 
@@ -122,13 +122,13 @@ First, the variance in the intercepts needs to be estimated if a random effect i
 Second, the random intercepts can be understood as a compromise between fitting separate models for each group of the grouping factor (\textit{no pooling}) and fitting a model while ignoring the grouping factor altogether (\textit{complete pooling}), see \citet[Ch.~12]{GelmanHill2006}.
 
 As was stated above, the random intercepts are assumed to come from a normal distribution, and therefore the variance between them has to be estimated with sufficient precision.
-From the estimated variance and the data for a specific group, the estimator predicts the \textit{conditional mode} in a GLMM (or the \textit{conditional mean} in a LMMs) for that group (see \citealt[Ch.~1]{Bates2010}).%
+From the estimated variance and the data for a specific group, the estimator predicts the \textit{conditional mode} in a GLMM or the \textit{conditional mean} in a LMMs for that group (see \citealt[Ch.~1]{Bates2010}).%
 \footnote{Notice that \textit{mode} here refers to the statistical usage of the word.}
 The conditional mode\slash mean for a group is the value of the varying intercept for this group.
 It is the numerical value shown by \texttt{R} packages like \texttt{lme4} for each level of a random intercept variable.
 This procedure, however, requires that the number of groups must not be too low.
 As a rule of thumb, if there are fewer than five levels, a grouping factor should be included as a fixed effect, regardless of its conceptual interpretation.
-Although one often find default recommendations telling practitioners to use a speaker grouping variable as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
+Although one often finds default recommendations telling practitioners to use a speaker grouping variable as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
 Along the same lines, the mode (typically spoken vs.\ written) is not a suitable grouping factor for use as a random effect because it has too few levels.
 
 If, however, the number of groups is reasonably large, the next thing to consider is the number of observations per group.
@@ -140,7 +140,7 @@ When there the number of observations in a group is low, the conditional mode\sl
 The lower the number of observations per group, the lesser evidence there is.}
 On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, large p-values) when the number of observations in a level is low.
 Thus, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
-Random effects are much more robust in situations like this because of shrinkage.
+Random effects are much more robust in such situations because of shrinkage.
 On the downside, a conditional mode that was strongly shrunken (due to a low number of observations) cannot be distinguished straightforwardly from a conditional mode of a group which simply does not deviate a lot from the average tendency.
 For fixed effects, we have both a parameter estimate and a possible significance test, but for random effects, we only have the prediction of the conditional mode\slash mean.
 However, so-called \textit{prediction intervals} can be calculated for individual per-group intercepts, and we return to them in the following section.
@@ -152,10 +152,10 @@ However, so-called \textit{prediction intervals} can be calculated for individua
 \paragraph{Significance}
 
 It is not adequate to do any kind of significance testing on the levels of the random effect because they are not estimates in the conceptual and technical sense.%
-\footnote{Again, we do not assume them to be fixed population parameters, which would be the case for estimates such as fixed effects coefficients.}
-There are ways of calculating \textit{prediction intervals} (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Section~\ref{sec:specifyingmodelsusinglme4inr}), but they should not be misused for talking about significance.
+\footnote{Again, we do not assume them to be fixed population parameters, which would be the case for true estimates such as fixed effects coefficients.}
+There are ways of calculating \textit{prediction intervals} (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Section~\ref{sec:practicalguidewithr}), but they should not be misused for talking about significance.
 Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
-Also, the simulation in Section~\ref{sec:choosingbetweenrandomandfixedeffects} shows that we can use a random effect and still get a good idea of the per-group tendencies.
+Also, we can still get a good idea of the per-group tendencies by looking at the conditional modes\slash means.
 Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible for fixed effects.
 
 \paragraph{Model selection}
@@ -165,19 +165,20 @@ It is recommended here to include all conceptually necessary random effects and 
 To check whether they have an effect, the estimated between-group variance is the first thing to look at.
 If it is close to $0$, there is most likely not much going on between groups, or there simply was not enough data to estimate the variance.
 In LMMs, it is possible to compare the residual (observation-level) variance with the between-group variance to see which one is larger, and to which degree.
-If, for example, the residual variance is 0.2 and the between-group variance is 0.8, then we can say that the between-group variance is four times larger than the residual variance, which would indicate that the random effect has a huge impact on the response.
-This comparison is impossible in GLMMs because their (several types of) residuals do not have the same straightforward interpretation as in LMMs.
+If, for example, the residual variance is 0.2 and the between-group variance is 0.8, then we can say that the between-group variance is four times larger than the residual variance, which would indicate that the random effect has a considerable impact on the response.
+This comparison is impossible in GLMMs because their (several types of) residuals do not have the same straightforward interpretation as those of LMMs.
 
 Furthermore, models can be compared using likelihood ratio (LR) tests.
 In such tests, a model including the random effect and a model not including it are compared, similar to LR tests for the comparison of fixed effects.
 Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
-A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests (see also Section~\ref{sec:specifyingmodelsusinglme4inr}).
+A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests (see also Section~\ref{sec:practicalguidewithr}).
+
 With all this, it should be kept in mind that it is \textit{never} appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including so-called information criteria such as Akaike's or Bayes').
 
 \paragraph{Quality of the fit}
 
 To measure how well a GLMM fits the data, any metric that is based on prediction accuracy can be used in the same way as with GLMs.
-For example, the prediction accuracy on the data used for model estimation or cross-validation methods can be used.
+For example, the rate of correct predictions on the data used for model estimation or cross-validation methods are appropriate.
 
 Coefficients of determination (pseudo-$R^2$) can be used to give some idea of the overall model fit.
 For GLMMs, \citet{NakagawaSchielzeth2013} have proposed a method that distinguishes between \textit{marginal} $R^2$ (only fixed effects) and \textit{conditional} $R^2$ (fixed and random effects).
@@ -196,7 +197,7 @@ In Section~\ref{sec:randominterceptsandslopes}, it was shown under which conditi
 Readers might want to review the example before continuing on.
 While it is possible to have just a varying slope, this is rarely useful, and we discuss only varying-intercept and varying-slope (VIVS) models.
 
-A random slope is useful when the strength or direction of some fixed effect varies by group.
+A random slope is a good choice when the strength or direction of some fixed effect varies by group.
 We extend the simple model from (\ref{eq:001}) to include random slopes for \textit{Givenness} varying by \textit{Lemma} using \texttt{R} notation in (\ref{eq:003}).
 Each variable from the fixed effects part of the formula which we expect to vary by \textit{Lemma} is simply repeated before the | symbol.
 
@@ -222,41 +223,45 @@ In this case, the model is \textit{over-parametrised} and needs to be simplified
 
 \paragraph{Nested and crossed random effects}
 
-As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are adequate when grouping factors are nested within other grouping factors.
+The difference between nested and crossed random effects is only defined when there are two or more random effects.
+As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are appropriate tools when the levels of a grouping factor are nested within the levels of another grouping factor.
 Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts can be understood as interactions between two or more random effects.
 Crossed random effects are just several unrelated random effects.
-(\ref{eq:glmm07}) shows the model specification, extending (\ref{eq:glmm01}) with a varying intercept $\alpha_s$.
-This could be for example semantic classes which nest individual lemmas.
-It could also be another grouping factor for speaker, completely unrelated to the lemmas.
 
-\begin{equation}
-  P(y^i=1)=logit^{-1}(\alpha_{s}^{k[i]}+\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
-  \label{eq:glmm07}
-\end{equation}
+In the model specification (both in \texttt{R} notation and in mathematical notation), there is no difference between a crossed and a nested random effect.
+Both are specified like independent random effects.
+See (\ref{eq:004}) for an example in \texttt{R} notation which extends (\ref{eq:002}).
 
-The difference is that in the nested case, $k[i]=k[j]$, \ie the level of the nesting factor can be selected based on the nested factor as well as based on the single observation.
-As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the question is rather one of how the way the data are organised.
+\Rformula{Construction}{1+Givenness+(1|Lemma)+(1+Semantics)}{eq:004}
+
+In (\ref{eq:004}), \textit{Semantics} could be a factor encoding the semantic classes which nest individual lemmas.
+It could also be a (crossed) grouping factor completely unrelated to the lemmas, for example encoding some semantic property of the whole sentence containing the construction.
+As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the question on the practitioner's side is rather how the data are organised.
+If the data have a nested structure, the estimator will treat them as nested, otherwise as crossed.
+Data have a nested structure whenever each level of a (nesting) random effect can always be determined entirely from the levels of another (nested) factor.
+
 
 \paragraph{Second-level predictors}
 
-In Section~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be partially predicted from fixed-effects.
-In this case, an additional linear model is specified for the random effect instead of the simple normal distribution predictor.
-We extend (\ref{eq:glmm01}) by a predictor $\gamma_f$ for the lemma frequency.
-The lemma frequencies themselves we denote by $u_f$, and we index them with $j$, just like the verb lemmas.
-This is reasonable because for each verb lemma, there is exactly one frequency.
-The first-level model specification remains the same, namely (\ref{eq:glmm08}).
+In Section~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be partially predicted from second-level fixed-effects.
+In this case, an additional linear (Gaussian) model is used to predict the random effects.
+In \texttt{R} notation, the true model structure is entirely blurred, and practitioners even run the risk of working with second-level predictors without realising it.
 
-\begin{equation}
-  P(y^i=1)=logit^{-1}(\alpha_{l}^{j[i]}+\beta_d\cdot x_d^i)
-  \label{eq:glmm08}
-\end{equation}
+We extend (\ref{eq:002}) to (\ref{eq:005}) by adding a numeric fixed effect which specifies the token frequency for each level of \textit{Lemma}.
 
-However, instead of (\ref{eq:glmm02}), the varying intercept is predicted from (\ref{eq:glmm09}).
+\Rformula{Construction}{1+Givenness+Lemmafrequency+(1|Lemma)}{eq:005}
 
-\begin{equation}
-  \alpha_l^j\sim N(\gamma_0+\gamma_f\cdot u_f^j,\sigma_l^2)
-  \label{eq:glmm09}
-\end{equation}
+This is the only way to specify second-level predictors in standard \texttt{R} notation.
+Since in the data set has to be organised as shown in Table~\ref{tab:multilevel}, where for each data point, a level of \textit{Lemma} is specified, and the appropriate frequency value for this level of \textit{Lemma} is given in a separate column.%
+\footnote{There are, of course, elegant ways of pulling the frequency values from another data frame on the fly in \texttt{R}.}
+\texttt{R} treats \textit{Lemmafrequency} as a second-level predictor automatically under such conditions.
+Simply speaking, this means that the random intercept for \textit{Lemma} will now be predicted from its own linear model.
+Illustration purposes, this second-level linear model is given as (\ref{eq:005a}) purely for illustration purposes.%
+\footnote{Users do not have to specify this formula, nor does \texttt{R} work by silently creating this exact specification.}
 
-Instead of just the mean of the $\alpha_j$ values, the model in (\ref{eq:glmm09}) specifies a second-level intercept $\gamma_0$ and a second-level fixed coefficient $\gamma_f$.
+\Rformula{Lemmaintercept}{1+Lemmafrequency}{eq:005a}
+
+The random effect (a random intercept in this case) is thus broken down into a second-level intercept (denoted by 1 in \texttt{R}) and a second-level fixed effect (in this case \textit{Lemmafrequency}).
+In Section~\ref{sec:practicalguidewithr}, a model with second-level effects will be used for illustration purposes.
+
 

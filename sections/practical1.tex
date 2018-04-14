@@ -2,146 +2,19 @@
 \label{sec:specifyingmodelsusinglme4inr}
 
 This section and the next focus on \texttt{lme4}, an often used package to do multilevel modeling in \texttt{R} with maximum likelihood methods \citep{BatesEa2015}.
+The data set used to illustrate the process of fitting GLMMs in \texttt{R} is taken from \citet{Schaefer2018}.
 
-\paragraph{Varying intercepts}
+\subsubsection{Overview of the data set}
 
-The functions \texttt{lmer} and \texttt{glmer} extend the syntax of \texttt{lm} and \texttt{glm}.
-The varying intercept model in (\ref{eq:glmm01}) is specified as follows in \texttt{R} (using informative variable names instead of Greek letters).
+\subsubsection{Varying intercepts}
 
-\vspace{0.5\baselineskip}
+\subsubsection{Varying intercepts and slopes}
 
-\begin{lstlisting}
-glmer(formula = construction ~ given + (1 | lemma),
-      family = binominal(link=logit), data = my.data)
-\end{lstlisting}
+\subsubsection{Multiple random effects}
 
-The pipe operator \texttt{x1|x2} can be read as \textit{x1 varies by x2}.
-The intercept is denoted by \texttt{1}, and hence \texttt{(1|lemma)} simply says that the intercept varies by lemma.
+\subsubsection{Second-level predictors}
 
-\paragraph{Varying intercepts and slopes}
+\subsubsection{Model evaluation}
 
-The VIVS model in (\ref{eq:glmm05}) is specified as follows (only the formula).
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (1 + given | lemma)
-\end{lstlisting}
-
-Before the pipe, the part of the model is repeated that should be modeled as varying by the grouping factor after the pipe.
-If a varying slope is specified, a varying intercept is silently assumed.
-The last formula can therefore be abbreviated to the following equivalent one.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (given | lemma)
-\end{lstlisting}
-
-In order to let \textit{only} the slope vary, the intercept has to be removed explicitly from the random part of the formula.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (given - 1 | lemma)
-\end{lstlisting}
-
-\paragraph{Multiple random effects}
-
-When there is more than one random effect, several bracketed terms are added.
-The following is the recommended specification for models like (\ref{eq:glmm07}), regardless of whether the effects are nested or crossed.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (1 | lemma) +
-               (1 | semantics)
-\end{lstlisting}
-
-Sometimes the following notation is used for nested random effects, where \texttt{semantics} nests \texttt{lemma}.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (1 | semantics / lemma)
-\end{lstlisting}
-
-\texttt{lme4} expands this to the following underlying syntax, which shows more clearly that nesting is handled as a kind of interaction.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (1 | semantics) +
-               (1 | semantics : lemma)
-\end{lstlisting}
-
-There is a random intercept for \texttt{semantics} and one for each combination of \texttt{semantics} and \texttt{lemma}.
-While these notations are seemingly very explicit about the nesting structure, they are not necessary under normal circumstances.
-If the grouping factor \texttt{lemma} is nested within \texttt{semantics} (see Table~\ref{tab:nested} for a similar situation), \texttt{lme4} automatically treats it as nested, and the results are exactly the same with all the three aforementioned notations.
-
-However, the following specification is \textit{not} equivalent and leads to problematic results.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + (1 | semantics) +
-               (1 | lemma) +
-               (1 | semantics : lemma)
-\end{lstlisting}
-
-This instructs \texttt{lme4} to estimate the variance of \texttt{lemma} not just restricted to the permutations of the levels of \texttt{lemma} and \texttt{semantics} (\ie \texttt{semantics:lemma}), but also outside of these specific permutations.
-In the nested case, there are no occurrences outside of these permutations, however, and the variance for \texttt{lemma} alone will be estimated close (but not exactly equal) to $0$.
-To compensate for the spurious estimate for \texttt{lemma}, the variance estimate for \texttt{semantics:lemma} will be shifted unpredictably.
-
-\begin{table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \textbf{Exemplar} & \textbf{Speaker}  & \textbf{Region}        \\
-    \midrule
-                    1 &           D      &         Tyneside       \\
-                    2 &           D      &         Tyneside       \\
-                    3 &           R      &         Tyneside       \\
-                    4 &           R      &         Tyneside       \\
-                    5 &           D      &         Greater London \\
-                    6 &           D      &         Greater London \\
-                    7 &           R      &         Greater London \\
-                    8 &           R      &         Greater London \\
-    \bottomrule
-  \end{tabular}
-  \caption{Illustration of nested factors, organised suboptimally}
-  \label{tab:nestedwrong}
-\end{table}
-
-There is one situation where the explicit notation for nested factors is necessary.
-This is when the data are stored in a suboptimal way.
-Such a suboptimal version of Table~\ref{tab:nested} would look something like Table~\ref{tab:nestedwrong}.
-Here, the speaker factor is encoded as the initial letter of the name only.
-Hence, Daryl and Dale (coming from two different regions) cannot be distinguisehd from each other, and Riley and Reed cannot, either.
-This leaves \texttt{lme4} no way of recognising that the data structure is nested, and the user has to explicitly provide that information.
-It would, of course, be better \textit{not} to organise data that way.
-
-\paragraph{Second-level predictors}
-
-(\ref{eq:glmm08}) and (\ref{eq:glmm09}) have the following \texttt{lme4} syntax.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + frequency + (1 | lemma)
-\end{lstlisting}
-
-If the data is organised as shown in Table~\ref{tab:multilevel} -- \ie, with the second-level regressor not having any variance within the levels of the grouping factor --, \texttt{lme4} will detect this and treat \texttt{frequency} as a second-level effect.
-However, second-level predictors for random slopes are more tricky to specify (see \citealt[280-282]{GelmanHill2006}).
-Assuming that the effect of givenness varies with the lemma, which itself comes with a second-level model including frequency as a regressor, the specification looks as follows.
-
-\vspace{0.5\baselineskip}
-
-\begin{lstlisting}
-construction ~ given + frequency +
-               given : frequency +
-	       (1 + given | lemma)
-\end{lstlisting}
-
-A second-level regressor on a varying slope is thus an interaction between a first-level and a second-level fixed effect.
+\subsubsection{Bootstrap methods}
 

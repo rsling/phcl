@@ -24,7 +24,7 @@ First, we specify a minimal model as (\ref{eq:001}) with only the \textit{Lemma}
 In the case of logistic regression in alternation modelling, \textit{Construction} is binary (levels 0 or 1, corresponding to the two alternants).
 Furthermore, \textit{Lemma} has $m$ levels (one for each lemma), and \textit{Givenness} is also binary (levels 0 and 1, corresponding to \textit{not given} and \textit{given}).
 A statement like (\ref{eq:001}) encodes a theoretical commitment to what the researcher thinks is the mechanism that determines which alternant is chosen.
-Concretely, it encodes the assumption that the probability of the outcome which is labeled as 1 (often called the ``success'') can be predicted from the additive linear term specified as \textit{1+Lemma+Givenness}.
+Concretely, it encodes the assumption that the probability of the outcome which is labeled as 1 can be predicted from the additive linear term specified as \textit{1+Lemma+Givenness}.
 Because the influence of the regressors on the outcome is not linear in many cases, the additive linear term is transformed through the link function (here assumed to be the inverse logit function), which is not encoded directly in \texttt{R}-type model formulæ.
 Also not part of the model formula in \texttt{R} is the specification of the distribution of the residuals (assumed to be binomial), which encodes the assumption that the distribution of the prediction errors follows the binomial distribution.%
 \footnote{As the example is still a GLM, this is merely a recapitulation of the previous chapter.
@@ -35,7 +35,7 @@ If another distribution (such as the Poisson distribution) and another link func
 In any type of GL(M)M, the additive linear term consists of a number of sub-terms which are simply added up.
 Each of these sub-terms (except for the intercepts) consists of the multiplication of the (estimated) \textit{coefficient} with an observed \textit{value} of one of the variables.
 However, \texttt{R} notation for model formulæ simplifies the specification of the actual linear term.
-First of all, the 1 in \textit{1+Lemma+Givenness} is \texttt{R}'s way of encoding the fact that an \textit{intercept} is part of the model.
+First of all, the 1 in (\ref{eq:001}) is \texttt{R}'s way of encoding the fact that an \textit{intercept} is part of the model.
 An intercept is a constant sub-term to which all other terms are added, and it can be seen as the reference value when all other sub-terms (corresponding to categorical or numeric regressors) assume 0 as their value.
 
 For binary regressors like \textit{Givenness}, the only coefficient that is estimated directly encodes the value added to (in case of a positive coefficient) or subtracted from (in case of a negative coefficient) the linear term when the value of the regressor is 1 (in the example, when the referent is given).
@@ -256,7 +256,7 @@ Since in the data set has to be organised as shown in Table~\ref{tab:multilevel}
 \footnote{There are, of course, elegant ways of pulling the frequency values from another data frame on the fly in \texttt{R}.}
 \texttt{R} treats \textit{Lemmafrequency} as a second-level predictor automatically under such conditions.
 Simply speaking, this means that the random intercept for \textit{Lemma} will now be predicted from its own linear model.
-Illustration purposes, this second-level linear model is given as (\ref{eq:005a}) purely for illustration purposes.%
+For illustration purposes, this second-level linear model is given as (\ref{eq:005a}) purely for illustration purposes.%
 \footnote{Users do not have to specify this formula, nor does \texttt{R} work by silently creating this exact specification.}
 
 \Rformula{Lemmaintercept}{1+Lemmafrequency}{eq:005a}

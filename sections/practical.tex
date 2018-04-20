@@ -24,7 +24,7 @@ The influencing first-level factors derived from theory-driven analysis and prev
 Furthermore, there are two crossed random intercepts for the kind noun (\texttt{Kindlemma}) and the measure noun (\texttt{Measurelemma}).
 These random intercepts come with second-level models including a number of fixed second-level effects.
 For \texttt{Kindlemma}, there are: \texttt{Kindfreq} (numeric, z-transformed), which encodes the lemma frequency; \texttt{Kindgender} (binary), which encodes the grammatical gender of the kind noun; \texttt{Kindattraction} (numeric, z-transformed), which encodes the influence of neighbouring constructions.
-For \texttt{Measurelemma}, there are: \texttt{Measurefreq} and \texttt{Measureattraction}, which correspond to the similarly named variables for \texttt{Kindlemma}; \texttt{Measureclass} (5-level categorical) which encodes the broad semantic class of the measure noun.
+For \texttt{Measurelemma}, there are: \texttt{Measurefreq} and \texttt{Measureattraction}, which correspond to the similarly named variables for \texttt{Kindlemma}; \texttt{Measureclass} (5-level categorical), which encodes the broad semantic class of the measure noun.
 
 \subsubsection{A simple varying intercept instead of a fixed effect}
 
@@ -50,7 +50,7 @@ glm.01 <- glm(Construction~1
 The output of the \texttt{summary(glm.01)} command (not shown here) shows that the estimates for the 149 fixed effects corresponding to \texttt{Measurelemma} have extremely high standard errors and are virtually unusable.
 The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{MagelkerkeR2(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
 
-However, the grouping factor \texttt{Measurelemma} is not suitable for use as a fixed effect, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept (assuming that the \texttt{lme4} package was loaded).
+However, the grouping factor \texttt{Measurelemma} is not suitable for use as a fixed effect, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
 
 \vspace{0.5\baselineskip}
 
@@ -88,10 +88,10 @@ MeasurecaseDat  0.25047    0.12045   2.079  0.03758 *
 Besides the standard coefficient table for the fixed effects including the overall intercept.
 Above this coefficient table, there is a summary of the random effects.
 The number of groups for \texttt{Measurelemma} is correctly given as 150, and the variance in the random intercepts is 1.252.%
-\footnote{The variance-covariance matrix of GLMMs can also be extracted directly using the \texttt{VarCorr(glmm.01)} command from \texttt{lme4}.}
+\footnote{The variance-covariance matrix of GLMMs can also be extracted directly using the \texttt{VarCorr(glmm.01)} command.}
 As a rule of thumb, the larger is the variance between the intercepts, the larger are the differences between the groups.
 For the variance estimate, confidence intervals can be obtained with either one of the following commands, where the first one uses the profile method (based on likelihood ratio tests) and the second one uses the parametric bootstrap, which is sometimes considered more robust.%
-\footnote{Since the bootstrap (especially with smaller original sample sizes tends to run into replications where the estimation of the variance fails and is thus returned as 0, the bootstrap interval is sometimes skewed towards 0 when the profile confidence interval frames the true value symmetrically. The bootstrap is thus not always more robust or intrinsically better.
+\footnote{Since the bootstrap (especially with smaller original sample sizes) tends to run into replications where the estimation of the variance fails and is thus returned as 0, the bootstrap interval is sometimes skewed towards 0 when the profile confidence interval frames the true value symmetrically. The bootstrap is thus not always more robust or intrinsically better.
 Comparing both methods is recommended.}
 
 \vspace{0.5\baselineskip}
@@ -102,7 +102,7 @@ confint(glmm.01, parm="theta_", method="boot", nsim = 250)
 \end{lstlisting}
 
 For the first command, the output (95\% confidence interval) is 0.887 and 1.414.
-Without applying formal significance testing, this is a reasonably narrow interval, and it does not include 0.
+Without applying formal significance testing, this is a reasonably narrow interval, and it does not extend to 0.
 It is generally not a good idea to do (stepwise) model selection for random effects.
 Even worse, while bootstrap methods are available for the comparison of two nested mixed models (see below), the comparison of a GLM and a GLMM (which extends the GLM by one random effect) is mostly uncharted territory and should be avoided.
 
@@ -125,9 +125,9 @@ They have to be accessed using the \texttt{attribute} function as shown below.
 attributes(glmm.01.ranef)$postVar
 \end{lstlisting}
 
-These can be used to construct prediction intervals around the predicted conditional modes in order to display them in tabular form or plot them-
+These can be used to construct prediction intervals around the predicted conditional modes in order to display them in tabular form or plot them.
 While some ready-made functions exist to plot them in the form of a dot plot, it is good to have a custom plotting function.
-If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes.
+If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes, and there is no ready-made function which supports this.
 The \texttt{R} script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a dot plot with prediction intervals for a random subset of the conditional modes.
 An example is given in Figure~\ref{fig:condmodes}, where the smaller prediction intervals correspond strongly to the number of exemplars observed in the different groups.
 
@@ -153,21 +153,23 @@ Taking also the random effect into account, the model explains a proportion of 0
 The random effect thus appears to be relevant.
 Comparing the conditional $R^2$ to the Nagelkerke $R^2$ of the GLM with \texttt{Measurelemma} as a fixed effect (which was 0.397), we see that the difference is not substantial although the individual coefficient estimates in the GLM were unreliable.
 
-Furthermore, readers are encouraged to compare the estimates of the fixed effects for \texttt{glm.01} (except \texttt{Measurelemma}) and for \texttt{glmm.01}.
-The coefficient estimates (except for the intercept, which is heavily offset in \texttt{glm.01}) themselves do not differ much between the GLM and the GLMM, which indicates that the grouping variable \texttt{Measurelemma} does not enter into an interaction with the fixed effects.
+Furthermore, readers are encouraged to compare the estimates of the fixed effects for \texttt{glm.01} (except \texttt{Measurelemma}) and for \texttt{glmm.01}.%
+\footnote{Again, the accompanying script contains all necessary code.}
+The fixed-effects coefficient estimates (except for the intercept, which is heavily offset in \texttt{glm.01}) do not differ much between the GLM and the GLMM, which indicates that the grouping variable \texttt{Measurelemma} does not enter into an interaction with the fixed effects.
 However, the standard deviations (and consequently the confidence intervals as well as the p-values) change.
 
 \paragraph{Reporting the results}
 
 Journals and conferences in corpus linguistics apparently do not enforce strict guidelines when it comes to reporting the results of GLMM fits.
 While a coefficient table for the fixed effects is a de-facto standard for GLMMs just as much as for GLMs, there is no such de-facto standard with regard to which measures of model quality for GLMMs should be reported, and especially how random effects should be reported.
-In addition to the coefficient table (and other diagnostics also recommended for GLMs such as variance inflation factors; \citealp{FoxMonette1992,ZuurEa2010}), which should at least contain the coefficient estimate, the standard error, and (possibly bootstrapped) confidence intervals for the fixed effects, the present author recommends to report (either in the running text, in tabular form, or in the caption of the coefficient table):
+Everything that should be reported for a GLM should also be reported for a GLMM, such as the coefficient table for the fixed effects (which should at least contain the coefficient estimate, the standard error, and possibly bootstrapped confidence intervals) and variance inflation factors \citep{FoxMonette1992,ZuurEa2010}.
+In addition, the present author recommends to report (either in the running text, in tabular form, or in the caption of the coefficient table):
 
 \begin{enumerate}
   \item the estimate of the random effect variance (and covariance) parameters
   \item (bootstrap) confidence intervals for the above
   \item Nakagawa \& Schielzeth's $R^2$ coefficients of determination
-  \item optionally all or some conditional modes with prediction intervals in tabular form or as a dotplot (see Figure~\ref{fig:condmodes})
+  \item optionally all or some conditional modes with prediction intervals in tabular form or as a dot plot (see Figure~\ref{fig:condmodes})
   \item (bootstrap) p-values for random effects (if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM)
 \end{enumerate}
 
@@ -198,11 +200,11 @@ glmm.10 <- glmer(Construction~1
 \end{lstlisting}
 
 Since the model has a relatively high degree of complexity, the option \texttt{control=glmerControl("bobyqa")} is required.
-It selects a different optimiser, which is an algorithm used by the estimator.
+It selects a different optimiser (an algorithm used by the estimator).
 In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when there are convergence errors.
 
 The second-level effects have the same value for each level of the corresponding random intercept and are automatically treated as second-level effects.
-In order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 from the \texttt{measure} data set.
+In order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
 For example, the overall intercept of -3.653 can be extracted via the following command.
 
 \vspace{0.5\baselineskip}

@@ -36,7 +36,7 @@ In any type of GL(M)M, the additive linear term consists of a number of sub-term
 Each of these sub-terms (except for the intercepts) consists of the multiplication of the (estimated) \textit{coefficient} with an observed \textit{value} of one of the variables.
 However, \texttt{R} notation for model formulæ simplifies the specification of the actual linear term.
 First of all, the 1 in (\ref{eq:001}) is \texttt{R}'s way of encoding the fact that an \textit{intercept} is part of the model.
-An intercept is a constant sub-term to which all other terms are added, and it can be seen as the reference value when all other sub-terms (corresponding to categorical or numeric regressors) assume 0 as their value.
+An intercept is a constant sub-term to which all other sub-terms are added, and it can be seen as the reference value when all other sub-terms (corresponding to categorical or numeric regressors) assume 0 as their value.
 
 For binary regressors like \textit{Givenness}, the only coefficient that is estimated directly encodes the value added to (in case of a positive coefficient) or subtracted from (in case of a negative coefficient) the linear term when the value of the regressor is 1 (in the example, when the referent is given).
 When the value of the regressor is 0 (for example, when the referent is not given), 0 is added to the intercept.
@@ -138,7 +138,7 @@ With a random effect, however, the conditional modes\slash means are pulled (\te
 When there the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly towards $0$, predicting only a small deviation from the overall tendency.%
 \footnote{Terminologically, shrinkage is thus \textit{stronger} (and the conditional mode\slash mean is closer to $0$) if there is less evidence that a group deviates from the overall tendency.
 The lower the number of observations per group, the lesser evidence there is.}
-On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, large p-values) when the number of observations in a level is low.
+On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, high p-values) when the number of observations for a level is low.
 Thus, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
 Random effects are much more robust in such situations because of shrinkage.
 On the downside, a conditional mode that was strongly shrunken (due to a low number of observations) cannot be distinguished straightforwardly from a conditional mode of a group which simply does not deviate a lot from the average tendency.
@@ -151,7 +151,7 @@ However, so-called \textit{prediction intervals} can be calculated for individua
 
 \paragraph{Significance}
 
-It is not adequate to do any kind of significance testing on the levels of the random effect because they are not estimates in the conceptual and technical sense.%
+It is not adequate to do any kind of significance testing on the individual levels of the random effect because they are not estimates in the conceptual and technical sense.%
 \footnote{Again, we do not assume them to be fixed population parameters, which would be the case for true estimates such as fixed effects coefficients.}
 There are ways of calculating \textit{prediction intervals} (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Section~\ref{sec:practicalguidewithr}), but they should not be misused for talking about significance.
 Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
@@ -161,19 +161,20 @@ Additionally, a random effect allows the researcher to quantify the between-grou
 \paragraph{Model selection}
 
 A related question is \textit{model selection}, \ie whether the inclusion of the random effect improves the model quality.
-It is recommended here to include all conceptually necessary random effects and only remove them if they have no effect.
+It is recommended here to include all conceptually necessary random effects and only remove them if they clearly (and beyond doubt) have no effect.
 To check whether they have an effect, the estimated between-group variance is the first thing to look at.
 If it is close to $0$, there is most likely not much going on between groups, or there simply was not enough data to estimate the variance.
-In LMMs, it is possible to compare the residual (observation-level) variance with the between-group variance to see which one is larger, and to which degree.
+In LMMs, it is possible to compare the residual (item-level) variance with the between-group variance to see which one is larger, and to which degree.
 If, for example, the residual variance is 0.2 and the between-group variance is 0.8, then we can say that the between-group variance is four times larger than the residual variance, which would indicate that the random effect has a considerable impact on the response.
 This comparison is impossible in GLMMs because their (several types of) residuals do not have the same straightforward interpretation as those of LMMs.
 
 Furthermore, models can be compared using likelihood ratio (LR) tests.
 In such tests, a model including the random effect and a model not including it are compared, similar to LR tests for the comparison of fixed effects.
 Such pairs of models, where one is strictly a simplification of the other, are called \textit{nested models} (not to be confused with \textit{nested effects} discussed in Section~\ref{sec:crossedandnestedeffects}).
-A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests (see also Section~\ref{sec:practicalguidewithr}).
+A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests. 
 
-With all this, it should be kept in mind that it is \textit{never} appropriate to compare a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including so-called information criteria such as Akaike's or Bayes').
+With all this, it should be kept in mind that it is \textit{never} appropriate to make formal comparisons between a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including so-called information criteria such as Akaike's or Bayes').
+\textit{Informally} comparing coefficients of determination ($R^2$) between such pairs of models has a limited use, as will be shown below.
 
 \paragraph{Quality of the fit}
 
@@ -232,7 +233,7 @@ In the model specification (both in \texttt{R} notation and in mathematical nota
 Both are specified like independent random effects.
 See (\ref{eq:004}) for an example in \texttt{R} notation which extends (\ref{eq:002}).
 
-\Rformula{Construction}{1+Givenness+(1|Lemma)+(1+Semantics)}{eq:004}
+\Rformula{Construction}{1+Givenness+(1|Lemma)+(1|Semantics)}{eq:004}
 
 In (\ref{eq:004}), \textit{Semantics} could be a factor encoding the semantic classes which nest individual lemmas.
 It could also be a (crossed) grouping factor completely unrelated to the lemmas, for example encoding some semantic property of the whole sentence containing the construction.

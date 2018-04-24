@@ -6,9 +6,9 @@ The data set used to illustrate the process of fitting GLMMs in \texttt{R} is ta
 
 \subsubsection{Overview of the data set}
 
-The data used here for illustration purposed is used in \citet{Schaefer2018} to model a binary case alternation in German measure phrases.
-In the first alternant, the kind-denoting noun (here \textit{Wein} `wine') is assigned the same case as the head measure noun as in (\ref{ex:intro:alternation1}).
-In the second alternant, the kind-denoting noun is in the genitive as in (\ref{ex:intro:alternation2}).
+The data used here for illustration purposes comes from \citet{Schaefer2018}, where a binary case alternation in German measure phrases is modelled.
+In the first alternant, the kind-denoting noun (here \textit{Wein} `wine') is in the genitive as in (\ref{ex:intro:alternation1}).
+In the second alternant, the kind-denoting noun is assigned the same case as the head measure noun as in (\ref{ex:intro:alternation2}).
 
 \begin{exe}
   \ex\label{ex:intro:alternation}
@@ -20,11 +20,12 @@ In the second alternant, the kind-denoting noun is in the genitive as in (\ref{e
   \end{xlist}
 \end{exe}
 
-The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} and \texttt{Genitives}, a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
+The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} (a measure of document quality) and \texttt{Genitives} (a measure of the frequency of genitives), a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
 Furthermore, there are two crossed random intercepts for the kind noun (\texttt{Kindlemma}) and the measure noun (\texttt{Measurelemma}).
 These random intercepts come with second-level models including a number of fixed second-level effects.
 For \texttt{Kindlemma}, there are: \texttt{Kindfreq} (numeric, z-transformed), which encodes the lemma frequency; \texttt{Kindgender} (binary), which encodes the grammatical gender of the kind noun; \texttt{Kindattraction} (numeric, z-transformed), which encodes the influence of neighbouring constructions.
 For \texttt{Measurelemma}, there are: \texttt{Measurefreq} and \texttt{Measureattraction}, which correspond to the similarly named variables for \texttt{Kindlemma}; \texttt{Measureclass} (5-level categorical), which encodes the broad semantic class of the measure noun.
+Finally, the dependent variable \texttt{Construction} is coded as 1 if the genitive is used and as 0 if there is case identity.
 
 \subsubsection{A simple varying intercept instead of a fixed effect}
 
@@ -48,7 +49,7 @@ glm.01 <- glm(Construction~1
 \end{lstlisting}
 
 The output of the \texttt{summary(glm.01)} command (not shown here) shows that the estimates for the 149 fixed effects corresponding to \texttt{Measurelemma} have extremely high standard errors and are virtually unusable.
-The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{MagelkerkeR2(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
+The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{NagelkerkeR2(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
 
 However, the grouping factor \texttt{Measurelemma} is not suitable for use as a fixed effect, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
 
@@ -85,7 +86,7 @@ MeasurecaseAcc -0.01923    0.08821  -0.218  0.82740
 MeasurecaseDat  0.25047    0.12045   2.079  0.03758 *  
 \end{lstlisting}
 
-Besides the standard coefficient table for the fixed effects including the overall intercept.
+\texttt{R} outputs the standard coefficient table for the fixed effects including the overall intercept.
 Above this coefficient table, there is a summary of the random effects.
 The number of groups for \texttt{Measurelemma} is correctly given as 150, and the variance in the random intercepts is 1.252.%
 \footnote{The variance-covariance matrix of GLMMs can also be extracted directly using the \texttt{VarCorr(glmm.01)} command.}
@@ -117,7 +118,7 @@ glmm.01.ranef <- ranef(glmm.01, condVar = TRUE,
 \end{lstlisting}
 
 If the options \texttt{condVar = TRUE} and \texttt{drop = TRUE} are passed as above, then conditional variance-covariance estimates are returned as attributes of the result.
-They have to be accessed using the \texttt{attribute} function as shown below.
+They have to be accessed using the \texttt{attributes} function as shown below.
 
 \vspace{0.5\baselineskip}
 
@@ -167,10 +168,10 @@ In addition, the present author recommends to report (either in the running text
 
 \begin{enumerate}
   \item the estimate of the random effect variance (and covariance) parameters
-  \item (bootstrap) confidence intervals for the above
+  \item (bootstrapped) confidence intervals for the above
   \item Nakagawa \& Schielzeth's $R^2$ coefficients of determination
   \item optionally all or some conditional modes with prediction intervals in tabular form or as a dot plot (see Figure~\ref{fig:condmodes})
-  \item (bootstrap) p-values for random effects (if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM)
+  \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package)
 \end{enumerate}
 
 \subsubsection{More complex models}
@@ -203,7 +204,7 @@ Since the model has a relatively high degree of complexity, the option \texttt{c
 It selects a different optimiser (an algorithm used by the estimator).
 In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when there are convergence errors.
 
-The second-level effects have the same value for each level of the corresponding random intercept and are automatically treated as second-level effects.
+The second-level predictors have the same value per level of the corresponding random intercept and are automatically treated as second-level effects.
 In order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
 For example, the overall intercept of -3.653 can be extracted via the following command.
 

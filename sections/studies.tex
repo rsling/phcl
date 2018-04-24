@@ -48,7 +48,7 @@
   The grouping factors derived from the structure of the corpus are mode (only two levels), register (five levels), and subregister ($13$ levels).
   They are nested: mode nests register, which nests subregister.
   Additionally, verb and particle lemma grouping factors are annotated.
-  Finally, two fixed effects candidates are annotated (the type of the head of direct object and the logarithmised length of the direct object in words).
+  Finally, two fixed effects candidates are annotated (the type of the head of the direct object and the logarithmised length of the direct object in words).
   
   \paragraph{Method}
   
@@ -58,7 +58,7 @@
   
   \paragraph{Results}
 
-  Gries finds that the verb and particle lemma play and the subregister play a significant role.
+  Gries finds that the verb and particle lemma as well as the subregister play significant roles.
   Notably, the variance estimate for mode is close to $0$ from the beginning of the model selection procedure.
   This is not surprising, as two levels are not nearly enough in order for the variance to be reliably estimated, and it could maybe be used as a second-level predictor instead (see Section~\ref{sec:choosingbetweenrandomandfixedeffects}).
   The $R^2$ values of the final model are very high, with a considerable difference between marginal $R^2_m=0.57$ and conditional $R^2_c=0.748$, which indicates that the random effects do in fact improve the model fit.

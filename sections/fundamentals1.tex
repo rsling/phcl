@@ -13,7 +13,7 @@ A single observation (alternatively \textit{data point}, \textit{measurement}, o
 In corpus linguistics, single observations can be understood as single lines in a concordance.
 These concordance lines could contain, for example, clauses or sentences in which one of the alternants of a morpho-syntactic alternation occurs, the goal being to model the influence of diverse properties of the clauses or sentences on the choice of the alternants.
 Along similar lines, they could contain occurrences of a contracted or a non-contracted form of words (like \textit{am} and \textit{'m} in English).
-As a another example, the concordance lines could contain NPs where two pre-nominal adjectives are used, the goal being to determine the factors influencing their relative ordering.
+As another example, the concordance lines could contain NPs where two pre-nominal adjectives are used, the goal being to determine the factors influencing their relative ordering.
 When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions at the group-level.
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
 Put simply, this means that means of the group-wise errors vary.
@@ -24,7 +24,7 @@ This gets even worse when there are within-group tendencies regarding the direct
 This is why known variation by group should always be accounted for in the model.
 Random effects are one convenient way to do so.
 
-Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), the regions where they were born or live, social groups with which they identify, but also time time periods, genres, styles, etc.%
+Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.%
 \footnote{Trivially, grouping factors should never be ordinal variables.
 The are always categorical.}
 Specific lexemes often have idiosyncratic affinities towards alternants in alternating constructions.
@@ -170,8 +170,8 @@ The verb lemma also influences the probability of either variant being used.
 The situation can now be as in the left or the right panel of Figure~\ref{fig:varintlsope}.
 In the situation depicted in the left panel, the overall level in probability changes with the verb lemma, but for each verb lemma, the values change roughly by the same amount in exemplars with old and new dative NPs.
 Note that the lines are not perfectly parallel because the figure is supposed to be an illustration of a data set rather than a fitted model, and we always expect some chance variation in data sets.
-In the situation depicted in the right panel, however, the overall levels are different between lemmas, but the lemma-specific tendencies also vary between exemplars with old and new NPs.
-This is actually nothing but an interaction between two factors (verb lemma and givenness), and we could use a fixed-effect interaction to take it into account.
+In the situation depicted in the right panel, however, the overall levels are also different between lemmas, but additionally the lemma-specific tendencies also vary between exemplars with old and new NPs.
+This is in fact nothing but an interaction between two factors (verb lemma and givenness), and we could use a fixed-effect interaction to take it into account.
 However, if the verb lemma factor is used as a random effect grouping factor, the interaction is modeled as a so-called \textit{random slope}.
 In the next section, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects models.
 Which one is more appropriate will be argued to be better understood as a technical rather than a conceptual question.

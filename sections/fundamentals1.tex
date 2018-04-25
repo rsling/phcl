@@ -18,8 +18,7 @@ When such observations are grouped, it is often plausible to assume that there i
 If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
 Put simply, this means that means of the group-wise errors vary.
 Since the estimators used for estimating the parameters of GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
-\footnote{Type I errors occur when the null hypothesis is rejected although it is true.
-The requirement that error should be uncorrelated is often called ``independence (of errors)''.}
+\footnote{The requirement that error should be uncorrelated is often called ``independence (of errors)''.}
 This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
 This is why known variation by group should always be accounted for in the model.
 Random effects are one convenient way to do so.

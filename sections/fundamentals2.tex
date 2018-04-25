@@ -86,7 +86,10 @@ This is where random effects come into play as an alternative.
 If we treat the same grouping factor as a random intercept, we let the intercept vary by group, \ie\ each group is allowed to have its own intercept.
 Furthermore, we give the varying intercepts a (normal) distribution instead of estimating $m-1$ fixed population parameters.
 This means that the group-wise intercepts are assumed to be normally distributed around $0$.
-This and nothing else is the crucial difference between a fixed effect and a random effect.
+This and nothing else is the conceptual difference between a fixed effect and a random effect.%
+\footnote{There is one other practical difference.
+If models are used to make actual predictions (which is rarely the case in linguistics), a random effect allows one to make predictions for unseen groups.
+See \citet[272--275]{GelmanHill2006}.}
 
 In \texttt{R}, the model specification then looks like (\ref{eq:002}), where ``1|'' can be read as ``an intercept varying by''.
 

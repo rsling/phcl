@@ -211,7 +211,7 @@ For example, the overall intercept of -3.653 can be extracted via the following 
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.03))['(Intercept)','Estimate']
+coef(summary(glmm.10))['(Intercept)','Estimate']
 \end{lstlisting}
 
 To this intercept, the sub-terms for first-level fixed effects are added.
@@ -221,7 +221,7 @@ The result is 0.0183.
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.03))['Badness', 'Estimate'] *
+coef(summary(glmm.10))['Badness', 'Estimate'] *
   measure[99, 'Badness']
 \end{lstlisting}
 
@@ -233,7 +233,7 @@ The following code extracts the \texttt{Kindlemma} random intercept for item 99,
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-ranef(glmm.03)$Kindlemma[
+ranef(glmm.10)$Kindlemma[
   as.character(measure[99, 'Kindlemma']), '(Intercept)']
 \end{lstlisting}
 
@@ -243,7 +243,7 @@ For example, the following code calculates the sub-term for \texttt{Kindfreq}, w
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.03))['Kindfreq', 'Estimate'] *
+coef(summary(glmm.10))['Kindfreq', 'Estimate'] *
   measure[99, 'Kindfreq']
 \end{lstlisting}
 

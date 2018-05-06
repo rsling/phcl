@@ -217,7 +217,7 @@ The varying slope for \textit{Givenness} to be chosen appropriately for each \te
 A source of problems in VIVS models is the fact that in addition to the variance in the intercepts and slopes, the covariance between them has to be estimated.
 If in groups with a higher-than-average intercept, the slope is also higher than average, they are positively correlated, and vice versa.
 These relations are captured in the covariance.
-Technically speaking, the joint distribution of the random intercepts and the random slopes is assumed to follow a bivariate normal distribution with means, variances, and covariances to be estimated.
+Technically speaking, the joint distribution of the random intercepts and the random slopes is assumed to follow a multivariate normal distribution with means, variances, and covariances to be estimated.
 The number of variance parameters to be estimated thus obviously increases with more complex model specifications, and the estimation of the parameters in the presence of complex variance-covariance matrices requires considerably more data than estimating a single variance parameter.
 The estimator algorithm might terminate, but typically covariance estimates of $-1$ or $1$ indicate that the data was too sparse for a successful estimation of the parameter.
 In this case, the model is \textit{over-parametrised} and needs to be simplified (see \citealt{BatesEa2015a,MatuschekEa2017}).

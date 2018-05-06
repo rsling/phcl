@@ -66,7 +66,7 @@ library(merTools)
 
 
 # Some options.
-save.plots <- TRUE
+save.plots <- FALSE
 
 
 # This loads the data, i.e. the "measure" data frame and copyright
@@ -166,7 +166,7 @@ ranef.plot <- function(model, effect, number = -1, intervals = 0.95, ...) {
 opts.dotchart <- list(pch=19, col="black", cex=1, xlab="Prediction of conditional mode")
 
 if(save.plots) pdf("ranef_selection.pdf")
-do.call(ranef.plot, c(list(glmm.01, "Measurelemma", 30, main = "Measure lemma random effect"), opts.dotchart))
+do.call(ranef.plot, c(list(glmm.01, "Measurelemma", 30, main = "Measure lemma random effects with 95% prediction intervals"), opts.dotchart))
 if(save.plots) dev.off()
 
 

@@ -25,7 +25,8 @@ quick:
 	@texcount -merge -total -utf8 -incbib -v0 glmm.tex
 
 clean:
-	\rm *.adx *.and *.aux *.bbl *.blg *.idx *.ilg *.ldx *.lnd *.log *.out *.pdf *.rdx *.run.xml *.sdx *.snd *.toc *.wdx *.xdv *.bcf
+	\rm *.adx *.and *.aux *.bbl *.blg *.idx *.ilg *.ldx *.lnd *.log *.out *.rdx *.run.xml *.sdx *.snd *.toc *.wdx *.xdv *.bcf *.pdf *.xwm .DS_Store RPHCL/.DS_Store RPHCL/.RData RPHCL/.Rhistory RPHCL/Rplots.pdf graphics/.DS_Store sections/.DS_Store
+	\rm -rf .Rproj.user
 
 all:
 	-$(LX) $(TEXFLAGS) $(PREFLAGS) $(FILEN)

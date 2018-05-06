@@ -127,13 +127,13 @@ glmm.01.predict <- predictInterval(glmm.01, n.sims = 100)
 
 
 # Plots the intercept from model for the number most frequent levels in data.
-ranef.plot <- function(model, effect, number = -1, intervals = TRUE, ...) {
+ranef.plot <- function(model, effect, number = -1, intervals = 0.95, ...) {
   require(lme4)
 
   # Get conditional modes.
   .ranef <- ranef(model, condVar = TRUE, drop = T)[[effect]]
 
-  # Get a subsample of conditionalk modes if necessary.
+  # Get a subsample of conditional modes if necessary.
   if (number > 0 & length(.ranef) > number)
     .select <- sample(1:length(.ranef), number)
   else
@@ -143,16 +143,22 @@ ranef.plot <- function(model, effect, number = -1, intervals = TRUE, ...) {
   .select <- .select[order(.ranef[.select])]
 
   # Create full data frame.
+  # Note: postVar gives you the conditional variance. Hence, we need
+  # to calculate the stdev and derive a proper n% interval from it.
   .condvar <- attributes(.ranef)$postVar
+  .qn <- qnorm(1-(1-intervals)/2)
   .df <- cbind(.ranef[.select],
-               .ranef[.select]-.condvar[.select],
-               .ranef[.select]+.condvar[.select])
+               .ranef[.select]-.qn*sqrt(.condvar[.select]),
+               .ranef[.select]+.qn*sqrt(.condvar[.select])
+               )
 
   # Plot.
   dotchart(.df[,1], labels = rownames(.df), xlim = c(min(.df[,2]), max(.df[,3])), ...)
 
   # Add the prediction intervals.
-  if (intervals) for (.i in 1:nrow(.df)) lines(c(.df[.i,2], .df[.i,3]), c(.i,.i), lwd=2)
+  if (!is.null(intervals)) {
+    for (.i in 1:nrow(.df)) lines(c(.df[.i,2], .df[.i,3]), c(.i,.i), lwd=2)
+  }
 
   # Return the data frame with the selection.
   .df

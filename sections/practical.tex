@@ -49,7 +49,7 @@ glm.01 <- glm(Construction~1
 \end{lstlisting}
 
 The output of the \texttt{summary(glm.01)} command (not shown here) shows that the estimates for the 149 fixed effects corresponding to \texttt{Measurelemma} have extremely high standard errors and are virtually unusable.
-The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{NagelkerkeR2(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
+The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{NagelkerkeR2} \texttt{(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
 
 However, the grouping factor \texttt{Measurelemma} is not suitable for use as a fixed effect, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
 
@@ -200,7 +200,7 @@ glmm.10 <- glmer(Construction~1
                  control=glmerControl("bobyqa"))
 \end{lstlisting}
 
-Since the model has a relatively high degree of complexity, the option \texttt{control=glmerControl("bobyqa")} is required.
+Since the model has a relatively high degree of complexity, the option \texttt{control=} \texttt{glmerControl("bobyqa")} is required.
 It selects a different optimiser (an algorithm used by the estimator).
 In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when there are convergence errors.
 

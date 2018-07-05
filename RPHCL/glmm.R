@@ -1,5 +1,7 @@
 # Copyright 2018 Roland Schäfer <mail@rolandschaefer.net>
-# Distributed under the following BSD 2-clause license.
+#                German Grammar, Freie Universität Berlin
+#
+# R code distributed under the following BSD 2-clause license.
 #
 # BEGIN OF BSD 2-CLAUSE LICENSE
 #
@@ -29,13 +31,18 @@
 #
 # END OF BSD 2-CLAUSE LICENSE
 
+
 # The data file "glmm.RData" included with this script is licensed
 # under a Creative Commons Attribution 4.0 International License (see
 # http://creativecommons.org/licenses/by/4.0/).
 
+
 # Reference for script and data:
-# Roland Schäfer (2018). Abstractions and exemplars: the measure noun phrase alternation in German. To appear in Cognitive Linguistics.
-# https://github.com/rsling/measurenps
+# Roland Schäfer (2018). Abstractions and exemplars: the measure noun
+#   phrase alternation in German. Cognitive Linguistics 29(4).
+#
+# DATA URL: https://github.com/rsling/measurenps
+# DATA DOI: https://dx.doi.org/10.5281/zenodo.1254871
 
 
 ### BEGIN OF SCRIPT
@@ -62,7 +69,7 @@ require(fmsb)
 require(MuMIn)
 require(car)
 require(pbkrtest)
-library(merTools)
+require(merTools)
 
 
 # Some options.
@@ -127,6 +134,8 @@ glmm.01.predict <- predictInterval(glmm.01, n.sims = 100)
 
 
 # Plots the intercept from model for the number most frequent levels in data.
+# NOTE! This works only with VI models, not with VS or VIVS models. But
+# it can be adapted to handle such models.
 ranef.plot <- function(model, effect, number = -1, intervals = 0.95, ...) {
   require(lme4)
 

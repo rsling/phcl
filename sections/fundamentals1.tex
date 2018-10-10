@@ -1,27 +1,20 @@
 \subsection{When are random effects useful?}
 \label{sec:whenrandomeffectsareuseful}
 
-\subsubsection{Introduction to random effects}
-\label{sec:introductiontorandomeffects}
+% \subsubsection{Introduction to random effects}
+% \label{sec:introductiontorandomeffects}
 
-(Generalised) Linear Mixed Models (GLMMs) are an extension of (Generalised) Linear Models (GLMs).
-They add what are often called \textit{random effects} and \textit{mix} them with the normal predictors (\textit{fixed effects}) as used in GLMs.
-Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels}.
+%(Generalised) Linear Mixed Models (GLMMs) are an extension of (Generalised) Linear Models (GLMs).
+% They add what are often called \textit{random effects} and \textit{mix} them with the normal predictors (\textit{fixed effects}) as used in GLMs.
+% Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels}.
 
-The purpose of including random effects is usually said to be the modeling of variance between groups of observations.
+In (Generalised) Linear Mixed Models (GLMMs) -- which some statisticians call \textit{multilevel models} or \textit{hierarchical models} (see \citealp{GelmanHill2006} and Section~\ref{sec:hierarchicalormultilevelmodels} below) -- the purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (alternatively \textit{data point}, \textit{measurement}, or \textit{unit}) is one atomic exemplar entering into the statistical analysis of a study.
 In corpus linguistics, single observations can be understood as single lines in a concordance.
 These concordance lines could contain, for example, clauses or sentences in which one of the alternants of a morpho-syntactic alternation occurs, the goal being to model the influence of diverse properties of the clauses or sentences on the choice of the alternants.
 Along similar lines, they could contain occurrences of a contracted or a non-contracted form of words (like \textit{am} and \textit{'m} in English).
 As another example, the concordance lines could contain NPs where two pre-nominal adjectives are used, the goal being to determine the factors influencing their relative ordering.
-When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions at the group-level.
-If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
-Put simply, this means that means of the group-wise errors vary.
-Since the estimators used for estimating the parameters of GLMs work under the assumption of non-correlated errors, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.%
-\footnote{The requirement that error should be uncorrelated is often called ``independence (of errors)''.}
-This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
-This is why known variation by group should always be accounted for in the model.
-Random effects are one convenient way to do so.
+When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions at the group-level (such as the level of the individual speakers, registers, lemmas, etc.).
 
 Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.%
 \footnote{Trivially, grouping factors should never be ordinal variables.
@@ -30,11 +23,21 @@ Specific lexemes often have idiosyncratic affinities towards alternants in alter
 Therefore, exemplars containing specific lexemes also constitute groups.
 In cases like the dative alternation in English, individual verbs co-occur with the alternants to different degrees.
 
+If this is the case and the grouping factor is not included in the model, the error terms within the groups will be correlated.
+Put simply, this means that means of the errors also vary per group, not just per observation.
+The algorithms used for estimating the parameters of GLMs work under the assumption of non-correlated errors, an assumption often called ``independence (of errors)''.
+This means that the prediction errors should not have group-wise tendencies.
+This would be the case, for example, if sentence length were modelled (for example using the types of constructions or lexemes occurring in it) and individual speakers represented in the data had tendencies to form longer or shorter sentences.
+If the speaker were not included as a predictor in the model in this case, the model would make predictions averaged over all speakers, and for short-sentence speakers, these predictions would tend to be too high, whereas for long-sentence speakers, they would be too low.
+If the assumption of independence does not hold, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.
+This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
+This is why known variation by group should always be accounted for in the model.
+Random effects are one convenient way to do so.
+
 The crucial question in specifying models is not whether to include these grouping factors at all, but rather whether to include them as fixed effects or as random effects.
 Random effects structures are very suitable for accounting for group-level variation in regression, but while formulaic recommendations such as ``Always include random effects for speaker and genre!'' provide useful guidance for beginners, the choice between fixed and random effects can and should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting models.
 The remainder of Section~\ref{sec:whenrandomeffectsareuseful} introduces three important points to consider about the structure of the data typically used in mixed modeling.
 Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provides a moderately technical introduction to modeling.
-Section~\ref{sec:practicalguidewithr} shows how a mixed model is implemented in \texttt{R}.
 
 
 \subsubsection{Crossed and nested effects}
@@ -69,7 +72,7 @@ In this example, the region factor nests the speaker factor.
 This example was chosen because the nesting is conceptually necessary.
 However, even when a data set has a nested structure by accident, standard packages in \texttt{R} will also treat them as nested (see Section~\ref{sec:specifyingmodelsusinglme4inr}).
 
-When the grouped entities (themselves groups) do not uniquely belong to levels of the grouping factor, the factors are \textit{crossed}.
+When grouped entities do not uniquely belong to levels of the other grouping factor, the factors are \textit{crossed}.
 Continuing the example, crossed factors for speaker and mode are illustrated in Table~\ref{tab:crossed}.
 %
 \begin{table}
@@ -101,7 +104,7 @@ Mode could nest genre if genres are defined such that each genre is either exclu
 Similarly, in a study on adjectives we might want to describe adjectives as being either intersective or non-intersective.
 Within the two groups, a finer-grained semantic classification might be nested, which itself nests single adjective lexemes.
 However, not all of these structures should be modeled as nested random effects.
-In the latter case, for example, the low number of levels in one factor (intersectivity with just two levels) predestines it as a second-level predictor rather than a nesting factor; see Section~\ref{sec:hierarchicalormultilevelmodels}.
+In the latter case, for example, the low number of levels in one factor (intersective vs.\ non-intersective) predestines it as a second-level predictor rather than a nesting factor; see Section~\ref{sec:hierarchicalormultilevelmodels}.
 
 \subsubsection{Hierarchical or multilevel modeling}
 \label{sec:hierarchicalormultilevelmodels}

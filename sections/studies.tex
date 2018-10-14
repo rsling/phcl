@@ -1,21 +1,21 @@
-\begin{mdframed}
-  \subsection*{\citet{WolkEa2013}}
+\begin{svgraybox}
+  \textbf{\citet{WolkEa2013}}
   
-  \paragraph{Research questions}
+  \vspace{-\baselineskip}\paragraph{Research questions}\vspace{-0.5\baselineskip}
 
   The authors aim to achieve two things.
   First, they want to compare changes in two word order-related alternations in the history of English between 1650 and 1999: the dative alternation and the genitive alternation.
   They look for influencing features shared in both cases as well as construction-specific features.
   Second, they aim to show that historical data fits well into a probabilistic, cognitively oriented view of language.
 
-  \paragraph{Data}
+  \vspace{-\baselineskip}\paragraph{Data}\vspace{-0.5\baselineskip}
 
   The authors use the \textsc{archer} corpus \citep{BiberEa1994}, which contains texts from various registers from 1650 to 1999.
   For both constructions, carefully designed sampling protocols were used (see their Section~4).
   For the annotation of the data, both available corpus meta data were used (text ID, register, time in fractions of centuries, centered at 1800) as well as a large number of manually coded variables (constituent length, animacy, definiteness, etc.).
   Furthermore, the possessor head lemma (genitive alternation) and the verb lemma (dative alternation) were coded.
 
-  \paragraph{Method}
+  \vspace{-\baselineskip}\paragraph{Method}\vspace{-0.5\baselineskip}
 
   Two mixed effects logistic regression models are estimated.
   For the genitive alternation, the text ID and the possessor head lemma are used as crossed random effects.
@@ -23,47 +23,49 @@
   However, it is the advantage of random effects modeling that it can deal with a situation where categories have low numbers of observations (see \textit{shrinkage}, Section~\ref{sec:choosingbetweenrandomandfixedeffects}).
   For the dative alternation, the model includes the text ID, the register (which nests the text ID) as well as the lemma of the theme argument and the verb. 
 
-  \paragraph{Results}
+  \vspace{-\baselineskip}\paragraph{Results}\vspace{-0.5\baselineskip}
 
   It is found that many factors have a shared importance in both alternations, \eg definiteness, animacy, construction length.
   It is also argued that the observed tendencies -- such as \textit{short-before-long} and \textit{animate referents first} -- are in line with synchronic corpus based and experimental findings about general cognitive principles underlying the framework of probabilistic grammar.
   These principles remain in effect, but the strength of their influence changes over time.
 
-\end{mdframed}
+\end{svgraybox}
 
-\begin{mdframed}
+\newpage
 
-  \subsection*{\citet{Gries2015}}
+\begin{svgraybox}
+  \textbf{\citet{Gries2015}}
 
-  \paragraph{Research questions}
+  \vspace{-\baselineskip}\paragraph{Research questions}\vspace{-0.5\baselineskip}
   
   The paper is programmatic in nature.
   The author re-analyses data from a previously published study on verb particle placement in English.
   He uses a GLMM instead of a fixed-effects logistic regression to show that including random effects in order to account for variation related to mode, register, and subregister increases the quality and predictive power of the model.
   He also argues that by not doing so, corpus linguists risk violating fundamental assumptions about the independence of the error terms in models.
   
-  \paragraph{Data}
+  \vspace{-\baselineskip}\paragraph{Data}\vspace{-0.5\baselineskip}
   
   The data are $2,321$ instances of particle verbs showing either verb--direct object--particle or verb--particle--direct object order, taken from the ICE-GB.
   The grouping factors derived from the structure of the corpus are mode (only two levels), register (five levels), and subregister ($13$ levels).
   They are nested: mode nests register, which nests subregister.
   Additionally, verb and particle lemma grouping factors are annotated.
   Finally, two fixed effects candidates are annotated (the type of the head of the direct object and the logarithmised length of the direct object in words).
-  
-  \paragraph{Method}
+ 
+  \vspace{-\baselineskip}\paragraph{Method}\vspace{-0.5\baselineskip}
   
   The author uses the model selection protocol described in \citet{ZuurEa2009} to first find the optimal random effects structure using ANOVAs and AIC comparisons as well as analyses of the estimated variance for single random effects.
   He then goes on to find the optimal fixed effects structure.
   Additionally, he compares the pseudo-$R^2$ measure of the resulting mixed models.
-  
-  \paragraph{Results}
+ 
+  \vspace{-\baselineskip}\paragraph{Results}\vspace{-0.5\baselineskip}
 
   Gries finds that the verb and particle lemma as well as the subregister play significant roles.
-  Notably, the variance estimate for mode is close to $0$ from the beginning of the model selection procedure.
-  This is not surprising, as two levels are not nearly enough in order for the variance to be reliably estimated, and it could maybe be used as a second-level predictor instead (see Section~\ref{sec:choosingbetweenrandomandfixedeffects}).
-  The $R^2$ values of the final model are very high, with a considerable difference between marginal $R^2_m=0.57$ and conditional $R^2_c=0.748$, which indicates that the random effects do in fact improve the model fit.
-  It is also shown that the classification accuracy is considerably improved over that of a GLM without random effects, but differently for different lexical groups and subregisters.
+  The variance estimate for mode is close to $0$ from the beginning of the model selection procedure.
+  This is not surprising, as two levels are not nearly enough in order for the variance to be reliably estimated, and it should be used as a second-level predictor instead.
+  The $R^2$ values of the final model are high, with a large difference between marginal $R^2_m=0.57$ and conditional $R^2_c=0.748$, which indicates that the random effects improve the model fit.
+  It is also shown that the classification accuracy is improved over that of a GLM without random effects, but differently for different lexical groups and subregisters.
   The paper thus shows that it is not appropriate to ignore lexical grouping factors and grouping factors derived from the corpus structure, especially as both are easy to annotate automatically.
 
-\end{mdframed}
+\end{svgraybox}
 
+\newpage

@@ -1,13 +1,6 @@
 \subsection{When are random effects useful?}
 \label{sec:whenrandomeffectsareuseful}
 
-% \subsubsection{Introduction to random effects}
-% \label{sec:introductiontorandomeffects}
-
-%(Generalised) Linear Mixed Models (GLMMs) are an extension of (Generalised) Linear Models (GLMs).
-% They add what are often called \textit{random effects} and \textit{mix} them with the normal predictors (\textit{fixed effects}) as used in GLMs.
-% Alternatively, statisticians speak of \textit{multilevel models} or \textit{hierarchical models} \citep{GelmanHill2006}, a terminology to be explained in Section~\ref{sec:hierarchicalormultilevelmodels}.
-
 In (Generalised) Linear Mixed Models (GLMMs) -- which some statisticians call \textit{multilevel models} or \textit{hierarchical models} (see \citealp{GelmanHill2006} and Section~\ref{sec:hierarchicalormultilevelmodels} below) -- the purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (alternatively \textit{data point}, \textit{measurement}, or \textit{unit}) is one atomic exemplar entering into the statistical analysis of a study.
 In corpus linguistics, single observations can be understood as single lines in a concordance.
@@ -27,17 +20,18 @@ If this is the case and the grouping factor is not included in the model, the er
 Put simply, this means that means of the errors also vary per group, not just per observation.
 The algorithms used for estimating the parameters of GLMs work under the assumption of non-correlated errors, an assumption often called ``independence (of errors)''.
 This means that the prediction errors should not have group-wise tendencies.
-This would be the case, for example, if sentence length were modelled (for example using the types of constructions or lexemes occurring in it) and individual speakers represented in the data had tendencies to form longer or shorter sentences.
+We would fine group-wise tendenceies, for example, if sentence length were modelled (for example using the types of constructions or lexemes occurring in it) and individual speakers represented in the data had tendencies to form longer or shorter sentences.
 If the speaker were not included as a predictor in the model in this case, the model would make predictions averaged over all speakers, and for short-sentence speakers, these predictions would tend to be too high, whereas for long-sentence speakers, they would be too low.
 If the assumption of independence does not hold, standard errors for model coefficients will typically be estimated as smaller than they nominally are, leading to increased Type I error rates in inferences about the coefficients.
 This gets even worse when there are within-group tendencies regarding the direction and strength of the influence of the other regressors, \ie when there is an interaction between them and the grouping factor (\eg \citealt{SchielzethForstmeier2009}).
 This is why known variation by group should always be accounted for in the model.
-Random effects are one convenient way to do so.
+Random effects are one convenient way to do so with some advantages and disadvantages compared to fixed effects.
 
 The crucial question in specifying models is not whether to include these grouping factors at all, but rather whether to include them as fixed effects or as random effects.
-Random effects structures are very suitable for accounting for group-level variation in regression, but while formulaic recommendations such as ``Always include random effects for speaker and genre!'' provide useful guidance for beginners, the choice between fixed and random effects can and should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting models.
-The remainder of Section~\ref{sec:whenrandomeffectsareuseful} introduces three important points to consider about the structure of the data typically used in mixed modeling.
-Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provides a moderately technical introduction to modeling.
+Random effect structures are very suitable for accounting for group-level variation in regression, but formulaic recommendations such as ``Always include random effects for speaker and genre!'' are inadequate.
+The choice between fixed and random effects should be made based on an analysis and understanding of the data set at hand and the differences and similarities in the resulting models.
+The remainder of Section~\ref{sec:whenrandomeffectsareuseful} introduces three important points to consider about the structure of data sets in this context.
+Then, Section~\ref{sec:modelspecificationandmodelingassumptions} provides a moderately technical introduction to the actual modeling.
 
 
 \subsubsection{Crossed and nested effects}
@@ -70,7 +64,7 @@ Such a data set would intrinsically be \textit{nested}, as Table~\ref{tab:crosse
 Since speakers have a unique region of birth, Tyneside is the unique \textit{region} value for the speakers Daryl and Riley, and Greater London is the unique \textit{region} value for Dale and Reed.
 In this example, the region factor nests the speaker factor.
 This example was chosen because the nesting is conceptually necessary.
-However, even when a data set has a nested structure by accident, standard packages in \texttt{R} will also treat them as nested (see Section~\ref{sec:specifyingmodelsusinglme4inr}).
+However, even when a data set has a nested structure by accident, standard packages in R will also treat them as nested (see Section~\ref{sec:specifyingmodelsusinglme4inr}).
 
 When grouped entities do not uniquely belong to levels of the other grouping factor, the factors are \textit{crossed}.
 Continuing the example, crossed factors for speaker and mode are illustrated in Table~\ref{tab:crossed}.
@@ -102,16 +96,17 @@ In Table~\ref{tab:nested}, the relation between speakers and regions is many-to-
 With more than two grouping factors, there can be more than one level of nesting.
 Mode could nest genre if genres are defined such that each genre is either exclusively spoken or written.
 Similarly, in a study on adjectives we might want to describe adjectives as being either intersective or non-intersective.
-Within the two groups, a finer-grained semantic classification might be nested, which itself nests single adjective lexemes.
+Within the two groups, a finer-grained semantic classification which itself nests single adjective lexemes might be nested.
 However, not all of these structures should be modeled as nested random effects.
-In the latter case, for example, the low number of levels in one factor (intersective vs.\ non-intersective) predestines it as a second-level predictor rather than a nesting factor; see Section~\ref{sec:hierarchicalormultilevelmodels}.
+In the latter case, for example, the low number of levels in one factor (intersective vs.\ non-intersective) predestines it as a second-level predictor rather than a nesting factor (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
 
-\subsubsection{Hierarchical or multilevel modeling}
+\subsubsection{Hierarchical\slash multilevel modelling}
 \label{sec:hierarchicalormultilevelmodels}
 
-This section describes the types of data to be used in true multilevel models.
+This section describes the types of data structures which require the use of multilevel models.
+Such data structures are similar or even identical to nested data structures.
 Let us assume that we wanted to account for lexeme-specific variation in a study on an alternation phenomenon such as the dative alternation in English by specifying the lexeme as a random effect in the model.
-Additionally, we suspect or know that a lexeme's overall frequency influences its preferences for occurring in the construction alternants.
+Additionally, we entertain the hypothesis that a lexeme's overall frequency influences its preferences for occurring in the construction alternants.
 A similar situation would arise in a study of learner corpus data (even of the same alternation phenomenon) with a learner grouping factor if we also knew that the number of years learners have learned a language influences their performance with regard to a specific phenomenon.
 In such cases, variables like \textit{frequency} and \textit{number of learning years} are constant for each level of the grouping factor (\textit{lexeme} and \textit{learner}, respectively).
 In other words, each lexeme has exactly one overall frequency, and each learner has had a fixed number of years of learning the language.
@@ -134,24 +129,23 @@ In other words, each lexeme has exactly one overall frequency, and each learner 
             9 &     Old   &      9    &   promise &   5.86   & 2 \\
     \bottomrule
   \end{tabular}
-  \caption{Illustration of a fictional data set which requires multilevel modeling; NP length could be measured in words; the lemma frequencies are actual logarithm-transformed frequencies per one million tokens taken from ENCOW14A \citep{SchaeferBildhauer2012}; the outcome column encodes whether alternant 1 or 2 was chosen}
+  \caption{Illustration of a fictional data set which requires multilevel modeling}
   \label{tab:multilevel}
 \end{table}
 
 Such variables are thus interpretable only at the group-level.
 Table~\ref{tab:multilevel} illustrates such a data set (fictional in this case).
 It might be a small fraction of the data used to predict whether a ditransitive verb is used in the dative shift construction or not.
-The givenness and the NP length status vary at the level of observations.
+The NP length is measured in words, the lemma frequencies are actual logarithm-transformed frequencies per one million tokens taken from ENCOW14A \citep{SchaeferBildhauer2012}.
+The outcome column encodes whether alternant 1 or 2 was chosen.
+As the table shows, the givenness status and the NP length vary at the level of observations.
 To capture verb lemma specific tendencies, a verb lemma grouping factor is added.
 The verb lemma frequency necessarily varies at the group level because each lemma has a unique frequency.
-In such cases, an adequately specified multilevel model uses the group-level variables to partially predict the tendency of the grouping factor.
-Put differently, the idiosyncratic effect associated with a lexeme, speaker, genre, etc.\ is split up into a truly idiosyncratic preference and a preference predictable from group-level variables.
-This is achieved by specifying a second (linear) model which predicts the group-level random effect itself.
-Such second-level models can even contain modeled effects themselves, giving rise to third-level models, and so on.
+In such cases, an adequately specified multilevel model uses these so-called \textit{second-level fixed effect variables} to partially predict the tendency of the grouping factor.
+Put differently, the idiosyncratic effect associated with a lexeme, speaker, genre, etc.\ is split up into a truly idiosyncratic preference and a preference predictable from group-level variables (such as the frequency of the lemma).
+In Section~\ref{sec:morecomplexmodels}, it will be explained briefly that in such cases, a second model has to be specified which predicts the group-level tendency from the second-level effects.
 The data look similar to multilevel nesting, but (i) second-level models can account for continuous numerical predictors at the group-level, which nesting cannot, and (ii) there might be situations where specifying even categorical second-level grouping factors as fixed effects in a second-level model is more appropriate than adding nested random effects (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
 
-As in the case of nested vs.\ crossed factors, standard packages in \texttt{R} usually take care of hierarchical modeling automatically, given that the data are structured appropriately.
-This might, however, lead to situations where practitioners specify multilevel models without even knowing it, which in turn can lead to misinterpretations of the results.
 
 \subsubsection{Random slopes as interactions}
 \label{sec:randominterceptsandslopes}
@@ -175,6 +169,6 @@ Note that the lines are not perfectly parallel because the figure is supposed to
 In the situation depicted in the right panel, however, the overall levels are also different between lemmas, but additionally the lemma-specific tendencies also vary between exemplars with old and new NPs.
 This is in fact nothing but an interaction between two factors (verb lemma and givenness), and we could use a fixed-effect interaction to take it into account.
 However, if the verb lemma factor is used as a random effect grouping factor, the interaction is modeled as a so-called \textit{random slope}.
-In the next section, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects models.
+In Section~\ref{sec:modelspecificationandmodelingassumptions}, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects models.
 Which one is more appropriate will be argued to be better understood as a technical rather than a conceptual question.
 

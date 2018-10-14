@@ -1,8 +1,8 @@
-\subsection{Specifying models using \texttt{lme4} in \texttt{R}}
+\subsection{Specifying models using \texttt{lme4} in R}
 \label{sec:specifyingmodelsusinglme4inr}
 
-This section and the next focus on \texttt{lme4}, an often used package to do multilevel modeling in \texttt{R} with maximum likelihood methods \citep{BatesEa2015}.
-The data set used to illustrate the process of fitting GLMMs in \texttt{R} is taken from \citet{Schaefer2018}.
+This section and the next focus on \texttt{lme4}, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
+The data set used to illustrate the process of fitting GLMMs in R is taken from \citet{Schaefer2018}.
 
 \subsubsection{Overview of the data set}
 
@@ -15,12 +15,12 @@ In the second alternant, the kind-denoting noun is assigned the same case as the
   \begin{xlist}
     \ex[ ]{\label{ex:intro:alternation1} \gll Wir trinken [[ein Glas]\Sub{Acc} [guten Weins]\Sub{Gen}]\Sub{Acc}.\\
     we drink a glass good wine \\
-    \glt We drink a glass of good wine.}
+    \trans We drink a glass of good wine.}
     \ex[ ]{\label{ex:intro:alternation2} Wir trinken [[ein Glas]\Sub{Acc} [guten Wein]\Sub{Acc}]\Sub{Acc}.}
   \end{xlist}
 \end{exe}
 
-The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} (a measure of document quality) and \texttt{Genitives} (a measure of the frequency of genitives), a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
+The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} (a measure of document quality available for all COW documents; see \citealt{SchaeferEa2013}) and \texttt{Genitives} (a measure of the frequency of genitives), a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
 Furthermore, there are two crossed random intercepts for the kind noun (\texttt{Kindlemma}) and the measure noun (\texttt{Measurelemma}).
 These random intercepts come with second-level models including a number of fixed second-level effects.
 For \texttt{Kindlemma}, there are: \texttt{Kindfreq} (numeric, z-transformed), which encodes the lemma frequency; \texttt{Kindgender} (binary), which encodes the grammatical gender of the kind noun; \texttt{Kindattraction} (numeric, z-transformed), which encodes the influence of neighbouring constructions.
@@ -51,7 +51,9 @@ glm.01 <- glm(Construction~1
 The output of the \texttt{summary(glm.01)} command (not shown here) shows that the estimates for the 149 fixed effects corresponding to \texttt{Measurelemma} have extremely high standard errors and are virtually unusable.
 The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{NagelkerkeR2} \texttt{(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
 
-However, the grouping factor \texttt{Measurelemma} is not suitable for use as a fixed effect, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
+As the above example shows, grouping factors with many levels like \texttt{Measurelemma} are usually not suitable fixed effects.
+Hence, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
+The \texttt{glmer} function is the standard function from the \texttt{lme4} package for estimating mixed models.
 
 \vspace{0.5\baselineskip}
 
@@ -86,10 +88,10 @@ MeasurecaseAcc -0.01923    0.08821  -0.218  0.82740
 MeasurecaseDat  0.25047    0.12045   2.079  0.03758 *  
 \end{lstlisting}
 
-\texttt{R} outputs the standard coefficient table for the fixed effects including the overall intercept.
+R outputs the standard coefficient table for the fixed effects including the overall intercept.
 Above this coefficient table, there is a summary of the random effects.
 The number of groups for \texttt{Measurelemma} is correctly given as 150, and the variance in the random intercepts is 1.252.%
-\footnote{The variance-covariance matrix of GLMMs can also be extracted directly using the \texttt{VarCorr(glmm.01)} command.}
+\footnote{The variance-covariance matrix of \texttt{glmm.01} can also be extracted directly using the \texttt{VarCorr(glmm.01)} command.}
 As a rule of thumb, the larger is the variance between the intercepts, the larger are the differences between the groups.
 For the variance estimate, confidence intervals can be obtained with either one of the following commands, where the first one uses the profile method (based on likelihood ratio tests) and the second one uses the parametric bootstrap, which is sometimes considered more robust.%
 \footnote{Since the bootstrap (especially with smaller original sample sizes) tends to run into replications where the estimation of the variance fails and is thus returned as 0, the bootstrap interval is sometimes skewed towards 0 when the profile confidence interval frames the true value symmetrically. The bootstrap is thus not always more robust or intrinsically better.
@@ -107,7 +109,7 @@ Without applying formal significance testing, this is a reasonably narrow interv
 It is generally not a good idea to do (stepwise) model selection for random effects.
 Even worse, while bootstrap methods are available for the comparison of two nested mixed models (see below), the comparison of a GLM and a GLMM (which extends the GLM by one random effect) is mostly uncharted territory and should be avoided.
 
-Single conditional modes for the levels of the grouping factor can be extracted using the \texttt{ranef} command.
+Single conditional modes (see Section~\ref{sec:choosingbetweenrandomandfixedeffects}) for the levels of the grouping factor can be extracted using the \texttt{ranef} command.
 The following command stores a list of conditional modes for \texttt{Measurelemma} in \texttt{glmm.01.ranef}.
 
 \vspace{0.5\baselineskip}
@@ -129,7 +131,7 @@ attributes(glmm.01.ranef)$postVar
 These can be used to construct prediction intervals around the predicted conditional modes in order to display them in tabular form or plot them.
 While some ready-made functions exist to plot them in the form of a dot plot, it is good to have a custom plotting function.
 If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes, and there is no ready-made function which supports this.
-The \texttt{R} script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a dot plot with prediction intervals for a random subset of the conditional modes.
+The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a dot plot with prediction intervals for a random subset of the conditional modes.
 An example is given in Figure~\ref{fig:condmodes}, where the smaller prediction intervals correspond strongly to the number of exemplars observed in the different groups.
 
 \begin{figure}

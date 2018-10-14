@@ -1,55 +1,57 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[graybox]{svmult}
 
-\usepackage{authblk}
-\usepackage[margin=1.5in]{geometry}
-\usepackage{setspace}
 \usepackage[T1]{fontenc}
-\usepackage{calc}
-\usepackage[hyphens]{url}
 
-\usepackage{amsmath}
-
-\usepackage[mono=false]{libertine}
-\usepackage{unicode-math}
-\setmathfont[Scale=MatchUppercase]{libertinusmath-regular.otf}
-\setsansfont{Lucida Console}[Scale=MatchLowercase]
-
-%\usepackage{inconsolata}
+% The editors specifically asked for Lucida Console.
+% Hence, I switched to XeLaTeX. It does, of course,
+% not work with PDFLaTeX. You'll know how to goi back
+% to PDFLaTeX if you have to.
+\usepackage{fontspec}
 \setmonofont{Lucida Console}
 
-\usepackage{xcolor}
-\definecolor{lightgray}{gray}{0.9}
-\usepackage{listings}
-\lstset{language=R, keywordstyle=\color{black}, basicstyle=\ttfamily\small,backgroundcolor = \color{lightgray}, frame=trbl, rulecolor=\color{black}, framesep=10pt}
+\usepackage{makeidx}
+\usepackage{multicol}
+\usepackage[bottom]{footmisc}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
 
-\usepackage{pifont}
+\usepackage{xcolor}
+\definecolor{lightgray}{gray}{0.85}
+\usepackage{listings}
+\lstset{%
+  language=R,
+  keywordstyle=\color{black},
+  basicstyle=\ttfamily\small,
+  backgroundcolor = \color{white},
+  frame=trbl,
+  rulecolor=\color{white},
+  framesep=10pt,
+  xleftmargin=10pt,
+  xrightmargin=10pt
+}
+
+\usepackage[hyphens]{url}
+
 \usepackage{hhline}
 \usepackage{booktabs}
-\usepackage{longtable}
-\setlength{\LTleft}{0pt}
 \usepackage{colortbl}
 \usepackage{gb4e-}
 \usepackage[xetex]{graphicx}
-\usepackage{mdframed}
-\usepackage{hyperref}
 
-\usepackage{boxedminipage2e}
+% \usepackage[backend=biber,
+% 	natbib=true,
+% 	style=bst/unified/bbx/biblatex-sp-unified,
+% 	citestyle=bst/unified/cbx/sp-authoryear-comp,
+% 	maxbibnames=99,
+% 	isbn=false,
+% 	doi=false,
+% 	eprint=false
+% ]{biblatex}
+% \bibliography{glmm}
 
-\usepackage[backend=biber,
-	natbib=true,
-	style=bst/unified/bbx/biblatex-sp-unified,
-	citestyle=bst/unified/cbx/sp-authoryear-comp,
-	maxbibnames=99,
-	isbn=false,
-	doi=false,
-	eprint=false
-]{biblatex}
+\usepackage{natbib}
+\bibliographystyle{styles/spbasic}
 
-\usepackage{fancyhdr}
-\pagestyle{headings}
-
-%\usepackage[printwatermark]{xwatermark}
-%\newwatermark[allpages, color=red!25, angle=45, scale=3, xpos=-15, ypos=12]{\sffamily DRAFT}
 
 \newcommand{\Lf}{
   \setlength{\itemsep}{1pt}
@@ -64,32 +66,16 @@
 \newcommand{\Eg}{E.\,g.,\ }
 \newcommand{\Aa}{The author\ }
 \newcommand{\A}{the author\ }
+
 \newcommand{\Sub}[1]{\ensuremath{\mathrm{_{#1}}}}
 \newcommand{\Sup}[1]{\ensuremath{\mathrm{^{#1}}}}
-\newcommand{\Subsf}[1]{\ensuremath{\mathsf{_{#1}}}}
-\newcommand{\Supsf}[1]{\ensuremath{\mathsf{^{#1}}}}
-\newcommand{\pPB}{p\Subsf{PB}}
-\newcommand{\mpPB}{\ensuremath{p_{\text{PB}}}}
 \newcommand{\vivs}{VI\slash VS\ }
 
 \newcommand{\Rformula}[3]{\begin{equation}{\texttt{#1\textasciitilde #2}}\label{#3}\end{equation}}
 
-
-\bibliography{glmm}
-
 \title{Mixed-effects regression modeling}
-% \title{{\small DRAFT of \today}\\Mixed-effects regression modeling\\\small to appear in: St.~Gries \& M.~Paquot (eds.), Practical Handbook of Corpus Linguistics}
 \author{Roland Schäfer}
-\affil{Freie Universität Berlin}
-\date{}
-
-\setlength\parindent{0pt}
-\doublespacing
-
-% For word counting.
-% \raggedright
-% \pagestyle{empty}
-
+\institute{Roland Schäfer \at Deutsche und niederländische Philologie, Freie Universität Berlin \email{roland.schaefer@fu-berlin.de}}
 
 \begin{document}       
 
@@ -109,14 +95,15 @@ Readers are assumed to be familiar with the concepts covered in the previous cha
 \section{Fundamentals}
 \label{sec:fundamentals}
 
-\input{sections/fundamentals1} % Types of data for multilevel modelling.
-\input{sections/fundamentals2} % Model selection and choosing between fixed and random.
+\input{sections/fundamentals1}
+\input{sections/fundamentals2}
 
 \section{Practical guide with R}
 \label{sec:practicalguidewithr}
 
 \input{sections/practical}
 
+\newpage
 \section{Representative studies}
 
 \input{sections/studies}
@@ -124,15 +111,11 @@ Readers are assumed to be familiar with the concepts covered in the previous cha
 \section{Further reading}
 \label{sec:furtherreading}
 
-% This article was written in a way such that readers should be able to move on to more advanced text books written by statisticians instead of practitioners.
-% There are, however, no up-to-date, comprehensive, and accessible text books written for linguists, and readers will have to live with the fact that examples in these text books are taken from political or social science, biology, etc. 
 Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for \texttt{R} and \texttt{lme4} users.
 Similarly, \citet{ZuurEa2009} has a reputation among \texttt{R} users of mixed effects models in many fields.
-% Also, \cite{Fox2016} is a helpful resource.
-% The non-technical passages of \citet{FahrmeirEa2013} could be considered.
 The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
-% The GLMM FAQ collected by Ben Bolker is also a de-facto standard among \texttt{R} users working with GLMMs: \url{http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html}
 
-\printbibliography
+% \printbibliography
+\bibliography{glmm}
 
 \end{document} 

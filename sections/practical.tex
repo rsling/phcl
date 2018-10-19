@@ -2,7 +2,6 @@
 \label{sec:specifyingmodelsusinglme4inr}
 
 This section and the next focus on \texttt{lme4}, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
-The data set used to illustrate the process of fitting GLMMs in R is taken from \citet{Schaefer2018}.
 
 \subsubsection{Overview of the data set}
 
@@ -163,7 +162,7 @@ However, the standard deviations (and consequently the confidence intervals as w
 
 \paragraph{Reporting the results}
 
-Journals and conferences in corpus linguistics apparently do not enforce strict guidelines when it comes to reporting the results of GLMM fits.
+Journals and conferences in corpus linguistics do not enforce strict guidelines when it comes to reporting the results of GLMM fits.
 While a coefficient table for the fixed effects is a de-facto standard for GLMMs just as much as for GLMs, there is no such de-facto standard with regard to which measures of model quality for GLMMs should be reported, and especially how random effects should be reported.
 Everything that should be reported for a GLM should also be reported for a GLMM, such as the coefficient table for the fixed effects (which should at least contain the coefficient estimate, the standard error, and possibly bootstrapped confidence intervals) and variance inflation factors \citep{FoxMonette1992,ZuurEa2010}.
 In addition, the present author recommends to report (either in the running text, in tabular form, or in the caption of the coefficient table):
@@ -176,7 +175,10 @@ In addition, the present author recommends to report (either in the running text
   \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014}) 
 \end{enumerate}
 
+See Section~\ref{sec:morecomplexmodels} for an example.
+
 \subsubsection{More complex models}
+\label{sec:morecomplexmodels}
 
 The \texttt{glmer} call as used in \citet{Schaefer2018} is as follows.
 
@@ -206,8 +208,57 @@ Since the model has a relatively high degree of complexity, the option \texttt{c
 It selects a different optimiser (an algorithm used by the estimator).
 In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when the estimator does not converge and convergence errors are reported at the console.
 
-The second-level predictors are automatically detected as second-level by R because for each value of the random intercept, they have a fixed value.
-In order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
+\begin{table}
+  \centering
+  \resizebox{\textwidth}{!}{
+    \begin{tabular}{llrlrrrc}
+    Model           &                   &                        & Factor       &             &        &         \\
+    level           & Regressor         & $\text{p}_{\text{PB}}$ & level        & Coefficient & CI low & CI high \\
+    \midrule
+    Observations    & Badness           &  0.002                 &              & -0.152      & -0.247 & -0.061  \\
+                    & Cardinal          &  0.001                 & No           &  1.189      &  0.862 &  1.466  \\
+                    & Genitives         &  0.001                 &              & -0.693      & -0.768 & -0.592  \\
+                    & Measurecase       &  0.001                 & Acc          &  0.030      & -0.150 &  0.212  \\
+                    &                   &                        & Dat          &  0.705      &  0.455 &  0.944  \\[0.5\baselineskip]
+    
+    Kindlemma       & Kindattraction    &  0.020                 &              &  0.225      &  0.049 &  0.393  \\
+                    & Kindfreq          &  0.095                 &              &  0.146      & -0.023 &  0.301  \\
+                    & Kindgender        &  0.001                 & Neut         &  0.021      & -0.367 &  0.392  \\
+                    &                   &                        & Fem          &  1.269      &  0.800 &  1.709  \\[0.5\baselineskip]
+    
+    Measurelemma    & Measureattraction &  0.001                 &              &  0.282      &  0.106 &  0.447  \\
+                    & Measureclass      &  0.001                 & Container    &  0.252      & -0.265 &  0.788  \\
+                    &                   &                        & Rest         &  0.421      & -0.209 &  1.063  \\
+                    &                   &                        & Amount       &  0.831      &  0.215 &  1.432  \\
+                    &                   &                        & Portion      &  1.217      &  0.675 &  1.684  \\
+                    & Measurefreq       &  0.005                 &              & -0.231      & -0.363 & -0.079  \\
+
+  \end{tabular}
+  }
+  \caption{Coefficient table from \citet{Schaefer2018}}
+  \label{tab:bigtable}
+\end{table}
+
+
+In \citet{Schaefer2018}, the results are reported as follows (given here in adapted and abridged form):
+
+\begin{quote}
+  A multilevel logistic regression model was fit which models the influence of the regressors on the probability that the genitive is chosen over case identity.
+  The measure lemma and the kind noun lemma were specified as varying-intercept random effects.
+  The sample size was \textit{n=}5,063 with 1,134 cases with the genitive and 3,929 cases with case identity.
+  The intercept estimated at -3.548 comprises \textit{Cardinal=Yes}, \textit{Measurecase=Nom}, \textit{Kindgender=Masc}, \textit{Measureclass=Physical}, and 0 for all numeric z-transformed regressors.
+  The coefficient table is shown in Figure~\ref{tab:bigtable}.
+  Given the coding of the response variable, coefficients leaning to the positive side can be interpreted as characterising a configuration typical of the genitive.
+  I ran a parametric bootstrap (using the \mbox{\textit{confint.merMod}} function from \textit{lme4}) with 1,000 replications and using the percentile method.
+  The resulting 95\% bootstrap confidence intervals are reported in Table~\ref{tab:bigtable} in columns \textit{CI low} and \textit{CI high}.
+  For each regressor, a p-value $\text{p}_{\text{PB}}$ was obtained by dropping the regressor from the full model, re-estimating the nested model, and comparing it to the full model.
+  A drop-in bootstrap replacement for the Likelihood Ratio Test in the form of the function \textit{PBmodcomp} from the \textit{pbkrtest} package \citep{HalekohHojsgaard2014} was used. 
+  Nakagawa \& Schielzeth's pseudo-coefficients of determination are $R_m^2=0.409$ and $R^2_c=0.495$.
+  The lemma intercepts have standard deviations of $\sigma_{\text{Measurelemma}}=0.448$ and $\sigma_{\text{Kindlemma}}=0.604$.
+  Of all predictors, only \textit{Kindfreq} ($p_{\text{PB}}=0.095$) could be seen as slightly too high to be convincing, failing at sig=0.05.
+\end{quote}
+
+Finally, in order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
 For example, the overall intercept of -3.653 can be extracted via the following command.
 
 \vspace{0.5\baselineskip}

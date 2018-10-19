@@ -136,7 +136,7 @@ Although one often finds default recommendations telling practitioners to use a 
 Along the same lines, the distinction between intersective and non-intersective adjectives (Section~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
 Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect.
 
-If the number of groups is reasonably large, the next thing to consider is the number of observations per group.
+If the number of levels is reasonably large, the next thing to consider is the number of observations per levels.
 Alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed coefficients per group are estimated without taking the between-group variance into account.
 With a random effect, however, the conditional modes\slash means are pulled (\textit{shrunken}) towards the overall intercept (\textit{shrinkage}).

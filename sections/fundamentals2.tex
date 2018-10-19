@@ -66,7 +66,7 @@ Because the first of the $m$ levels of the grouping factor is encoded by all dum
 The first level of the grouping factor is thus ``on the intercept'' and becomes the reference to which all other levels are compared.%
 \footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate.
-This extends to any other appropriate coding for categorical grouping variables.
+This extends to any other appropriate coding for categorical variables.
 }
 
 To sum up and clarify, if in a given study \textit{Lemma} has four levels dummy-coded as $l_1$, $l_2$, $l_3$, and \textit{Givenness} is binary and coded as $g$ with $g=1$ if the referent is given, the formula corresponding to (\ref{eq:001}) looks like (\ref{eq:001a}) in mathematical notation, where the linear additive term is enclosed in $[ ]$, each sub-term appears in $( )$, and $c$ encodes the choice of the two alternants.
@@ -124,7 +124,7 @@ They conclude that there is essentially no universally accepted and tenable conc
 The author of this chapter agrees with their conclusion that random effects should be preferred whenever it is technically feasible.
 Understanding when it is technically feasible requires at least some understanding of two major points.
 First, the variance in the intercepts needs to be estimated if a random effect is used.
-Second, the random intercepts can be understood as a compromise between fitting separate models for each group of the grouping factor (\textit{no pooling}) and fitting a model while ignoring the grouping factor altogether (\textit{complete pooling}), see \citet[Ch.~12]{GelmanHill2006}.
+Second, the random intercepts can be understood as a compromise between fitting separate models for each level of the grouping factor (\textit{no pooling}) and fitting a model while ignoring the grouping factor altogether (\textit{complete pooling}), see \citet[Ch.~12]{GelmanHill2006}.
 
 As was stated above, the random intercepts are assumed to come from a normal distribution, and therefore the variance between them has to be estimated with sufficient precision.
 From the estimated variance and the data for a specific group, the estimator predicts the \textit{conditional mode} in a GLMM or the \textit{conditional mean} in a LMMs for that group (see \citealt[Ch.~1]{Bates2010}).
@@ -143,7 +143,7 @@ With a random effect, however, the conditional modes\slash means are pulled (\te
 When the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly towards $0$, predicting only a small deviation from the overall tendency.%
 \footnote{Terminologically, shrinkage is thus \textit{stronger} (and the conditional mode\slash mean is closer to $0$) if there is less evidence that a group deviates from the overall tendency.
 The lower the number of observations per group, the lesser evidence there is.}
-On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, high p-values) when the number of observations for a level is low.
+On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, high p-values) when the number of observations in a group is low.
 Thus, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
 Random effects are much more robust in such situations because of shrinkage.
 On the downside, a conditional mode that was strongly shrunken (due to a low number of observations) cannot be distinguished straightforwardly from a conditional mode of a group which simply does not deviate a lot from the average tendency.

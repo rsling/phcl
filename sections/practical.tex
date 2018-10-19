@@ -5,7 +5,7 @@ This section and the next focus on \texttt{lme4}, an often used package to do mu
 
 \subsubsection{Overview of the data set}
 
-The data used here for illustration purposes comes from \citet{Schaefer2018}, where a binary case alternation in German measure phrases is modelled.
+The data used here for illustration purposes comes from \citet{Schaefer2018}, where a binary case alternation in German measure phrases is modeled.
 In the first alternant, the kind-denoting noun (here \textit{Wein} `wine') is in the genitive as in (\ref{ex:intro:alternation1}).
 In the second alternant, the kind-denoting noun is assigned the same case as the head measure noun as in (\ref{ex:intro:alternation2}).
 
@@ -128,9 +128,9 @@ attributes(glmm.01.ranef)$postVar
 \end{lstlisting}
 
 These can be used to construct prediction intervals around the predicted conditional modes in order to display them in tabular form or plot them.
-While some ready-made functions exist to plot them in the form of a dot plot, it is good to have a custom plotting function.
+While some ready-made functions exist to plot them, it is good to have a custom plotting function.
 If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes, and there is no ready-made function which supports this.
-The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a dot plot with prediction intervals for a random subset of the conditional modes.
+The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a plot with dots representing the estimate (measured on the y axis) as a dot and the prediction intervals as horizontal bars around the plot for a random subset of the conditional modes.
 An example is given in Figure~\ref{fig:condmodes}, where the smaller prediction intervals correspond strongly to the number of exemplars observed in the different groups.
 
 \begin{figure}
@@ -153,7 +153,7 @@ The output looks as follows.
 This informs the user that the fixed effects cumulatively account for a proportion of 0.200 of the total variance in the data.
 Taking also the random effect into account, the model explains a proportion of 0.421 of the total variance.
 The random effect thus appears to be relevant.
-Comparing the conditional $R^2$ to the Nagelkerke $R^2$ of the GLM with \texttt{Measurelemma} as a fixed effect (which was 0.397), we see that the difference is not substantial although the individual coefficient estimates in the GLM were unreliable.
+Comparing the conditional $\textrm{R}^{\textrm{2}}$ to the Nagelkerke $\textrm{R}^{\textrm{2}}$ of the GLM with \texttt{Measurelemma} as a fixed effect (which was 0.397), we see that the difference is not substantial although the individual coefficient estimates in the GLM were unreliable.
 
 Furthermore, readers are encouraged to compare the estimates of the fixed effects for \texttt{glm.01} (except \texttt{Measurelemma}) and for \texttt{glmm.01}.%
 \footnote{Again, the accompanying script contains all necessary code.}
@@ -170,8 +170,8 @@ In addition, the present author recommends to report (either in the running text
 \begin{enumerate}
   \item the estimate of the random effect variance (and covariance) parameters
   \item (bootstrapped) confidence intervals for the above
-  \item Nakagawa \& Schielzeth's $R^2$ coefficients of determination
-  \item optionally all or some conditional modes with prediction intervals in tabular form or as a dot plot (see Figure~\ref{fig:condmodes})
+  \item Nakagawa \& Schielzeth's $\textrm{R}^{\textrm{2}}$ coefficients of determination
+  \item optionally all or some conditional modes with prediction intervals in tabular form or as a plot (see Figure~\ref{fig:condmodes})
   \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014}) 
 \end{enumerate}
 
@@ -212,8 +212,10 @@ In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first
   \centering
   \resizebox{\textwidth}{!}{
     \begin{tabular}{llrlrrrc}
-    Model           &                   &                        & Factor       &             &        &         \\
-    level           & Regressor         & $\text{p}_{\text{PB}}$ & level        & Coefficient & CI low & CI high \\
+      \toprule
+    Model           & Regressor         & $\text{p}_{\text{PB}}$ & Factor       & Coefficient & CI low & CI high \\
+    level           &                   &                        & level        &             &        &         \\
+
     \midrule
     Observations    & Badness           &  0.002                 &              & -0.152      & -0.247 & -0.061  \\
                     & Cardinal          &  0.001                 & No           &  1.189      &  0.862 &  1.466  \\
@@ -232,6 +234,7 @@ In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first
                     &                   &                        & Amount       &  0.831      &  0.215 &  1.432  \\
                     &                   &                        & Portion      &  1.217      &  0.675 &  1.684  \\
                     & Measurefreq       &  0.005                 &              & -0.231      & -0.363 & -0.079  \\
+  \bottomrule
 
   \end{tabular}
   }
@@ -240,26 +243,27 @@ In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first
 \end{table}
 
 
-In \citet{Schaefer2018}, the results are reported as follows (given here in adapted and abridged form):
+In \citet{Schaefer2018}, the results are reported as follows (given here in adapted and abridged form):%
+\footnote{Notice that the results reported in the paper differ slightly from the sample script included with this chapter because the random number generator was in a different state.}
 
 \begin{quote}
   A multilevel logistic regression model was fit which models the influence of the regressors on the probability that the genitive is chosen over case identity.
   The measure lemma and the kind noun lemma were specified as varying-intercept random effects.
-  The sample size was \textit{n=}5,063 with 1,134 cases with the genitive and 3,929 cases with case identity.
-  The intercept estimated at -3.548 comprises \textit{Cardinal=Yes}, \textit{Measurecase=Nom}, \textit{Kindgender=Masc}, \textit{Measureclass=Physical}, and 0 for all numeric z-transformed regressors.
+  The sample size was n=5,063 with 1,134 cases with the genitive and 3,929 cases with case identity.
+  The intercept estimated at -3.548 comprises \textsc{Cardinal=Yes}, \textsc{Measurecase=Nom}, \textsc{Kindgender=Masc}, \textsc{Measureclass=Physical}, and 0 for all numeric z-transformed regressors.
   The coefficient table is shown in Figure~\ref{tab:bigtable}.
   Given the coding of the response variable, coefficients leaning to the positive side can be interpreted as characterising a configuration typical of the genitive.
-  I ran a parametric bootstrap (using the \mbox{\textit{confint.merMod}} function from \textit{lme4}) with 1,000 replications and using the percentile method.
-  The resulting 95\% bootstrap confidence intervals are reported in Table~\ref{tab:bigtable} in columns \textit{CI low} and \textit{CI high}.
+  I ran a parametric bootstrap (using the \mbox{\textsc{confint.merMod}} function from \textsc{lme4}) with 1,000 replications and using the percentile method.
+  The resulting 95\% bootstrap confidence intervals are reported in Table~\ref{tab:bigtable} in columns ``CI low'' and ``CI high''.
   For each regressor, a p-value $\text{p}_{\text{PB}}$ was obtained by dropping the regressor from the full model, re-estimating the nested model, and comparing it to the full model.
-  A drop-in bootstrap replacement for the Likelihood Ratio Test in the form of the function \textit{PBmodcomp} from the \textit{pbkrtest} package \citep{HalekohHojsgaard2014} was used. 
-  Nakagawa \& Schielzeth's pseudo-coefficients of determination are $R_m^2=0.409$ and $R^2_c=0.495$.
+  A drop-in bootstrap replacement for the Likelihood Ratio Test in the form of the function \textsc{PBmodcomp} from the \textsc{pbkrtest} package \citep{HalekohHojsgaard2014} was used. 
+  Nakagawa \& Schielzeth's pseudo-coefficients of determination are $\textrm{R}^{\textrm{2}}=0.409$ (marginal) and $\textrm{R}^{\textrm{2}}=0.495$ (conditional).
   The lemma intercepts have standard deviations of $\sigma_{\text{Measurelemma}}=0.448$ and $\sigma_{\text{Kindlemma}}=0.604$.
-  Of all predictors, only \textit{Kindfreq} ($p_{\text{PB}}=0.095$) could be seen as slightly too high to be convincing, failing at sig=0.05.
+  Of all predictors, only \textsc{Kindfreq} ($p_{\text{PB}}=0.095$) could be seen as slightly too high to be convincing, failing at sig=0.05.
 \end{quote}
 
 Finally, in order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
-For example, the overall intercept of -3.653 can be extracted via the following command.
+For example, the overall intercept can be extracted via the following command.
 
 \vspace{0.5\baselineskip}
 

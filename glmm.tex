@@ -1,13 +1,14 @@
 \documentclass[graybox]{svmult}
 
+
 \usepackage[T1]{fontenc}
 
 % The editors specifically asked for Lucida Console.
-% Hence, I switched to XeLaTeX. It does, of course,
-% not work with PDFLaTeX. You'll know how to goi back
+% Hence, I switched to XeLaTeX. This does, of course,
+% not work with PDFLaTeX. You'll know how to go back
 % to PDFLaTeX if you have to.
 \usepackage{fontspec}
-\setmonofont{Lucida Console}
+\setmonofont[Scale=0.95]{Lucida Console}
 
 \usepackage{makeidx}
 \usepackage{multicol}
@@ -38,19 +39,19 @@
 \usepackage{gb4e-}
 \usepackage[xetex]{graphicx}
 
-% \usepackage[backend=biber,
-% 	natbib=true,
-% 	style=bst/unified/bbx/biblatex-sp-unified,
-% 	citestyle=bst/unified/cbx/sp-authoryear-comp,
-% 	maxbibnames=99,
-% 	isbn=false,
-% 	doi=false,
-% 	eprint=false
-% ]{biblatex}
-% \bibliography{glmm}
+\usepackage[backend=biber,
+	natbib=true,
+	style=bst/unified/bbx/biblatex-sp-unified,
+	citestyle=bst/unified/cbx/sp-authoryear-comp,
+	maxbibnames=99,
+	isbn=false,
+	doi=false,
+	eprint=false
+]{biblatex}
+\bibliography{glmm}
 
-\usepackage{natbib}
-\bibliographystyle{styles/spbasic}
+%\usepackage{natbib}
+%\bibliographystyle{styles/spbasic}
 
 
 \newcommand{\Lf}{
@@ -79,12 +80,16 @@
 
 \begin{document}       
 
+% To make it look right to LaTeX-unaware editors.
+\setcounter{chapter}{21}
+\renewcommand*\thesection{\arabic{section}}
+
 \maketitle
 
 \section{Introduction}
 \label{sec:introduction}
 
-Mixed effects modeling -- alternatively called \textit{hierarchical} or \textit{multilevel modeling} -- is an extension of (generalised) linear modeling, of which logistic regression (see Chapter 21) is an instance.
+Mixed effects modeling is an extension of (generalised) linear modeling, of which logistic regression (see Chapter 21) is an instance.
 A common characterisation of mixed-effects modeling is that it accounts for situations where observations are \textit{clustered} or \textit{come in groups}.
 In corpus linguistics, there could be clusters of observations defined by individual speakers, registers, genres, modes, lemmas, etc.
 Instead of estimating coefficients for each level of such a grouping factor (so-called \textit{fixed effects}), in a mixed model it can alternatively be modeled as a normally distributed random variable (a so-called \textit{random effect}) with predictions of group-wise tendencies being made for each group.
@@ -115,7 +120,7 @@ Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recomm
 Similarly, \citet{ZuurEa2009} has a reputation among \texttt{R} users of mixed effects models in many fields.
 The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
 
-% \printbibliography
-\bibliography{glmm}
+\printbibliography
+%\bibliography{glmm}
 
 \end{document} 

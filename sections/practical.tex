@@ -106,8 +106,8 @@ confint(glmm.01, parm="theta_", method="boot", nsim = 250)
 
 For the first command, the output (95\% confidence interval) is 0.887 and 1.414.
 Without applying formal significance testing, this is a reasonably narrow interval, and it does not extend to 0.
-It is generally not a good idea to do (stepwise) model selection for random effects.
-Even worse, while bootstrap methods are available for the comparison of two nested mixed models (see below), the comparison of a GLM and a GLMM (which extends the GLM by one random effect) is mostly uncharted territory and should be avoided.
+Thus, the effect should remain part of the model specification.
+Beyond this, practitioners should not do model selection for random effects.
 
 Single conditional modes (see Section~\ref{sec:choosingbetweenrandomandfixedeffects}) for the levels of the grouping factor can be extracted using the \texttt{ranef} command.
 The following command stores a list of conditional modes for \texttt{Measurelemma} in \texttt{glmm.01.ranef}.
@@ -178,12 +178,12 @@ In addition, the present author recommends to report (either in the running text
 
 \subsubsection{More complex models}
 
-The \texttt{glmer} call as used for the original paper is as follows.
+The \texttt{glmer} call as used in \citet{Schaefer2018} is as follows.
 
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-glmm.10 <- glmer(Construction~1
+glmm.03 <- glmer(Construction~1
                  +(1|Measurelemma)   # Random.
                  +(1|Kindlemma)
                  +Badness            # Item-level.
@@ -204,16 +204,16 @@ glmm.10 <- glmer(Construction~1
 
 Since the model has a relatively high degree of complexity, the option \texttt{control=} \texttt{glmerControl("bobyqa")} is required.
 It selects a different optimiser (an algorithm used by the estimator).
-In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when there are convergence errors.
+In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first step to try when the estimator does not converge and convergence errors are reported at the console.
 
-The second-level predictors have the same value per level of the corresponding random intercept and are automatically treated as second-level effects.
+The second-level predictors are automatically detected as second-level by R because for each value of the random intercept, they have a fixed value.
 In order to illustrate the interpretation of the conditional modes and the fixed effects coefficients in such a model, there is code in the accompanying script which extracts all relevant values and calculates a predicted value for item 99 (arbitrarily chosen for illustration purposes) from the \texttt{measure} data set.
 For example, the overall intercept of -3.653 can be extracted via the following command.
 
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.10))['(Intercept)','Estimate']
+coef(summary(glmm.03))['(Intercept)','Estimate']
 \end{lstlisting}
 
 To this intercept, the sub-terms for first-level fixed effects are added.
@@ -223,7 +223,7 @@ The result is 0.0183.
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.10))['Badness', 'Estimate'] *
+coef(summary(glmm.03))['Badness', 'Estimate'] *
   measure[99, 'Badness']
 \end{lstlisting}
 
@@ -235,7 +235,7 @@ The following code extracts the \texttt{Kindlemma} random intercept for item 99,
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-ranef(glmm.10)$Kindlemma[
+ranef(glmm.03)$Kindlemma[
   as.character(measure[99, 'Kindlemma']), '(Intercept)']
 \end{lstlisting}
 
@@ -245,7 +245,7 @@ For example, the following code calculates the sub-term for \texttt{Kindfreq}, w
 \vspace{0.5\baselineskip}
 
 \begin{lstlisting}
-coef(summary(glmm.10))['Kindfreq', 'Estimate'] *
+coef(summary(glmm.03))['Kindfreq', 'Estimate'] *
   measure[99, 'Kindfreq']
 \end{lstlisting}
 

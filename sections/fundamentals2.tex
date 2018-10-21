@@ -111,7 +111,7 @@ In addition to the overall intercept $\alpha_0$, there is another constant term 
 \end{equation}
 
 Crucially, instead of estimating a batch of $m-1$ coefficients for the levels of the grouping variable, a varying intercept (assumed to come from a normal distribution) is predicted for each of its $m$ levels.
-Essentially, this means that the varying intercepts are predicted from their own linear model.
+Technically, the varying intercepts are predicted from their own linear model.
 All more complex model structures to be discussed below are extensions of this approach.
 
 \subsubsection{Choosing between random and fixed effects}
@@ -127,21 +127,21 @@ First, the variance in the intercepts needs to be estimated if a random effect i
 Second, the random intercepts can be understood as a compromise between fitting separate models for each level of the grouping factor (``no pooling'') and fitting a model while ignoring the grouping factor altogether (``complete pooling''), see \citet[Ch.~12]{GelmanHill2006}.
 
 As was stated above, the random intercepts are assumed to come from a normal distribution, and therefore the variance between them has to be estimated with sufficient precision.
-From the estimated variance and the data for a specific group, the estimator predicts the ``conditional mode'' in a GLMM or the ``conditional mean'' in a LMMs for that group (see \citealt[Ch.~1]{Bates2010}).
+From the estimated variance and the data for a specific group, the estimator predicts the ``conditional mode'' in a GLMM or the ``conditional mean'' in a LMM for that group (see \citealt[Ch.~1]{Bates2010}).
 The conditional mode\slash mean for a group is the value of the varying intercept for this group.
 It is the numerical value shown by R packages like \texttt{lme4} for each level of a random intercept variable.
 This procedure, however, requires that the number of groups must not be too low.
 As a rule of thumb, if there are fewer than five levels, a grouping factor should be included as a fixed effect, regardless of its conceptual interpretation.
 Although one often finds default recommendations telling practitioners to use a speaker grouping variable as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
 Along the same lines, the distinction between intersective and non-intersective adjectives (Section~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
-Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect.
+Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect (see Section~\ref{sec:morecomplexmodels}).
 
 If the number of levels is reasonably large, the next thing to consider is the number of observations per levels.
 Alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed coefficients per group are estimated without taking the between-group variance into account.
 With a random effect, however, the conditional modes\slash means are pulled (``shrunken'') towards the overall intercept (``shrinkage'').
 When the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly towards $0$, predicting only a small deviation from the overall tendency.%
-\footnote{Terminologically, shrinkage is thus \textit{stronger} (and the conditional mode\slash mean is closer to $0$) if there is less evidence that a group deviates from the overall tendency.
+\footnote{Shrinkage is thus \textit{stronger} (and the conditional mode\slash mean is closer to $0$) if there is less evidence that a group deviates from the overall tendency.
 The lower the number of observations per group, the lesser evidence there is.}
 On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, high p-values) when the number of observations in a group is low.
 Thus, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
@@ -151,7 +151,7 @@ For fixed effects, we have both a parameter estimate and a possible significance
 However, so-called ``prediction intervals'' can be calculated for individual per-group intercepts, and we return to them in the following section.
 
 
-\subsubsection{Model quality and model selection}
+\subsubsection{Model quality}
 \label{sec:significancetestingandcoefficientsofdetermination}
 
 \paragraph{Significance}
@@ -159,7 +159,7 @@ However, so-called ``prediction intervals'' can be calculated for individual per
 It is not adequate to do any kind of significance testing on the individual levels of the random effect because they are not estimates in the conceptual and technical sense.%
 \footnote{Again, we do not assume them to be fixed population parameters, which would be the case for true estimates such as fixed effects coefficients.}
 There are ways of calculating ``prediction intervals'' (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Section~\ref{sec:practicalguidewithr}), but they should not be misused for talking about significance.
-Not doing significance tests for single levels of the grouping factor does, however, not mean that the researcher is not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a dot plot.
+The fact that we do not do significance tests for single levels of the grouping factor does, however, not mean that we are not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a plot.
 Also, we can still get a good idea of the per-group tendencies by looking at the conditional modes\slash means.
 Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible for fixed effects.
 
@@ -180,7 +180,7 @@ Such pairs of models, where one is strictly a simplification of the other, are c
 A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests. 
 
 With all this, it should be kept in mind that it is \textit{never} appropriate to make formal comparisons between a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including so-called information criteria such as Akaike's or Bayes').
-\textit{Informally} comparing coefficients of determination ($\textrm{R}^{\textrm{2}}$) between such pairs of models has a limited use, as will be shown below.
+\textit{Informally} comparing coefficients of determination ($\textrm{R}^{\textrm{2}}$) between such pairs of models is somewhat useful, as will be shown below.
 
 \paragraph{Quality of the fit}
 
@@ -201,10 +201,10 @@ Also, the conditional $\textrm{R}^{\textrm{2}}$ for a GLMM estimate is roughly t
 \paragraph{Varying intercepts and slopes}
 
 In Section~\ref{sec:randominterceptsandslopes}, it was shown under which conditions a varying-intercept and varying-slope (VIVS) model might be useful.
-While it is possible to have just a varying slope, this is rarely useful, and we discuss only varying-intercept and varying-slope (VIVS) models.
+While it is possible to have just a varying slope, this is rarely useful, and we discuss only VIVS models.
 
 A random slope is a good choice when the strength or direction of some fixed effect varies by group.
-We extend the simple model from Section~\ref{sec:simplerandomintercepts} to include random slopes for \textsc{Givenness} varying by \textsc{Lemma} using R notation in (\ref{eq:003}).
+We extend the simple model from Section~\ref{sec:simplerandomintercepts} to include random slopes for \textsc{Givenness} varying by \textsc{Lemma} using R notation.
 Each variable from the fixed effects part of the formula which we expect to vary by \textsc{Lemma} is simply repeated before the | symbol.
 
 \begin{lstlisting}
@@ -238,7 +238,7 @@ As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random 
 Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts can be understood as interactions between two or more random effects.
 Crossed random effects are just several unrelated random effects.
 
-In the model specification (both in R notation and in mathematical notation), there is no difference between a crossed and a nested random effect.
+In the model specification, there is no difference between a crossed and a nested random effect.
 Both are specified like independent random effects.
 The following code provides an example in R notation.
 

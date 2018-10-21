@@ -1,11 +1,11 @@
 \subsection{Specifying models using \texttt{lme4} in R}
 \label{sec:specifyingmodelsusinglme4inr}
 
-This section and the next focus on \texttt{lme4}, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
+This section focusses on \texttt{lme4}, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
 
 \subsubsection{Overview of the data set}
 
-The data used here for illustration purposes comes from \citet{Schaefer2018}, where a binary case alternation in German measure phrases is modeled.
+The data used here for illustration purposes comes from \citet{Schaefer2018}, where a binary case alternation in German measure phrases is modeled using data from the DECOW corpus \citep{SchaeferBildhauer2012}.
 In the first alternant, the kind-denoting noun (here \textit{Wein} `wine') is in the genitive as in (\ref{ex:intro:alternation1}).
 In the second alternant, the kind-denoting noun is assigned the same case as the head measure noun as in (\ref{ex:intro:alternation2}).
 
@@ -19,7 +19,7 @@ In the second alternant, the kind-denoting noun is assigned the same case as the
   \end{xlist}
 \end{exe}
 
-The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} (a measure of document quality available for all COW documents; see \citealt{SchaeferEa2013}) and \texttt{Genitives} (a measure of the frequency of genitives), a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
+The influencing first-level factors derived from theory-driven analysis and previous accounts comprise the numeric stylistic indicator variables \texttt{Badness} (a measure of document quality available for all DECOW documents; see \citealt{SchaeferEa2013}) and \texttt{Genitives} (a measure of the frequency of genitives), a binary variable \texttt{Cardinal} encoding whether the NP is modified by a cardinal or not, and the three-level variable \texttt{Measurecase} encoding the case of the head noun.
 Furthermore, there are two crossed random intercepts for the kind noun (\texttt{Kindlemma}) and the measure noun (\texttt{Measurelemma}).
 These random intercepts come with second-level models including a number of fixed second-level effects.
 For \texttt{Kindlemma}, there are: \texttt{Kindfreq} (numeric, z-transformed), which encodes the lemma frequency; \texttt{Kindgender} (binary), which encodes the grammatical gender of the kind noun; \texttt{Kindattraction} (numeric, z-transformed), which encodes the influence of neighbouring constructions.
@@ -51,7 +51,7 @@ The output of the \texttt{summary(glm.01)} command (not shown here) shows that t
 The Nagelkerke coefficient of determination for this model can be calculated using the \texttt{NagelkerkeR2} \texttt{(glm.01)} function from the \texttt{fmsb} package, and it is 0.397.
 
 As the above example shows, grouping factors with many levels like \texttt{Measurelemma} are usually not suitable fixed effects.
-Hence, and the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
+Hence, the following specification re-estimates the model as a GLMM using the \texttt{glmer} function with \texttt{Measurelemma} as a varying intercept.
 The \texttt{glmer} function is the standard function from the \texttt{lme4} package for estimating mixed models.
 
 \vspace{0.5\baselineskip}
@@ -130,13 +130,13 @@ attributes(glmm.01.ranef)$postVar
 These can be used to construct prediction intervals around the predicted conditional modes in order to display them in tabular form or plot them.
 While some ready-made functions exist to plot them, it is good to have a custom plotting function.
 If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes, and there is no ready-made function which supports this.
-The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a plot with dots representing the estimate (measured on the y axis) as a dot and the prediction intervals as horizontal bars around the plot for a random subset of the conditional modes.
-An example is given in Figure~\ref{fig:condmodes}, where the smaller prediction intervals correspond strongly to the number of exemplars observed in the different groups.
+The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a plot with dots representing the estimate (measured on the y axis) and the prediction intervals as horizontal bars around the plot for a random subset of the conditional modes.
+An example is given in Figure~\ref{fig:condmodes}, where the width of the prediction intervals corresponds negatively to the number of exemplars observed in the different groups.
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{RPHCL/ranef_selection}
-  \caption{Dot plot with prediction intervals for a random subset of 30 conditional modes (model \texttt{glmm.01}, random intercept for \texttt{Measurelemma})}
+  \caption{Dot plot with prediction intervals for a random subset of thirty conditional modes (model \texttt{glmm.01}, random intercept for \texttt{Measurelemma})}
   \label{fig:condmodes}
 \end{figure}
 
@@ -175,10 +175,8 @@ In addition, the present author recommends to report (either in the running text
   \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014}) 
 \end{enumerate}
 
-See Section~\ref{sec:morecomplexmodels} for an example.
-
 \subsubsection{More complex models}
-\label{sec:morecomplexmodels}
+\label{sec:morecomplexmodelspractical}
 
 The \texttt{glmer} call as used in \citet{Schaefer2018} is as follows.
 
@@ -310,4 +308,3 @@ Added up, the linear term is predicted to be -3.284.
 This result needs to go through the inverse logit link function (implemented as \texttt{invlogit} in the \texttt{car} package, for example), which results in 0.036.
 Given the coding of the response variable, this means that the model predicts a probability of 0.036 that the genitive construction is chosen in the given example.
 Readers are advised to go through the full calculations in order to understand what the different numbers in their reported GLMMs represent.
-They will likely realise that the superficial maths involved is relatively transparent, even for more complex models.

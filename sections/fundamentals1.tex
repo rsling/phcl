@@ -100,13 +100,13 @@ Mode could nest genre if genres are defined such that each genre is either exclu
 Similarly, in a study on adjectives we might want to describe adjectives as being either intersective or non-intersective.
 Within the two groups, a finer-grained semantic classification which itself nests single adjective lexemes might be nested.
 However, not all of these structures should be modeled as nested random effects.
-In the latter case, for example, the low number of levels of one factor (intersective vs.\ non-intersective) predestines it as a second-level predictor rather than a nesting factor (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
+In the latter case, for example, the low number of levels of one factor (intersective vs.\ non-intersective) predestines it as a so-called ``second-level predictor'' rather than a nesting random effect (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
 
 \subsubsection{Hierarchical\slash multilevel modeling}
 \label{sec:hierarchicalormultilevelmodels}
 
 This section describes the types of data structures which require the use of multilevel models, which represent a generalisation of the simple mixed effects models discussed so far.
-Such data structures are similar or even identical to nested data structures.
+Such data structures are similar or in some special cases identical to nested data structures.
 Let us assume that we wanted to account for lexeme-specific variation in a study on an alternation phenomenon such as the dative alternation in English by specifying the lexeme as a random effect in the model.
 Additionally, we entertain the hypothesis that a lexeme's overall frequency influences its preferences for occurring in the construction alternants.
 A similar situation would arise in a study of learner corpus data (even of the same alternation phenomenon) with a learner grouping factor if we also knew that the number of years learners have learned a language influences their performance with regard to a specific phenomenon.
@@ -172,7 +172,7 @@ In the situation depicted in the left panel, the overall level in probability ch
 Note that the lines are not perfectly parallel because the figure is supposed to be an illustration of a data set rather than a fitted model, and we always expect some chance variation in data sets.
 In the situation depicted in the right panel, however, the overall tendency also varies between lemmas, but additionally the lemma-specific tendencies also vary between exemplars with old and new NPs.
 This is in fact nothing but an interaction between two factors (verb lemma and givenness), and we could use a fixed-effect interaction to take it into account.
-However, if the verb lemma factor is used as a random effect grouping factor, the interaction is modeled as a so-called ``random slope''.
+However, if the verb lemma factor is used as a random effect, the interaction is modeled as a so-called ``random slope''.
 In Section~\ref{sec:modelspecificationandmodelingassumptions}, it is shown how all the different types of data sets discussed so far can be modeled using fixed effects models or, alternatively, using mixed effects models.
 Which one is more appropriate will be argued to be better understood as a technical rather than a conceptual question.
 

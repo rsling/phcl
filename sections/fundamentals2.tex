@@ -64,7 +64,7 @@ In such a case, the $m$ levels of the grouping factor are ``dummy-coded'', and f
 Dummy coding is a way of encoding a categorical variable as a number of binary variables (see Table~\ref{tab:dummy}), and R takes care of dummy-coding automatically.
 Because the first of the $m$ levels of the grouping factor is encoded by all dummy variables assuming the value 0, only $m-1$ sub-terms are added to the model, which means that only $m-1$ coefficients have to be estimated.
 The first level of the grouping factor is thus ``on the intercept'' and becomes the reference to which all other levels are compared.%
-\footnote{Picking one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
+\footnote{Chosing one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate.
 This extends to any other appropriate coding for categorical variables.
 }
@@ -136,7 +136,7 @@ Although one often finds default recommendations telling practitioners to use a 
 Along the same lines, the distinction between intersective and non-intersective adjectives (Section~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
 Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect (see Section~\ref{sec:morecomplexmodels}).
 
-If the number of levels is reasonably large, the next thing to consider is the number of observations per levels.
+If the number of levels is reasonably large, the next thing to consider is the number of observations per level.
 Alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
 In both cases the effects are not treated as random variables, and fixed coefficients per group are estimated without taking the between-group variance into account.
 With a random effect, however, the conditional modes\slash means are pulled (``shrunken'') towards the overall intercept (``shrinkage'').

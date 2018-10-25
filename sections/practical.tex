@@ -157,13 +157,13 @@ Comparing the conditional $\textrm{R}^{\textrm{2}}$ to the Nagelkerke $\textrm{R
 
 Furthermore, readers are encouraged to compare the estimates of the fixed effects for \texttt{glm.01} (except \texttt{Measurelemma}) and for \texttt{glmm.01}.%
 \footnote{Again, the accompanying script contains all necessary code.}
-The fixed-effects coefficient estimates (except for the intercept, which is heavily offset in \texttt{glm.01}) do not differ much between the GLM and the GLMM, which indicates that the grouping variable \texttt{Measurelemma} does not enter into an interaction with the fixed effects.
+The fixed-effects coefficient estimates (except for the intercept, which is heavily offset in \texttt{glm.01}) do not differ much between the GLM and the GLMM.
 However, the standard deviations (and consequently the confidence intervals as well as the p-values) change.
 
 \paragraph{Reporting the results}
 
 Journals and conferences in corpus linguistics do not enforce strict guidelines when it comes to reporting the results of GLMM fits.
-While a coefficient table for the fixed effects is a de-facto standard for GLMMs just as much as for GLMs, there is no such de-facto standard with regard to which measures of model quality for GLMMs should be reported, and especially how random effects should be reported.
+While a coefficient table for the fixed effects is a de-facto standard for GLMMs just as much as for GLMs, there is no such de-facto standard as to how random effects should be reported.
 Everything that should be reported for a GLM should also be reported for a GLMM, such as the coefficient table for the fixed effects (which should at least contain the coefficient estimate, the standard error, and possibly bootstrapped confidence intervals) and variance inflation factors \citep{FoxMonette1992,ZuurEa2010}.
 In addition, the present author recommends to report (either in the running text, in tabular form, or in the caption of the coefficient table):
 
@@ -172,7 +172,8 @@ In addition, the present author recommends to report (either in the running text
   \item (bootstrapped) confidence intervals for the above
   \item Nakagawa \& Schielzeth's $\textrm{R}^{\textrm{2}}$ coefficients of determination
   \item optionally all or some conditional modes with prediction intervals in tabular form or as a plot (see Figure~\ref{fig:condmodes})
-  \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014}) 
+  \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014})%
+    \footnote{This entails that GLMMs with only one simple random effect cannot be compared with a model without it, as such a model would be a GLM and not a nested GLMM.}
 \end{enumerate}
 
 \subsubsection{More complex models}

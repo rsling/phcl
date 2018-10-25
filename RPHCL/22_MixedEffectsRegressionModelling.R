@@ -464,9 +464,18 @@ ranef.plot <- function(model, effect, number = -1, intervals = 0.95, ...) {
   # Return the data frame with the selection.
   .df
 }
+
+# Set the options for the dotchart function.
 opts.dotchart <- list(pch=19, col="black", cex=1, xlab="Prediction of conditional mode")
 
+
+# Call the above function to create plot. Uncomment the three lines
+# if you want the plot to be saved as an EPS file.
+
+# setEPS()                                  # Uncomment to save grraphics.
+# postscript("../eps/ranef_selection.eps")  # Uncomment to save grraphics.
 do.call(ranef.plot, c(list(glmm.01, "Measurelemma", 30, main = "Measure lemma random effects with 95% prediction intervals"), opts.dotchart))
+# dev.off()                                 # Uncomment to save grraphics.
 
 # OUTPUT:
 #

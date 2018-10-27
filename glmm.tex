@@ -85,6 +85,15 @@
 
 \maketitle
 
+\begin{abstract}{In this chapter, mixed-effects regression modeling is introduced, mostly using alternation modeling as an example.
+  It is one option to deal with cases where observations vary by groups (such as speakers, registers, lemmas) by introducing so-called random effects into the model specification.
+  It is stressed that using a categorical variable as a random effect is just an alternative to using it as a normal fixed effect in a Generalised Linear Model (GLM) as introduced in Chapter 21, but that the two options have different mathematical advantages and disadvantages.
+  Simple random intercepts are introduced, which capture per-group tendencies.
+  However, random slopes (for situations where fixed effects vary per group) and multilevel models (for situations where group-wise tendencies can be predicted from other variables, for example when lemma frequency is useful to predict lemma-specific tendencies) are also introduced.
+  Criteria for including random effects in models and for evaluating the model fit (for example through pseudo-coefficients of determination) are discussed.
+The demonstration in R uses the popular lme4 package.}
+  \end{abstract}
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -115,7 +124,7 @@ Readers are assumed to be familiar with the concepts covered in Chapter~21.
 \section{Further reading}
 \label{sec:furtherreading}
 
-Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2006} are a highly recommended read, especially for \texttt{R} and \texttt{lme4} users.
+Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2007} are a highly recommended read, especially for \texttt{R} and \texttt{lme4} users.
 Similarly, \citet{ZuurEa2009} has a reputation among \texttt{R} users of mixed effects models in many fields.
 The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
 

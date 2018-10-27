@@ -1,7 +1,7 @@
-\subsection{Specifying models using \texttt{lme4} in R}
+\subsection{Specifying models using lme4 in R}
 \label{sec:specifyingmodelsusinglme4inr}
 
-This section focusses on \texttt{lme4}, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
+This section focuses on lme4, an often used package to do multilevel modeling in R with maximum likelihood methods \citep{BatesEa2015}.
 
 \subsubsection{Overview of the data set}
 
@@ -67,7 +67,7 @@ glmm.01 <- glmer(Construction~1
 		 family=binomial(link=logit))
 \end{lstlisting}
 
-The output of the \texttt{summary(glmm.01)} command looks as follows (abbreviated).
+The output of the \texttt{summary(glmm.01)} command is as follows (abbreviated).
 
 \vspace{0.5\baselineskip}
 
@@ -91,7 +91,7 @@ R outputs the standard coefficient table for the fixed effects including the ove
 Above this coefficient table, there is a summary of the random effects.
 The number of groups for \texttt{Measurelemma} is correctly given as 150, and the variance in the random intercepts is 1.252.%
 \footnote{The variance-covariance matrix of \texttt{glmm.01} can also be extracted directly using the \texttt{VarCorr(glmm.01)} command.}
-As a rule of thumb, the larger is the variance between the intercepts, the larger are the differences between the groups.
+As a rule of thumb, the larger the variance between the intercepts, the larger are the differences between the groups.
 For the variance estimate, confidence intervals can be obtained with either one of the following commands, where the first one uses the profile method (based on likelihood ratio tests) and the second one uses the parametric bootstrap, which is sometimes considered more robust.%
 \footnote{Since the bootstrap (especially with smaller original sample sizes) tends to run into replications where the estimation of the variance fails and is thus returned as 0, the bootstrap interval is sometimes skewed towards 0 when the profile confidence interval frames the true value symmetrically. The bootstrap is thus not always more robust or intrinsically better.
 Comparing both methods is recommended.}
@@ -141,7 +141,7 @@ An example is given in Figure~\ref{fig:condmodes}, where the width of the predic
 \end{figure}
 
 Turning to the quality of the overall model fit, Nakagawa \& Schielzeth's coefficients of determination can be calculated with the \texttt{r.squaredGLMM(glmm.01)} command (from the \texttt{MuMIn} package).
-The output looks as follows.
+The output is as follows.
 
 \vspace{0.5\baselineskip}
 
@@ -153,7 +153,7 @@ The output looks as follows.
 This informs the user that the fixed effects cumulatively account for a proportion of 0.200 of the total variance in the data.
 Taking also the random effect into account, the model explains a proportion of 0.421 of the total variance.
 The random effect thus appears to be relevant.
-Comparing the conditional $\textrm{R}^{\textrm{2}}$ to the Nagelkerke $\textrm{R}^{\textrm{2}}$ of the GLM with \texttt{Measurelemma} as a fixed effect (which was 0.397), we see that the difference is not substantial although the individual coefficient estimates in the GLM were unreliable.
+Comparing the conditional $\textrm{R}^{\textrm{2}}$ to the Nagelkerke $\textrm{R}^{\textrm{2}}$ of the GLM with \texttt{Measurelemma} as a fixed effect (which was 0.397), we see that the difference is not substantial, although the individual coefficient estimates in the GLM were unreliable.
 
 Furthermore, readers are encouraged to compare the estimates of the fixed effects for \texttt{glm.01} (except \texttt{Measurelemma}) and for \texttt{glmm.01}.%
 \footnote{Again, the accompanying script contains all necessary code.}

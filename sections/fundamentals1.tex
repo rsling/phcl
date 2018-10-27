@@ -1,17 +1,17 @@
 \subsection{When are random effects useful?}
 \label{sec:whenrandomeffectsareuseful}
 
-In (Generalised) Linear Mixed Models (GLMMs) -- or, more generally speaking, ``multilevel models'' or ``hierarchical models'' (see \citealp{GelmanHill2006} and Section~\ref{sec:hierarchicalormultilevelmodels} below) -- the purpose of including random effects is usually said to be the modeling of variance between groups of observations.
+In (Generalised) Linear Mixed Models (GLMMs) -- or, more generally speaking, ``multilevel models'' or ``hierarchical models'' (see \citealp{GelmanHill2007} and Section~\ref{sec:hierarchicalormultilevelmodels} below) -- the purpose of including random effects is usually said to be the modeling of variance between groups of observations.
 A single observation (alternatively ``data point'', ``measurement'', or ``unit'') is one atomic exemplar entering into the statistical analysis of a study.
 In corpus linguistics, single observations can be understood as single lines in a concordance.
 These concordance lines could contain, for example, clauses or sentences in which one of the alternants of a morpho-syntactic alternation occurs, the goal being to model the influence of diverse properties of the clauses or sentences on the choice of the alternants.
 Along similar lines, they could contain occurrences of a contracted or a non-contracted form of words (like \textit{am} and \textit{'m} in English).
 As another example, the concordance lines could contain NPs where two pre-nominal adjectives are used, the goal being to determine the factors influencing their relative ordering.
-When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions between groups (or ``at the group-level''), such as the level of the individual speakers, registers, lemmas, etc.
+When such observations are grouped, it is often plausible to assume that there is some variance in the choice of the alternating forms or constructions between groups (or ``at the group level''), such as the level of the individual speakers, registers, lemmas, etc.
 
 Groups can be defined by any linguistically relevant grouping factor, such as the individual speakers (or authors, writers, etc.), the regions where they were born or live, social groups with which they identify, but also time periods, genres, styles, etc.%
 \footnote{Trivially, grouping factors should never be ordinal variables.
-The are always categorical.
+They are always categorical.
 Terminologically, the ``groups'' are the collections of observations, and each such group corresponds to the ``levels'' of the categorical grouping factor.}
 Specific lexemes often have idiosyncratic affinities towards alternants in alternating constructions.
 Therefore, exemplars containing specific lexemes also constitute groups.
@@ -135,19 +135,19 @@ In other words, each lexeme has exactly one overall frequency, and each learner 
   \label{tab:multilevel}
 \end{table}
 
-Such variables are thus interpretable only at the group-level.
+Such variables are thus interpretable only at the group level.
 Table~\ref{tab:multilevel} illustrates such a data set (fictional in this case).
 It might be a small fraction of the data used to predict whether a ditransitive verb is used in the dative shift construction or not.
 The NP length is measured in words, the lemma frequencies are actual logarithm-transformed frequencies per one million tokens taken from ENCOW14A \citep{SchaeferBildhauer2012}.
 The outcome column encodes whether alternant 1 or 2 was chosen.
 As the table shows, the givenness status and the NP length vary at the level of observations.
-To capture verb lemma specific tendencies, a verb lemma grouping factor is added.
-The verb lemma frequency necessarily varies at the group-level because each lemma has a unique frequency.
+To capture verb-lemma-specific tendencies, a verb lemma grouping factor is added.
+The verb lemma frequency necessarily varies at the group level because each lemma has a unique frequency.
 In such cases, an adequately specified multilevel model uses these so-called ``second-level fixed effects'' to partially predict the tendency of the grouping factor, which is why they are also called ``second-level predictors''.%
 \footnote{The fixed effects discussed so far, which are interpreted at the level of observations, are consequently called ``first-level fixed effects'' or ``first-level predictors''.}
 Put differently, the idiosyncratic effect associated with a lexeme, speaker, genre, etc.\ is split up into a truly idiosyncratic preference and a preference predictable from group-level variables (such as the frequency of the lemma or the number of learning years of the speaker).
 In Section~\ref{sec:morecomplexmodels}, it will be explained briefly that in such cases, a second model has to be specified which predicts the group-level tendency from the second-level effects.
-The data look similar to multilevel nesting, but (i) second-level models can account for continuous numerical predictors at the group-level, which nesting cannot.
+The data look similar to multilevel nesting, but (i) second-level models can account for continuous numerical predictors at the group level, which nesting cannot.
 Also, (ii) there might be situations where specifying even categorical second-level grouping factors as fixed effects in a second-level model is more appropriate than adding nested random effects (see Section~\ref{sec:modelspecificationandmodelingassumptions}).
 
 

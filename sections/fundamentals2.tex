@@ -5,7 +5,7 @@ In this section, it is discussed how the specification of mixed models differs f
 A major focus is on the question of when to use fixed and random effects.
 The amount of technicality and notation is kept at the absolute minimum.
 Particularly, the specification of models in mathematical notation is not always shown, and models are introduced in R notation.
-For an appropriate understanding of model specification, readers should consult a more in-depth text book, for example Part~2A of \citet{GelmanHill2006} (pp.~235--342).
+For an appropriate understanding of model specification, readers should consult a more in-depth text book, for example Part~2A of \citet{GelmanHill2007} (pp.~235--342).
 Without any knowledge of the mathematical notation conventions, it is impossible to understand many advanced text books and much of the valuable advice available online.
 
 \subsubsection{Simple random intercepts}
@@ -64,7 +64,7 @@ In such a case, the $m$ levels of the grouping factor are ``dummy-coded'', and f
 Dummy coding is a way of encoding a categorical variable as a number of binary variables (see Table~\ref{tab:dummy}), and R takes care of dummy-coding automatically.
 Because the first of the $m$ levels of the grouping factor is encoded by all dummy variables assuming the value 0, only $m-1$ sub-terms are added to the model, which means that only $m-1$ coefficients have to be estimated.
 The first level of the grouping factor is thus ``on the intercept'' and becomes the reference to which all other levels are compared.%
-\footnote{Chosing one dummy as a reference level is necessary because otherwise infinitely many equivalent estimates of the model coefficients exist as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
+\footnote{Choosing one dummy as a reference level is necessary because otherwise, infinitely many equivalent estimates of the model coefficients exist, as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
 However, the estimator works under the assumption that there is a unique maximum likelihood estimate.
 This extends to any other appropriate coding for categorical variables.
 }
@@ -90,9 +90,9 @@ This means that the group-wise intercepts are assumed to be normally distributed
 This and nothing else is the conceptual difference between a fixed effect and a random effect.%
 \footnote{There is one other practical difference.
 If models are used to make actual predictions (which is rarely the case in linguistics), a random effect allows one to make predictions for unseen groups.
-See \citet[272--275]{GelmanHill2006}.}
+See \citet[272--275]{GelmanHill2007}.}
 
-In R, the model specification then looks as follows, where \textsc{1|} can be read as ``an intercept varying by''.
+In R, the model specification then is as follows, where \textsc{1|} can be read as ``an intercept varying by''.
 
 \begin{lstlisting}
   glmer(Construction~1+Givenness+(1|Lemma),
@@ -119,20 +119,20 @@ All more complex model structures to be discussed below are extensions of this a
 
 One commonly given reason to use a random effect instead of a fixed effect is that ``the researcher is not interested in the individual levels of the random effect'' (or variations thereof).
 Such recommendations should be taken with a grain of salt.
-\citet[245--247]{GelmanHill2006} summarise this as well as other diverging and partially contradicting recommendations for what should be a random effect as found in the literature.
-They conclude that there is essentially no universally accepted and tenable conceptual criterion of deciding what should be a random effect and what a fixed effect.
+\citet[245--247]{GelmanHill2007} summarise this as well as other diverging and partially contradictory recommendations for what should be a random effect as found in the literature.
+They conclude that there is essentially no universally accepted and tenable conceptual criterion for deciding what should be a random effect and what a fixed effect.
 The author of this chapter agrees with their conclusion that random effects should be preferred whenever it is technically feasible.
 Understanding when it is technically feasible requires at least some understanding of two major points.
 First, the variance in the intercepts needs to be estimated if a random effect is used.
-Second, the random intercepts can be understood as a compromise between fitting separate models for each level of the grouping factor (``no pooling'') and fitting a model while ignoring the grouping factor altogether (``complete pooling''), see \citet[Ch.~12]{GelmanHill2006}.
+Second, the random intercepts can be understood as a compromise between fitting separate models for each level of the grouping factor (``no pooling'') and fitting a model while ignoring the grouping factor altogether (``complete pooling''), see \citet[Ch.~12]{GelmanHill2007}.
 
 As was stated above, the random intercepts are assumed to come from a normal distribution, and therefore the variance between them has to be estimated with sufficient precision.
 From the estimated variance and the data for a specific group, the estimator predicts the ``conditional mode'' in a GLMM or the ``conditional mean'' in a LMM for that group (see \citealt[Ch.~1]{Bates2010}).
 The conditional mode\slash mean for a group is the value of the varying intercept for this group.
 It is the numerical value shown by R packages like \texttt{lme4} for each level of a random intercept variable.
-This procedure, however, requires that the number of groups must not be too low.
+This procedure, however, requires that the number of groups not be too low.
 As a rule of thumb, if there are fewer than five levels, a grouping factor should be included as a fixed effect, regardless of its conceptual interpretation.
-Although one often finds default recommendations telling practitioners to use a speaker grouping variable as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
+Although one often finds default recommendations telling practitioners to use a grouping variable for speakers as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
 Along the same lines, the distinction between intersective and non-intersective adjectives (Section~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
 Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect (see Section~\ref{sec:morecomplexmodels}).
 
@@ -142,7 +142,7 @@ In both cases the effects are not treated as random variables, and fixed coeffic
 With a random effect, however, the conditional modes\slash means are pulled (``shrunken'') towards the overall intercept (``shrinkage'').
 When the number of observations in a group is low, the conditional mode\slash mean is simply shrunken more strongly towards $0$, predicting only a small deviation from the overall tendency.%
 \footnote{Shrinkage is thus \textit{stronger} (and the conditional mode\slash mean is closer to $0$) if there is less evidence that a group deviates from the overall tendency.
-The lower the number of observations per group, the lesser evidence there is.}
+The lower the number of observations per group, the less evidence there is.}
 On the other hand, fixed effect estimates would become inexact and would probably be dismissed because of growing uncertainty in the estimate (large confidence intervals, high p-values) when the number of observations in a group is low.
 Thus, low numbers of observations in all or some groups are often detrimental for using fixed effects grouping factors.
 Random effects are much more robust in such situations because of shrinkage.
@@ -223,7 +223,7 @@ The varying slope for \textsc{Givenness} to be chosen appropriately for each \te
   \label{eq:003a}
 \end{equation}
 
-A source of problems in VIVS models is the fact that in addition to the variance in the intercepts and slopes, the covariance between them has to be estimated.
+A source of problems in VIVS models is the fact that, in addition to the variance in the intercepts and slopes, the covariance between them has to be estimated.
 If in groups with a higher-than-average intercept, the slope is also higher than average, they are positively correlated, and vice versa.
 These relations are captured in the covariance.
 Technically speaking, the joint distribution of the random intercepts and the random slopes is assumed to follow a multivariate normal distribution with means, variances, and covariances to be estimated.

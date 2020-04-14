@@ -108,7 +108,7 @@ Without applying formal significance testing, this is a reasonably narrow interv
 Thus, the effect should remain part of the model specification.
 Beyond this, practitioners should not do model selection for random effects.
 
-Single conditional modes (see Section~\ref{sec:choosingbetweenrandomandfixedeffects}) for the levels of the grouping factor can be extracted using the \texttt{ranef} command.
+Single conditional modes (see Sec.~\ref{sec:choosingbetweenrandomandfixedeffects}) for the levels of the grouping factor can be extracted using the \texttt{ranef} command.
 The following command stores a list of conditional modes for \texttt{Measurelemma} in \texttt{glmm.01.ranef}.
 
 \vspace{0.5\baselineskip}
@@ -131,7 +131,7 @@ These can be used to construct prediction intervals around the predicted conditi
 While some ready-made functions exist to plot them, it is good to have a custom plotting function.
 If the random effect has many levels, it might only be possible to plot a selection (random or informed) of the conditional modes, and there is no ready-made function which supports this.
 The R script accompanying this chapter contains a maximally simple example using only standard plotting functions which creates a plot with dots representing the estimate (measured on the y axis) and the prediction intervals as horizontal bars around the plot for a random subset of the conditional modes.
-An example is given in Figure~\ref{fig:condmodes}, where the width of the prediction intervals corresponds negatively to the number of exemplars observed in the different groups.
+An example is given in Fig.~\ref{fig:condmodes}, where the width of the prediction intervals corresponds negatively to the number of exemplars observed in the different groups.
 
 \begin{figure}
   \centering
@@ -171,7 +171,7 @@ In addition, the present author recommends to report (either in the running text
   \item the estimate of the random effect variance (and covariance) parameters
   \item (bootstrapped) confidence intervals for the above
   \item Nakagawa \& Schielzeth's $\textrm{R}^{\textrm{2}}$ coefficients of determination
-  \item optionally all or some conditional modes with prediction intervals in tabular form or as a plot (see Figure~\ref{fig:condmodes})
+  \item optionally all or some conditional modes with prediction intervals in tabular form or as a plot (see Fig.~\ref{fig:condmodes})
   \item (bootstrapped) p-values for random effects if absolutely necessary, and only if the model comparison is possible between nested GLMMs and does not involve the direct comparison of a GLM and a GLMM (see for example the \texttt{PBmodcomp} function from the \texttt{pbkrtest} package; \citealt{HalekohHojsgaard2014})%
     \footnote{This entails that GLMMs with only one simple random effect cannot be compared with a model without it, as such a model would be a GLM and not a nested GLMM.}
 \end{enumerate}
@@ -209,7 +209,7 @@ In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first
 
 \begin{table}
   \centering
-  \resizebox{\textwidth}{!}{
+  \caption{Coefficient table from \citet{Schaefer2018}}
     \begin{tabular}{llrlrrrc}
       \toprule
     Model           & Regressor         & $\text{p}_{\text{PB}}$ & Factor       & Coefficient & CI low & CI high \\
@@ -236,8 +236,6 @@ In general, BOBYQA optimisers are highly robust, and using a BOBYQA is the first
   \bottomrule
 
   \end{tabular}
-  }
-  \caption{Coefficient table from \citet{Schaefer2018}}
   \label{tab:bigtable}
 \end{table}
 
@@ -250,10 +248,10 @@ In \citet{Schaefer2018}, the results are reported as follows (given here in adap
   The measure lemma and the kind noun lemma were specified as varying-intercept random effects.
   The sample size was n=5,063 with 1,134 cases with the genitive and 3,929 cases with case identity.
   The intercept estimated at -3.548 comprises \textsc{Cardinal=Yes}, \textsc{Measurecase=Nom}, \textsc{Kindgender=Masc}, \textsc{Measureclass=Physical}, and 0 for all numeric z-transformed regressors.
-  The coefficient table is shown in Figure~\ref{tab:bigtable}.
+  The coefficient table is shown in Fig.~\ref{tab:bigtable}.
   Given the coding of the response variable, coefficients leaning to the positive side can be interpreted as characterising a configuration typical of the genitive.
   I ran a parametric bootstrap (using the \mbox{\textsc{confint.merMod}} function from \textsc{lme4}) with 1,000 replications and using the percentile method.
-  The resulting 95\% bootstrap confidence intervals are reported in Table~\ref{tab:bigtable} in columns ``CI low'' and ``CI high''.
+  The resulting 95\% bootstrap confidence intervals are reported in Tab.~\ref{tab:bigtable} in columns ``CI low'' and ``CI high''.
   For each regressor, a p-value $\text{p}_{\text{PB}}$ was obtained by dropping the regressor from the full model, re-estimating the nested model, and comparing it to the full model.
   A drop-in bootstrap replacement for the Likelihood Ratio Test in the form of the function \textsc{PBmodcomp} from the \textsc{pbkrtest} package \citep{HalekohHojsgaard2014} was used. 
   Nakagawa \& Schielzeth's pseudo-coefficients of determination are $\textrm{R}^{\textrm{2}}=0.409$ (marginal) and $\textrm{R}^{\textrm{2}}=0.495$ (conditional).

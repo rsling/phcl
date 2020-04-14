@@ -1,20 +1,24 @@
 \documentclass[graybox]{svmult}
 
+\usepackage[margin=2.54cm]{geometry}
 
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
 
 % The editors specifically asked for Lucida Console.
 % Hence, I switched to XeLaTeX. This does, of course,
 % not work with PDFLaTeX. You'll know how to go back
 % to PDFLaTeX if you have to.
 \usepackage{fontspec}
-\setmonofont[Scale=0.9]{Lucida Console}
+
+\usepackage{newtxtext}
+\usepackage[scaled=1.1]{newtxmath}
+
+\setmonofont[SizeFeatures={Size=11}]{Lucida Console}
+%\setmainfont[SizeFeatures={Size=12}]{Times}
 
 \usepackage{makeidx}
 \usepackage{multicol}
 \usepackage[bottom]{footmisc}
-\usepackage{newtxtext}
-\usepackage{newtxmath}
 
 \usepackage{xcolor}
 \definecolor{lightgray}{gray}{0.85}
@@ -37,19 +41,63 @@
 \usepackage{hhline}
 \usepackage{booktabs}
 \usepackage{colortbl}
-\usepackage{gb4e-}
+
+\newcommand{\stylepath}{./langsci/styles/}
+\usepackage{langsci/styles/langsci-gb4e}
+
 \usepackage[xetex]{graphicx}
+
+\usepackage[center]{caption}
 
 \usepackage[backend=biber,
 	natbib=true,
 	style=biblatex-sp-unified,
 	citestyle=sp-authoryear-comp,
+%        bibstyle=authoryear,
 	maxbibnames=99,
 	isbn=false,
-	doi=false,
+	doi=true,
+        firstinits=true,
 	eprint=false
 ]{biblatex}
 \bibliography{glmm}
+
+\DeclareNameAlias{sortname}{last-first}
+
+\newtoggle{bbx:boldentries}
+\DeclareBibliographyCategory{boldentry}
+\AtEveryBibitem{\ifboolexpr{togl {bbx:boldentries} and test {\ifcategory{boldentry}}}{\bfseries}{}}
+
+%\renewcommand*{\finentrypunct}{\addcomma}
+%\renewcommand*{\intitlepunct}{\addcolon\space}
+\renewcommand*{\postnotedelim}{\addcomma\space}
+\renewcommand*{\finalnamedelim}{%
+  \ifnumgreater{\value{liststop}}{2}{\space}{}%
+  \addspace and\space}
+
+
+
+
+
+
+% \usepackage{xpatch}
+% \xpatchbibmacro{journal+issuetitle}{%
+%   \setunit*{\addspace}%
+%   \iffieldundef{series}}
+%   {%
+%   \setunit*{\addcomma\space}%
+%   \iffieldundef{series}}{}{}
+% 
+% \renewbibmacro*{volume+number+eid}{%
+%   \printfield{volume}
+%   \setunit{\addcolon\space}%
+%   \printfield{number}%
+%   \setunit{\addcomma\space}%
+%   \printfield{eid}}
+
+\setlength\bibitemsep{0.5\baselineskip}
+
+
 
 %\usepackage{natbib}
 %\bibliographystyle{styles/spbasic}
@@ -74,14 +122,35 @@
 \newcommand{\vivs}{VI\slash VS\ }
 
 \title{Mixed-effects regression modeling}
-\author{Roland Schäfer}
+\author{\bf Roland Schäfer}
 \institute{Roland Schäfer \at Deutsche und niederländische Philologie, Freie Universität Berlin \email{roland.schaefer@fu-berlin.de}}
+
+\definecolor{listingbackground}{gray}{0.95}
+\lstdefinestyle{RStyle}{
+  language=R,
+%  basicstyle=\ttfamily\footnotesize,
+%  keywordstyle=\ttfamily\color{lsDarkOrange},
+%  stringstyle=\ttfamily\color{lsDarkBlue},
+%  identifierstyle=\ttfamily\color{lsDarkGreenOne},
+%  commentstyle=\ttfamily\color{lsLightBlue},
+  upquote=true,
+  breaklines=true,
+  backgroundcolor=\color{listingbackground},
+  framesep=5mm,
+  frame=trlb,
+  framerule=0pt,
+  linewidth=\dimexpr\textwidth-5mm,
+  xleftmargin=5mm
+  }
+\lstset{style=Rstyle}
 
 \begin{document}       
 
+\raggedright
+
 % To make it look right to LaTeX-unaware editors.
 \setcounter{chapter}{21}
-\renewcommand*\thesection{\arabic{section}}
+\renewcommand*\thesection{\arabic{chapter}.\arabic{section}}
 
 \maketitle
 
@@ -111,22 +180,46 @@ Readers are assumed to be familiar with the concepts covered in Chapter~21.
 \input{sections/fundamentals1}
 \input{sections/fundamentals2}
 
+\newpage
+\section*{Representative studies}
+
+\input{sections/studies}
+
+\newpage
 \section{Practical guide with R}
 \label{sec:practicalguidewithr}
 
 \input{sections/practical}
 
-\newpage
-\section{Representative studies}
-
-\input{sections/studies}
-
-\section{Further reading}
+\section*{Further reading}
 \label{sec:furtherreading}
 
-Chapters~1--15 and Chapters~20--24 of \citet{GelmanHill2007} are a highly recommended read, especially for \texttt{R} and \texttt{lme4} users.
-Similarly, \citet{ZuurEa2009} has a reputation among \texttt{R} users of mixed effects models in many fields.
-The companion to \texttt{lme4}, \citet{Bates2010} and the overview in \citet{BatesEa2015} are obligatory reads for users of \texttt{lme4}.
+  \begin{refsection}
+  \nocite{GelmanHill2007}
+  \addtocategory{boldentry}{GelmanHill2007}
+  \toggletrue{bbx:boldentries}
+  \printbibliography[heading=none]
+  \end{refsection}
+
+Chapters~1--15 and Chapters~20--24 of this book are a highly recommended read, especially for \texttt{R} and \texttt{lme4} users.
+
+  \begin{refsection}
+  \nocite{ZuurEa2009}
+  \addtocategory{boldentry}{ZuurEa2009}
+  \toggletrue{bbx:boldentries}
+  \printbibliography[heading=none]
+  \end{refsection}
+
+This practical guide has a reputation among \texttt{R} users of mixed effects models in many fields.
+
+  \begin{refsection}
+  \nocite{Bates2010,BatesEa2015}
+  \addtocategory{boldentry}{BatesEa2015,Bates2010}
+  \toggletrue{bbx:boldentries}
+  \printbibliography[heading=none]
+  \end{refsection}
+
+  These two are obligatory reads for users of \texttt{lme4}, (co-)authored by Douglas Bates, the author of \texttt{lme4}.
 
 \printbibliography
 %\bibliography{glmm}

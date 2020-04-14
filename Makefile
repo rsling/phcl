@@ -18,11 +18,11 @@ quick:
 	@echo
 	@echo " === LAST RUN === "
 	@echo
-	-$(LX) $(TEXFLAGS) $(FILEN) | grep 'Warning'
-	@echo
-	@echo " == WORD COUNT == "
-	@echo
-	@texcount -merge -total -utf8 -incbib -v0 glmm.tex
+	-$(LX) $(TEXFLAGS) $(FILEN) #| grep 'Warning'
+#	@echo
+#	@echo " == WORD COUNT == "
+#	@echo
+#	@texcount -merge -total -utf8 -incbib -v0 glmm.tex
 
 clean:
 	\rm *.adx *.and *.aux *.bbl *.blg *.idx *.ilg *.ldx *.lnd *.log *.out *.rdx *.run.xml *.sdx *.snd *.toc *.wdx *.xdv *.bcf *.pdf *.xwm .DS_Store RPHCL/.DS_Store RPHCL/.RData RPHCL/.Rhistory RPHCL/Rplots.pdf graphics/.DS_Store sections/.DS_Store

@@ -13,7 +13,7 @@ Without any knowledge of the mathematical notation conventions, it is impossible
 
 Readers with experience in fixed effects modeling should be able to see that a grouping factor encoding the verb lemma and all the other potential grouping factors discussed in the previous sections could be specified as normal fixed effects in a GLM.
 This section introduces the main difference between the fixed-effect approach and the random-effect approach.
-Logistic regression examples are used throughout this section, and we begin with the fictional corpus study of the dative alternation introduced in Sections~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
+Logistic regression examples are used throughout this section, and we begin with the fictional corpus study of the dative alternation introduced in Sec.s~\ref{sec:hierarchicalormultilevelmodels} and \ref{sec:randominterceptsandslopes}.
 
 First, we specify a minimal model with only the \textsc{Lemma} grouping factor and one other predictor, namely \textsc{Givenness}, both as fixed effects.
 
@@ -44,6 +44,7 @@ If the default corresponds to, as in the example, non-givenness, phrases like ``
 
 \begin{table}
   \centering
+  \caption{Dummy coding of a categorical variable \textsc{Lemma} with four levels, resulting in the binary dummy variables $l_1,l_2,l_3$}
   \begin{tabular}{cccc}
     \toprule
     \multicolumn{4}{l}{\textbf{Value of\ldots}} \\
@@ -55,13 +56,12 @@ If the default corresponds to, as in the example, non-givenness, phrases like ``
     4 & 0 & 0 & 1 \\ 
     \bottomrule
   \end{tabular}
-  \caption{Dummy coding of a categorical variable \textsc{Lemma} with four levels, resulting in the binary dummy variables $l_1,l_2,l_3$}
   \label{tab:dummy}
 \end{table}
 
 However, a grouping factor such as \textsc{Lemma} is usually a categorical variable with more than two levels.
 In such a case, the $m$ levels of the grouping factor are ``dummy-coded'', and for all but one of these binary dummy variables, a coefficient is estimated.
-Dummy coding is a way of encoding a categorical variable as a number of binary variables (see Table~\ref{tab:dummy}), and R takes care of dummy-coding automatically.
+Dummy coding is a way of encoding a categorical variable as a number of binary variables (see Tab.~\ref{tab:dummy}), and R takes care of dummy-coding automatically.
 Because the first of the $m$ levels of the grouping factor is encoded by all dummy variables assuming the value 0, only $m-1$ sub-terms are added to the model, which means that only $m-1$ coefficients have to be estimated.
 The first level of the grouping factor is thus ``on the intercept'' and becomes the reference to which all other levels are compared.%
 \footnote{Choosing one dummy as a reference level is necessary because otherwise, infinitely many equivalent estimates of the model coefficients exist, as one could simply add any arbitrary constant to the intercept and shift the other coefficients accordingly.
@@ -133,8 +133,8 @@ It is the numerical value shown by R packages like \texttt{lme4} for each level 
 This procedure, however, requires that the number of groups not be too low.
 As a rule of thumb, if there are fewer than five levels, a grouping factor should be included as a fixed effect, regardless of its conceptual interpretation.
 Although one often finds default recommendations telling practitioners to use a grouping variable for speakers as a random effect, it would be ill-advised to do so if there are exemplars from less than five speakers in the sample.
-Along the same lines, the distinction between intersective and non-intersective adjectives (Section~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
-Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect (see Section~\ref{sec:morecomplexmodels}).
+Along the same lines, the distinction between intersective and non-intersective adjectives (Sec.~\ref{sec:crossedandnestedeffects}) is not a suitable grouping factor for use as a random effect because it has too few levels.
+Hence, if such a grouping factor is used in a model where it nests finer-grained groups of another factor (such as adjective lemmas), the nested factor with the low number of levels should be used as a second-level fixed effect rather than a nesting random effect (see Sec.~\ref{sec:morecomplexmodels}).
 
 If the number of levels is reasonably large, the next thing to consider is the number of observations per level.
 Alternatives to using a random effect would be to estimate a separate model for each level of the grouping factor, or to include it as a fixed effect.
@@ -158,7 +158,7 @@ However, so-called ``prediction intervals'' can be calculated for individual per
 
 It is not adequate to do any kind of significance testing on the individual levels of the random effect because they are not estimates in the conceptual and technical sense.%
 \footnote{Again, we do not assume them to be fixed population parameters, which would be the case for true estimates such as fixed effects coefficients.}
-There are ways of calculating ``prediction intervals'' (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Section~\ref{sec:practicalguidewithr}), but they should not be misused for talking about significance.
+There are ways of calculating ``prediction intervals'' (which are not the same as confidence intervals) for conditional modes in order to specify the quality of the fit (see Sec.~\ref{sec:practicalguidewithr}), but they should not be misused for talking about significance.
 The fact that we do not do significance tests for single levels of the grouping factor does, however, not mean that we are not interested in the individual conditional modes, which is proven by the fact that they are often reproduced in research papers, for example in the form of a plot.
 Also, we can still get a good idea of the per-group tendencies by looking at the conditional modes\slash means.
 Additionally, a random effect allows the researcher to quantify the between-group variance, which is not possible for fixed effects.
@@ -166,7 +166,7 @@ Additionally, a random effect allows the researcher to quantify the between-grou
 \paragraph{Relevance of the random effects}
 
 A related question is whether the inclusion of the random effect improves the model quality.
-It is recommended here to include all random effects as required by the design of the study (after having decided based on the criteria given in Section~\ref{sec:choosingbetweenrandomandfixedeffects} whether they should be random rather than fixed).
+It is recommended here to include all random effects as required by the design of the study (after having decided based on the criteria given in Sec.~\ref{sec:choosingbetweenrandomandfixedeffects} whether they should be random rather than fixed).
 Only if they clearly (and beyond doubt) have no effect, practitioners should consider removing them.
 To check whether they have an effect, the estimated between-group variance is the first thing to look at.
 If it is close to $0$, there is most likely not much going on between groups, or there simply was not enough data to estimate the variance.
@@ -176,7 +176,7 @@ This comparison is impossible in GLMMs because their (several types of) residual
 
 Furthermore, models can be compared using likelihood ratio (LR) tests.
 In such tests, a model including the random effect and a model not including it are compared, similar to LR tests for the comparison of fixed effects.
-Such pairs of models, where one is strictly a simplification of the other, are called ``nested models'' (not to be confused with ``nested effects'' discussed in Section~\ref{sec:crossedandnestedeffects}).
+Such pairs of models, where one is strictly a simplification of the other, are called ``nested models'' (not to be confused with ``nested effects'' discussed in Sec.~\ref{sec:crossedandnestedeffects}).
 A sometimes more robust alternative to the ordinary LR test are parametric bootstrap tests. 
 
 With all this, it should be kept in mind that it is \textit{never} appropriate to make formal comparisons between a GLMM with a random effect and a GLM with the same factor as a fixed effect using any test or metric (including so-called information criteria such as Akaike's or Bayes').
@@ -200,11 +200,11 @@ Also, the conditional $\textrm{R}^{\textrm{2}}$ for a GLMM estimate is roughly t
 
 \paragraph{Varying intercepts and slopes}
 
-In Section~\ref{sec:randominterceptsandslopes}, it was shown under which conditions a varying-intercept and varying-slope (VIVS) model might be useful.
+In Sec.~\ref{sec:randominterceptsandslopes}, it was shown under which conditions a varying-intercept and varying-slope (VIVS) model might be useful.
 While it is possible to have just a varying slope, this is rarely useful, and we discuss only VIVS models.
 
 A random slope is a good choice when the strength or direction of some fixed effect varies by group.
-We extend the simple model from Section~\ref{sec:simplerandomintercepts} to include random slopes for \textsc{Givenness} varying by \textsc{Lemma} using R notation.
+We extend the simple model from Sec.~\ref{sec:simplerandomintercepts} to include random slopes for \textsc{Givenness} varying by \textsc{Lemma} using R notation.
 Each variable from the fixed effects part of the formula which we expect to vary by \textsc{Lemma} is simply repeated before the | symbol.
 
 \begin{lstlisting}
@@ -234,7 +234,7 @@ In this case, the model is ``over-parametrised'' and needs to be simplified (see
 \paragraph{Nested and crossed random effects}
 
 The difference between nested and crossed random effects is only defined when there are two or more random effects.
-As it was explained in Section~\ref{sec:crossedandnestedeffects}, nested random effects are appropriate tools when the levels of a grouping factor are nested within the levels of another grouping factor.
+As it was explained in Sec.~\ref{sec:crossedandnestedeffects}, nested random effects are appropriate tools when the levels of a grouping factor are nested within the levels of another grouping factor.
 Technically, while varying slopes can be understood as interactions between a fixed and a random effect, nested random intercepts can be understood as interactions between two or more random effects.
 Crossed random effects are just several unrelated random effects.
 
@@ -250,14 +250,14 @@ The following code provides an example in R notation.
 
 \textsc{Semantics} could be a factor encoding the semantic classes which nest individual lemmas.
 It could also be a (crossed) grouping factor completely unrelated to the lemmas, for example encoding some semantic property of the whole sentence containing the construction.
-As was mentioned in Section~\ref{sec:crossedandnestedeffects}, the question on the practitioner's side is rather how the data are organised.
+As was mentioned in Sec.~\ref{sec:crossedandnestedeffects}, the question on the practitioner's side is rather how the data are organised.
 If the data have a nested structure, the estimator will treat them as nested, otherwise as crossed.
 Data have a nested structure whenever each level of a (nesting) random effect can always be determined entirely from the levels of another (nested) factor.
 
 
 \paragraph{Second-level predictors}
 
-In Section~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be partially predicted from second-level fixed-effects.
+In Sec.~\ref{sec:hierarchicalormultilevelmodels}, situations were introduced where the random effects themselves can be partially predicted from second-level fixed-effects.
 In R notation, the true model structure is entirely blurred, and practitioners even run the risk of working with second-level predictors without realising it.
 
 We add a numeric second-level fixed effect which specifies the token frequency for each level of \textsc{Lemma} in the following R code.
@@ -269,10 +269,10 @@ We add a numeric second-level fixed effect which specifies the token frequency f
 \end{lstlisting}
 
 This is the only way to specify second-level predictors in standard R notation.
-The data set has to be organised as shown in Table~\ref{tab:multilevel}, where for each data point a level of \textsc{Lemma} is specified and the appropriate frequency value for this level of \textsc{Lemma} is given in a separate column.%
+The data set has to be organised as shown in Tab.~\ref{tab:multilevel}, where for each data point a level of \textsc{Lemma} is specified and the appropriate frequency value for this level of \textsc{Lemma} is given in a separate column.%
 \footnote{There are, of course, elegant ways of pulling the frequency values from another data frame on the fly in R.}
 R treats \textsc{Lemmafrequency} as a second-level predictor automatically under such conditions.
 Simply speaking, this means that the random intercept for \textsc{Lemma} will now be predicted from its own linear model.
-In Section~\ref{sec:practicalguidewithr}, a model with second-level effects will be used for illustration purposes.
+In Sec.~\ref{sec:practicalguidewithr}, a model with second-level effects will be used for illustration purposes.
 
 

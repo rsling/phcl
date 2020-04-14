@@ -416,7 +416,8 @@
   \newunit\newblock
 % \usebibmacro{in:}%                         We don't use "In: " before journal titles
   \usebibmacro{journal+issuetitle+editor}%
-  \newblock%                          \newblock ensures period before pages
+%  \newblock%                          \newblock ensures period before pages
+  \setunit{\addcolon\space}
   \usebibmacro{note+pages}%
   \newunit\newblock
   \iftoggle{bbx:isbn}
